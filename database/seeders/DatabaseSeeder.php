@@ -32,6 +32,15 @@ class DatabaseSeeder extends Seeder
             'idroles' => 'admins'
         ]);
 
+        DB::table('users')->insert([
+            'username' => 'hr',
+            'firstname' => 'HR',
+            'lastname' => 'Personalia',
+            'email' => 'hr@spunindo.com',
+            'password' => bcrypt('hr'),
+            'idroles' => 'hr'
+        ]);
+
         //insert tabel sys_gmenu
         DB::table('sys_gmenu')->insert([
             'gmenu' => 'blankx',
@@ -529,9 +538,9 @@ class DatabaseSeeder extends Seeder
 
         //insert tabel sys_app        
         DB::table('sys_app')->insert([
-            'appid' => 'msjframework',
-            'appname' => 'MSJFramework',
-            'description' => 'Framework Pembuatan Aplikasi Baru',
+            'appid' => 'msjabsensi',
+            'appname' => 'MSJ ABSENSI',
+            'description' => 'Sistem Absensi Karyawan',
             'company' => 'PT MULTI SPUNINDO JAYA Tbk',
             'address' => 'Desa Jabaran, Balongbendo 61263.',
             'city' => 'SIDOARJO',
@@ -557,6 +566,20 @@ class DatabaseSeeder extends Seeder
             menu_rpt_seeder::class,
             tabel_rpt_seeder::class,
             example_call_seed::class,
+            // Sistem Absensi Seeders
+            absens_role_hr::class,
+            absens_gmenu::class,
+            tabel_mst_shift::class,
+            tabel_mst_mapping_nik::class,
+            tabel_mst_group_karyawan::class,
+            tabel_mst_hari_libur_non_shift::class,
+            tabel_mst_hari_libur_shift::class,
+            tabel_mst_karyawan_hris::class,
+            tabel_trs_tukar_jadwal::class,
+            tabel_trs_pull_finger::class,
+            tabel_trs_data_missing::class,
+            tabel_rpt_finger::class,
+            tabel_rpt_sp::class,
         ]);
     }
 }
