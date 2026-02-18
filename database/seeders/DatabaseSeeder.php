@@ -575,6 +575,7 @@ class DatabaseSeeder extends Seeder
             tabel_mst_hari_libur_non_shift::class,
             tabel_mst_hari_libur_shift::class,
             tabel_mst_karyawan_hris::class,
+            tabel_mst_kontak_karyawan::class,
             tabel_trs_tukar_jadwal::class,
             tabel_trs_pull_finger::class,
             tabel_trs_data_missing::class,

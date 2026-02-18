@@ -45,6 +45,16 @@ class DashboardController extends Controller
         // Data dummy untuk dashboard HR
         // Nanti bisa diganti dengan query real dari database
         
+        // Get hari libur non-shift from database
+        $hariLibur = DB::table('mst_hari_libur_non_shift')
+            ->where('isactive', '1')
+            ->orderBy('tanggal')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->tanggal => $item->nama_libur];
+            })
+            ->toArray();
+        
         return [
             'total_karyawan' => 400,
             'hadir_hari_ini' => 365,
@@ -54,6 +64,7 @@ class DashboardController extends Controller
             'shift_pagi' => 180,
             'shift_malam' => 120,
             'non_shift' => 100,
+            'hari_libur' => $hariLibur,
         ];
     }
 }

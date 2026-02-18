@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>MSJ ABSENSI | Kirim Surat Peringatan</title>
+    
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Open Sans', sans-serif; background: #f8f9fa; }
+        .dashboard-wrapper { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+        
+        /* SIDEBAR */
+        .sidebar { background: #ffffff; border-right: 1px solid #e9ecef; padding: 24px 16px; display: flex; flex-direction: column; gap: 8px; }
+        .sidebar-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin-bottom: 16px; border-bottom: 1px solid #e9ecef; }
+        .sidebar-header img { width: 36px; height: 36px; }
+        .sidebar-header span { font-weight: 700; font-size: 15px; color: #344767; }
+        .nav-item { padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; color: #67748e; font-size: 14px; transition: all 0.2s; }
+        .nav-item:hover { background: #f8f9fa; }
+        .nav-item.active { background: linear-gradient(135deg, #028284, #025f60); color: white; }
+        .nav-item i { font-size: 14px; width: 20px; text-align: center; }
+        .nav-item.active i { color: white; }
+        .nav-group-title { padding: 12px 16px; font-size: 13px; font-weight: 600; color: #344767; display: flex; align-items: center; gap: 12px; }
+        .nav-sub-items { padding-left: 24px; display: flex; flex-direction: column; gap: 4px; }
+        
+        /* MAIN CONTENT */
+        .main-content { background: #f8f9fa; display: flex; flex-direction: column; }
+        .topnav { background: linear-gradient(135deg, #028284, #025f60); padding: 20px 32px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .breadcrumb-section h6 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .breadcrumb-section p { font-size: 13px; opacity: 0.9; }
+        .user-profile { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 8px; }
+        .user-profile img { width: 32px; height: 32px; border-radius: 50%; }
+        .user-profile span { font-size: 14px; font-weight: 600; }
+        
+        /* PAGE CONTENT */
+        .page-content { padding: 32px; flex: 1; }
+        .page-header { background: white; padding: 20px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .page-header h6 { font-size: 16px; font-weight: 700; color: #344767; margin-bottom: 4px; }
+        .page-header p { font-size: 13px; color: #67748e; margin: 0; }
+        
+        /* BUTTON ACTIONS */
+        .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, #028284, #025f60); color: white; }
+        .btn-success { background: #2dce89; color: white; }
+        .btn-warning { background: #fb6340; color: white; }
+        .btn-secondary { background: #67748e; color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        
+        /* FILTER SECTION */
+        .filter-card { background: white; padding: 24px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .filter-card h6 { font-size: 15px; font-weight: 700; color: #344767; margin-bottom: 16px; }
+        .filter-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; align-items: end; }
+        .filter-group { display: flex; flex-direction: column; gap: 8px; }
+        .filter-group label { font-size: 13px; font-weight: 600; color: #344767; }
+        .filter-group input, .filter-group select { padding: 10px 12px; border: 1px solid #d2d6da; border-radius: 8px; font-size: 14px; color: #344767; background: white; }
+        
+        /* DATA TABLE */
+        .data-card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow-x: auto; }
+        .data-card h6 { font-size: 15px; font-weight: 700; color: #344767; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: #f8f9fa; }
+        th { padding: 12px 16px; text-align: left; font-size: 11px; text-transform: uppercase; font-weight: 700; color: #67748e; border-bottom: 2px solid #e9ecef; white-space: nowrap; }
+        td { padding: 12px 16px; font-size: 13px; color: #344767; border-bottom: 1px solid #f1f3f5; white-space: nowrap; }
+        tbody tr:hover { background: #f8f9fa; }
+        
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+        .badge-danger { background: #f8d7da; color: #f5365c; }
+        .badge-warning { background: #ffeaa7; color: #fb6340; }
+        .badge-info { background: #d1ecf1; color: #11cdef; }
+        
+        /* PAGINATION */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 20px; }
+        .pagination button { padding: 8px 12px; border: 1px solid #d2d6da; border-radius: 6px; background: white; color: #344767; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+        .pagination button:hover { background: #f8f9fa; }
+        .pagination button.active { background: linear-gradient(135deg, #028284, #025f60); color: white; border-color: #028284; }
+        .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* DROPDOWN SELECT */
+        select.sp-select { padding: 6px 10px; border: 1px solid #d2d6da; border-radius: 6px; font-size: 13px; color: #344767; background: white; cursor: pointer; }
+        select.sp-select:focus { outline: none; border-color: #028284; }
+        
+        /* FOOTER */
+        .footer { padding: 20px 32px; text-align: center; color: #67748e; font-size: 13px; border-top: 1px solid #e9ecef; }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-wrapper">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="../img/logo-small.png" alt="Logo">
+                <span>MSJ ABSENSI</span>
+            </div>
+            
+            <a href="02-dashboard.html" class="nav-item">
+                <i class="fas fa-tv"></i>
+                <span>Dashboard</span>
+            </a>
+            
+            <div class="nav-group-title">
+                <i class="fas fa-folder"></i>
+                <span>Master Data</span>
+            </div>
+            <div class="nav-sub-items">
+                <a href="03-master-shift.html" class="nav-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Master Shift</span>
+                </a>
+                <a href="04-master-karyawan.html" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span>Master Karyawan</span>
+                </a>
+                <a href="05-master-mapping-nik.html" class="nav-item">
+                    <i class="fas fa-fingerprint"></i>
+                    <span>Mapping NIK</span>
+                </a>
+                <a href="06-master-group-karyawan.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Group Karyawan</span>
+                </a>
+                <a href="09-master-kontak-karyawan.html" class="nav-item">
+                    <i class="fas fa-mobile"></i>
+                    <span>Kontak Karyawan</span>
+                </a>
+                <a href="07-hari-libur-non-shift.html" class="nav-item">
+                    <i class="fas fa-calendar-times"></i>
+                    <span>Hari Libur Non-Shift</span>
+                </a>
+                <a href="08-hari-libur-shift.html" class="nav-item">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Hari Libur Shift</span>
+                </a>
+            </div>
+            
+            <div class="nav-group-title">
+                <i class="fas fa-th"></i>
+                <span>Transaksi</span>
+            </div>
+            <div class="nav-sub-items">
+                <a href="16-transaksi-pull-finger.html" class="nav-item">
+                    <i class="fas fa-download"></i>
+                    <span>Pull Finger</span>
+                </a>
+                <a href="10-input-manual-absensi.html" class="nav-item">
+                    <i class="fas fa-edit"></i>
+                    <span>Input Manual</span>
+                </a>
+                <a href="11-transaksi-tukar-jadwal.html" class="nav-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Tukar Jadwal</span>
+                </a>
+                <a href="12-transaksi-data-missing.html" class="nav-item">
+                    <i class="fas fa-search"></i>
+                    <span>Data Missing</span>
+                </a>
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Kirim SP</span>
+                </a>
+            </div>
+            
+            <div class="nav-group-title">
+                <i class="fas fa-file-alt"></i>
+                <span>Report</span>
+            </div>
+            <div class="nav-sub-items">
+                <a href="13-report-finger.html" class="nav-item">
+                    <i class="fas fa-list"></i>
+                    <span>Report Finger</span>
+                </a>
+                <a href="14-report-kehadiran.html" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Report Kehadiran</span>
+                </a>
+                <a href="15-report-keterlambatan.html" class="nav-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Report Keterlambatan</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- TOP NAVBAR -->
+            <div class="topnav">
+                <div class="breadcrumb-section">
+                    <h6>Kirim Surat Peringatan</h6>
+                    <p>Transaksi / Kirim SP</p>
+                </div>
+                <div class="user-profile">
+                    <img src="../img/user-avatar.png" alt="User">
+                    <span>Admin User</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+            
+            <!-- PAGE CONTENT -->
+            <div class="page-content">
+                <div class="page-header">
+                    <h6>Kirim Surat Peringatan ke Karyawan</h6>
+                    <p>Monitoring Mangkir Karyawan dan Kirim SP via WhatsApp</p>
+                </div>
+                
+                <!-- FILTER SECTION -->
+                <div class="filter-card">
+                    <h6>Filter Data Karyawan</h6>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Tanggal Mulai</label>
+                            <input type="date" id="filterTanggalMulai" value="2026-02-01">
+                        </div>
+                        <div class="filter-group">
+                            <label>Tanggal Akhir</label>
+                            <input type="date" id="filterTanggalAkhir" value="2026-02-18">
+                        </div>
+                        <div class="filter-group">
+                            <label>Karyawan</label>
+                            <select id="filterKaryawan">
+                                <option value="">-- Semua Karyawan --</option>
+                                <option value="169987">169987 - Ahmad Fauzi</option>
+                                <option value="235578">235578 - Citra Dewi</option>
+                                <option value="007122">007122 - Gita Maharani</option>
+                                <option value="099744">099744 - Hari Purnomo</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="applyFilter()">
+                                <i class="fas fa-search"></i> Cari Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- DATA TABLE -->
+                <div class="data-card">
+                    <h6><i class="fas fa-table"></i> Data Karyawan yang Perlu Surat Peringatan</h6>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;">No</th>
+                                <th>NIK</th>
+                                <th>Nama Karyawan</th>
+                                <th style="text-align: center;">Mangkir</th>
+                                <th style="text-align: center;">Izin</th>
+                                <th style="text-align: center;">Cuti</th>
+                                <th>Surat Peringatan</th>
+                                <th style="text-align: center;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><strong>169987</strong></td>
+                                <td>Ahmad Fauzi</td>
+                                <td style="text-align: center;"><span class="badge badge-danger">3</span></td>
+                                <td style="text-align: center;">1</td>
+                                <td style="text-align: center;">0</td>
+                                <td>
+                                    <select class="sp-select" data-nik="169987">
+                                        <option value="">-- Pilih SP --</option>
+                                        <option value="SP1">SP 1</option>
+                                        <option value="SP2">SP 2</option>
+                                        <option value="SP3">SP 3</option>
+                                    </select>
+                                </td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-success btn-sm" onclick="sendWhatsApp('169987', 'Ahmad Fauzi', '081234567890')">
+                                        <i class="fab fa-whatsapp"></i> Hubungi WA
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><strong>235578</strong></td>
+                                <td>Citra Dewi</td>
+                                <td style="text-align: center;"><span class="badge badge-danger">5</span></td>
+                                <td style="text-align: center;">0</td>
+                                <td style="text-align: center;">2</td>
+                                <td>
+                                    <select class="sp-select" data-nik="235578">
+                                        <option value="">-- Pilih SP --</option>
+                                        <option value="SP1">SP 1</option>
+                                        <option value="SP2" selected>SP 2</option>
+                                        <option value="SP3">SP 3</option>
+                                    </select>
+                                </td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-success btn-sm" onclick="sendWhatsApp('235578', 'Citra Dewi', '081298765432')">
+                                        <i class="fab fa-whatsapp"></i> Hubungi WA
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><strong>007122</strong></td>
+                                <td>Gita Maharani</td>
+                                <td style="text-align: center;"><span class="badge badge-danger">2</span></td>
+                                <td style="text-align: center;">1</td>
+                                <td style="text-align: center;">1</td>
+                                <td>
+                                    <select class="sp-select" data-nik="007122">
+                                        <option value="">-- Pilih SP --</option>
+                                        <option value="SP1" selected>SP 1</option>
+                                        <option value="SP2">SP 2</option>
+                                        <option value="SP3">SP 3</option>
+                                    </select>
+                                </td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-success btn-sm" onclick="sendWhatsApp('007122', 'Gita Maharani', '081312345678')">
+                                        <i class="fab fa-whatsapp"></i> Hubungi WA
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><strong>099744</strong></td>
+                                <td>Hari Purnomo</td>
+                                <td style="text-align: center;"><span class="badge badge-danger">4</span></td>
+                                <td style="text-align: center;">0</td>
+                                <td style="text-align: center;">0</td>
+                                <td>
+                                    <select class="sp-select" data-nik="099744">
+                                        <option value="">-- Pilih SP --</option>
+                                        <option value="SP1">SP 1</option>
+                                        <option value="SP2" selected>SP 2</option>
+                                        <option value="SP3">SP 3</option>
+                                    </select>
+                                </td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-success btn-sm" onclick="sendWhatsApp('099744', 'Hari Purnomo', '081387654321')">
+                                        <i class="fab fa-whatsapp"></i> Hubungi WA
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><strong>012345</strong></td>
+                                <td>Indah Permata</td>
+                                <td style="text-align: center;"><span class="badge badge-warning">6</span></td>
+                                <td style="text-align: center;">1</td>
+                                <td style="text-align: center;">1</td>
+                                <td>
+                                    <select class="sp-select" data-nik="012345">
+                                        <option value="">-- Pilih SP --</option>
+                                        <option value="SP1">SP 1</option>
+                                        <option value="SP2">SP 2</option>
+                                        <option value="SP3" selected>SP 3</option>
+                                    </select>
+                                </td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-success btn-sm" onclick="sendWhatsApp('012345', 'Indah Permata', '081456789012')">
+                                        <i class="fab fa-whatsapp"></i> Hubungi WA
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td><strong>098765</strong></td>
+                                <td>Joko Widodo</td>
+                                <td style="text-align: center;"><span class="badge badge-danger">3</span></td>
+                                <td style="text-align: center;">2</td>
+                                <td style="text-align: center;">0</td>
+                                <td>
+                                    <select class="sp-select" data-nik="098765">
+                                        <option value="">-- Pilih SP --</option>
+                                        <option value="SP1" selected>SP 1</option>
+                                        <option value="SP2">SP 2</option>
+                                        <option value="SP3">SP 3</option>
+                                    </select>
+                                </td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-success btn-sm" onclick="sendWhatsApp('098765', 'Joko Widodo', '081567890123')">
+                                        <i class="fab fa-whatsapp"></i> Hubungi WA
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <!-- PAGINATION -->
+                    <div class="pagination">
+                        <button disabled><i class="fas fa-chevron-left"></i> Previous</button>
+                        <button class="active">1</button>
+                        <button>2</button>
+                        <button>3</button>
+                        <button>4</button>
+                        <button>...</button>
+                        <button>11</button>
+                        <button>Next <i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FOOTER -->
+            <div class="footer">
+                © 2026, PT. Multi Sarana Jaya
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Filter Function
+        function applyFilter() {
+            const tanggalMulai = document.getElementById('filterTanggalMulai').value;
+            const tanggalAkhir = document.getElementById('filterTanggalAkhir').value;
+            const karyawan = document.getElementById('filterKaryawan').value;
+            
+            let filterText = 'Filter diterapkan:\n';
+            filterText += `Periode: ${tanggalMulai} s/d ${tanggalAkhir}`;
+            if (karyawan) filterText += `\nKaryawan: ${karyawan}`;
+            
+            alert('✓ ' + filterText + '\n\nData telah diperbarui.');
+        }
+        
+        // Send WhatsApp Function
+        function sendWhatsApp(nik, nama, phone) {
+            // Get selected SP
+            const spSelect = document.querySelector(`select.sp-select[data-nik="${nik}"]`);
+            const spValue = spSelect.value;
+            
+            if (!spValue) {
+                alert('⚠️ Mohon pilih Surat Peringatan terlebih dahulu!');
+                spSelect.focus();
+                return;
+            }
+            
+            // Get SP name
+            const spText = spSelect.options[spSelect.selectedIndex].text;
+            
+            // Confirm action
+            if (confirm(`Kirim ${spText} ke ${nama} (${nik})?\n\nSurat Peringatan akan dikirim via WhatsApp ke nomor:\n${phone}`)) {
+                // Create WhatsApp message
+                const message = `Yth. Bapak/Ibu ${nama} (NIK: ${nik}),\n\nDengan ini kami sampaikan Surat Peringatan ${spValue} terkait ketidakhadiran tanpa keterangan.\n\nMohon segera menghubungi HRD untuk klarifikasi.\n\nTerima kasih,\nPT. Multi Sarana Jaya - HRD`;
+                
+                // Encode message for URL
+                const encodedMessage = encodeURIComponent(message);
+                
+                // Open WhatsApp
+                const waUrl = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodedMessage}`;
+                window.open(waUrl, '_blank');
+                
+                // Log activity
+                alert(`✓ WhatsApp terbuka!\n\n${spText} akan dikirim ke ${nama}\nNomor: ${phone}`);
+                
+                // Optional: Save to history/database
+                logSPActivity(nik, nama, spValue, phone);
+            }
+        }
+        
+        // Log SP Activity (simulate saving to database)
+        function logSPActivity(nik, nama, sp, phone) {
+            const timestamp = new Date().toLocaleString('id-ID');
+            console.log('SP Activity Logged:', {
+                timestamp: timestamp,
+                nik: nik,
+                nama: nama,
+                sp: sp,
+                phone: phone,
+                status: 'Sent'
+            });
+        }
+        
+        // Auto-select SP based on mangkir count (optional feature)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Can add logic to auto-recommend SP based on mangkir count
+            console.log('Kirim SP page loaded');
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>MSJ ABSENSI | Master Karyawan</title>
+    
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: #f8f9fa;
+        }
+        
+        .dashboard-wrapper {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* SIDEBAR */
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid #e9ecef;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .sidebar-header img {
+            width: 36px;
+            height: 36px;
+        }
+        
+        .sidebar-header span {
+            font-weight: 700;
+            font-size: 15px;
+            color: #344767;
+        }
+        
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #67748e;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, #028284, #025f60);
+            color: white;
+        }
+        
+        .nav-item i {
+            font-size: 14px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .nav-item.active i {
+            color: white;
+        }
+        
+        .nav-group-title {
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #344767;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-sub-items {
+            padding-left: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        /* MAIN CONTENT */
+        .main-content {
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* TOP NAVBAR */
+        .topnav {
+            background: linear-gradient(135deg, #028284, #025f60);
+            padding: 20px 32px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .breadcrumb-section h6 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .breadcrumb-section p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+        
+        .user-profile img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+        
+        .user-profile span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* PAGE CONTENT */
+        .page-content {
+            padding: 32px;
+            flex: 1;
+        }
+        
+        .page-header {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-header-info h6 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #344767;
+            margin-bottom: 4px;
+        }
+        
+        .page-header-info p {
+            font-size: 13px;
+            color: #67748e;
+            margin: 0;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #028284, #025f60);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* DATA TABLE */
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: #f8f9fa;
+        }
+        
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #67748e;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        th:last-child {
+            text-align: center;
+        }
+        
+        td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #344767;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        td:last-child {
+            text-align: center;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            color: white;
+            margin: 0 2px;
+        }
+        
+        .btn-info {
+            background: #11cdef;
+        }
+        
+        .btn-danger {
+            background: #f5365c;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: #d4f4dd;
+            color: #2dce89;
+        }
+        
+        /* FOOTER */
+        .footer {
+            padding: 20px 32px;
+            text-align: center;
+            color: #67748e;
+            font-size: 13px;
+            border-top: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-wrapper">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="../img/logo-small.png" alt="Logo">
+                <span>MSJ ABSENSI</span>
+            </div>
+            
+            <a href="02-dashboard.html" class="nav-item">
+                <i class="fas fa-tv"></i>
+                <span>Dashboard</span>
+            </a>
+            
+            <div class="nav-group-title">
+                <i class="fas fa-folder"></i>
+                <span>Master Data</span>
+            </div>
+            <div class="nav-sub-items">
+                <a href="03-master-shift.html" class="nav-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Master Shift</span>
+                </a>
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-user"></i>
+                    <span>Master Karyawan</span>
+                </a>
+                <a href="05-master-mapping-nik.html" class="nav-item">
+                    <i class="fas fa-fingerprint"></i>
+                    <span>Mapping NIK</span>
+                </a>
+                <a href="06-master-group-karyawan.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Group Karyawan</span>
+                </a>
+                <a href="09-master-kontak-karyawan.html" class="nav-item">
+                    <i class="fas fa-mobile"></i>
+                    <span>Kontak Karyawan</span>
+                </a>
+                <a href="07-hari-libur-non-shift.html" class="nav-item">
+                    <i class="fas fa-calendar-times"></i>
+                    <span>Hari Libur Non-Shift</span>
+                </a>
+                <a href="08-hari-libur-shift.html" class="nav-item">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Hari Libur Shift</span>
+                </a>
+            </div>
+            
+            <div class="nav-group-title">
+                <i class="fas fa-th"></i>
+                <span>Transaksi</span>
+            </div>
+            <div class="nav-sub-items">
+                <a href="16-transaksi-pull-finger.html" class="nav-item">
+                    <i class="fas fa-download"></i>
+                    <span>Pull Finger</span>
+                </a>
+                <a href="10-input-manual-absensi.html" class="nav-item">
+                    <i class="fas fa-edit"></i>
+                    <span>Input Manual</span>
+                </a>
+                <a href="11-transaksi-tukar-jadwal.html" class="nav-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Tukar Jadwal</span>
+                </a>
+                <a href="12-transaksi-data-missing.html" class="nav-item">
+                    <i class="fas fa-search"></i>
+                    <span>Data Missing</span>
+                </a>
+                <a href="17-transaksi-kirim-sp.html" class="nav-item">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Kirim SP</span>
+                </a>
+            </div>
+            
+            <div class="nav-group-title">
+                <i class="fas fa-file-alt"></i>
+                <span>Report</span>
+            </div>
+            <div class="nav-sub-items">
+                <a href="13-report-finger.html" class="nav-item">
+                    <i class="fas fa-list"></i>
+                    <span>Report Finger</span>
+                </a>
+                <a href="14-report-kehadiran.html" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Report Kehadiran</span>
+                </a>
+                <a href="15-report-keterlambatan.html" class="nav-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Report Keterlambatan</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- TOP NAVBAR -->
+            <div class="topnav">
+                <div class="breadcrumb-section">
+                    <h6>Master Karyawan</h6>
+                    <p>Master Data / Karyawan</p>
+                </div>
+                <div class="user-profile">
+                    <img src="../img/user-avatar.png" alt="User">
+                    <span>Admin User</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+            
+            <!-- PAGE CONTENT -->
+            <div class="page-content">
+                <div class="page-header">
+                    <div class="page-header-info">
+                        <h6>Master Data Karyawan</h6>
+                        <p>Manajemen Data Karyawan PT. Multi Sarana Jaya</p>
+                    </div>
+                    <button class="btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Tambah Karyawan
+                    </button>
+                </div>
+                
+                <!-- DATA TABLE -->
+                <div class="table-card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>NIK</th>
+                                <th>Nama Lengkap</th>
+                                <th>Departemen</th>
+                                <th>Jabatan</th>
+                                <th>Shift</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><strong>NIK001</strong></td>
+                                <td>Ahmad Fauzi</td>
+                                <td>IT</td>
+                                <td>Programmer</td>
+                                <td>Non Shift</td>
+                                <td><span class="badge badge-success">Aktif</span></td>
+                                <td>
+                                    <button class="btn-sm btn-info"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><strong>NIK002</strong></td>
+                                <td>Budi Santoso</td>
+                                <td>HR & GA</td>
+                                <td>HR Staff</td>
+                                <td>Non Shift</td>
+                                <td><span class="badge badge-success">Aktif</span></td>
+                                <td>
+                                    <button class="btn-sm btn-info"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><strong>NIK003</strong></td>
+                                <td>Citra Dewi</td>
+                                <td>Produksi</td>
+                                <td>Operator</td>
+                                <td>Shift Siang</td>
+                                <td><span class="badge badge-success">Aktif</span></td>
+                                <td>
+                                    <button class="btn-sm btn-info"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><strong>NIK004</strong></td>
+                                <td>Dedi Kurniawan</td>
+                                <td>Finance</td>
+                                <td>Finance Staff</td>
+                                <td>Non Shift</td>
+                                <td><span class="badge badge-success">Aktif</span></td>
+                                <td>
+                                    <button class="btn-sm btn-info"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><strong>NIK005</strong></td>
+                                <td>Eka Putri</td>
+                                <td>Produksi</td>
+                                <td>Supervisor</td>
+                                <td>Shift Pagi</td>
+                                <td><span class="badge badge-success">Aktif</span></td>
+                                <td>
+                                    <button class="btn-sm btn-info"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- FOOTER -->
+            <div class="footer">
+                © 2026, PT. Multi Sarana Jaya
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

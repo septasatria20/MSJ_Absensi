@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>MSJ ABSENSI | Transaksi Pull Finger</title>
+    
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Open Sans', sans-serif; background: #f8f9fa; }
+        .dashboard-wrapper { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+        
+        /* SIDEBAR */
+        .sidebar { background: #ffffff; border-right: 1px solid #e9ecef; padding: 24px 16px; display: flex; flex-direction: column; gap: 8px; }
+        .sidebar-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin-bottom: 16px; border-bottom: 1px solid #e9ecef; }
+        .sidebar-header img { width: 36px; height: 36px; }
+        .sidebar-header span { font-weight: 700; font-size: 15px; color: #344767; }
+        .nav-item { padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; color: #67748e; font-size: 14px; transition: all 0.2s; }
+        .nav-item:hover { background: #f8f9fa; }
+        .nav-item.active { background: linear-gradient(135deg, #028284, #025f60); color: white; }
+        .nav-item i { font-size: 14px; width: 20px; text-align: center; }
+        .nav-item.active i { color: white; }
+        .nav-group-title { padding: 12px 16px; font-size: 13px; font-weight: 600; color: #344767; display: flex; align-items: center; gap: 12px; }
+        .nav-sub-items { padding-left: 24px; display: flex; flex-direction: column; gap: 4px; }
+        
+        /* MAIN CONTENT */
+        .main-content { background: #f8f9fa; display: flex; flex-direction: column; }
+        .topnav { background: linear-gradient(135deg, #028284, #025f60); padding: 20px 32px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .breadcrumb-section h6 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .breadcrumb-section p { font-size: 13px; opacity: 0.9; }
+        .user-profile { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 8px; }
+        .user-profile img { width: 32px; height: 32px; border-radius: 50%; }
+        .user-profile span { font-size: 14px; font-weight: 600; }
+        
+        /* PAGE CONTENT */
+        .page-content { padding: 32px; flex: 1; }
+        .page-header { background: white; padding: 20px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .page-header h6 { font-size: 16px; font-weight: 700; color: #344767; margin-bottom: 4px; }
+        .page-header p { font-size: 13px; color: #67748e; margin: 0; }
+        
+        /* BUTTON ACTIONS */
+        .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-primary { background: linear-gradient(135deg, #028284, #025f60); color: white; }
+        .btn-success { background: #2dce89; color: white; }
+        .btn-secondary { background: #67748e; color: white; }
+        .btn-info { background: #11cdef; color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        
+        /* TABLE ACTIONS */
+        .table-actions { background: white; padding: 16px 24px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .table-actions-left { display: flex; gap: 12px; align-items: center; }
+        .selection-info { font-size: 14px; color: #344767; }
+        .selection-info strong { color: #028284; }
+        
+        /* DATA TABLE */
+        .data-card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow-x: auto; }
+        .data-card h6 { font-size: 15px; font-weight: 700; color: #344767; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: #f8f9fa; }
+        th { padding: 12px 16px; text-align: left; font-size: 11px; text-transform: uppercase; font-weight: 700; color: #67748e; border-bottom: 2px solid #e9ecef; white-space: nowrap; }
+        td { padding: 12px 16px; font-size: 13px; color: #344767; border-bottom: 1px solid #f1f3f5; white-space: nowrap; }
+        tbody tr:hover { background: #f8f9fa; }
+        td small { display: block; font-size: 11px; color: #67748e; margin-top: 2px; }
+        
+        /* CHECKBOX */
+        input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #028284; }
+        
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+        .badge-success { background: #d4edda; color: #2dce89; }
+        .badge-danger { background: #f8d7da; color: #f5365c; }
+        .badge-info { background: #d1ecf1; color: #11cdef; }
+        
+        /* PROGRESS BAR */
+        .progress-container { background: #e9ecef; border-radius: 8px; height: 8px; margin-top: 8px; overflow: hidden; }
+        .progress-bar { background: linear-gradient(135deg, #028284, #025f60); height: 100%; transition: width 0.3s; }
+        
+        /* ALERT */
+        .alert { padding: 16px; border-radius: 8px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+        .alert-info { background: #d1ecf1; border-left: 4px solid #11cdef; color: #0c5460; }
+        .alert i { font-size: 20px; }
+        
+        /* FILTER SECTION */
+        .filter-card { background: white; padding: 24px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .filter-card h6 { font-size: 15px; font-weight: 700; color: #344767; margin-bottom: 16px; }
+        .filter-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; align-items: end; }
+        .filter-group { display: flex; flex-direction: column; gap: 8px; }
+        .filter-group label { font-size: 13px; font-weight: 600; color: #344767; }
+        .filter-group select { padding: 10px 12px; border: 1px solid #d2d6da; border-radius: 8px; font-size: 14px; color: #344767; background: white; cursor: pointer; }
+        
+        /* FOOTER */
+        .footer { padding: 20px 32px; text-align: center; color: #67748e; font-size: 13px; border-top: 1px solid #e9ecef; }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-wrapper">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="../img/logo-small.png" alt="Logo">
+                <span>MSJ ABSENSI</span>
+            </div>
+            
+            <a href="02-dashboard.html" class="nav-item">
+                <i class="fas fa-tv"></i>
+                <span>Dashboard</span>
+            </a>
+            
+            <div class="nav-group-title">
+                <i class="fas fa-folder"></i>
+                <span>Master Data</span>
+            </div>
+            <div class="nav-sub-items">
+                <a href="03-master-shift.html" class="nav-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Master Shift</span>
+                </a>
+                <a href="04-master-karyawan.html" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span>Master Karyawan</span>
+                </a>
+                <a href="05-master-mapping-nik.html" class="nav-item">
+                    <i class="fas fa-fingerprint"></i>
+                    <span>Mapping NIK</span>
+                </a>
+                <a href="06-master-group-karyawan.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Group Karyawan</span>
+                </a>
+                <a href="09-master-kontak-karyawan.html" class="nav-item">
+                    <i class="fas fa-mobile"></i>
+                    <span>Kontak Karyawan</span>
+                </a>
+                <a href="07-hari-libur-non-shift.html" class="nav-item">
+                    <i class="fas fa-calendar-times"></i>
+                    <span>Hari Libur Non-Shift</span>
+                </a>
+                <a href="08-hari-libur-shift.html" class="nav-item">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Hari Libur Shift</span>
+                </a>
+            </div>
+            
+            <div class="nav-group-title">
+                <i class="fas fa-th"></i>
+                <span>Transaksi</span>
+            </div>
+            <div class="nav-sub-items">
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-download"></i>
+                    <span>Pull Finger</span>
+                </a>
+                <a href="10-input-manual-absensi.html" class="nav-item">
+                    <i class="fas fa-edit"></i>
+                    <span>Input Manual</span>
+                </a>
+                <a href="11-transaksi-tukar-jadwal.html" class="nav-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Tukar Jadwal</span>
+                </a>
+                <a href="12-transaksi-data-missing.html" class="nav-item">
+                    <i class="fas fa-search"></i>
+                    <span>Data Missing</span>
+                </a>
+                <a href="17-transaksi-kirim-sp.html" class="nav-item">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Kirim SP</span>
+                </a>
+            </div>
+            
+            <div class="nav-group-title">
+                <i class="fas fa-file-alt"></i>
+                <span>Report</span>
+            </div>
+            <div class="nav-sub-items">
+                <a href="13-report-finger.html" class="nav-item">
+                    <i class="fas fa-list"></i>
+                    <span>Report Finger</span>
+                </a>
+                <a href="14-report-kehadiran.html" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Report Kehadiran</span>
+                </a>
+                <a href="15-report-keterlambatan.html" class="nav-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Report Keterlambatan</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- TOP NAVBAR -->
+            <div class="topnav">
+                <div class="breadcrumb-section">
+                    <h6>Transaksi Pull Finger</h6>
+                    <p>Transaksi / Pull Finger</p>
+                </div>
+                <div class="user-profile">
+                    <img src="../img/user-avatar.png" alt="User">
+                    <span>Admin User</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+            
+            <!-- PAGE CONTENT -->
+            <div class="page-content">
+                <div class="page-header">
+                    <h6>Pull Data Fingerprint dari Mesin</h6>
+                    <p>Data Absensi Fingerprint dari Semua Device - Pilih dan Konfirmasi untuk Proses ke Sistem</p>
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Informasi:</strong> Data di bawah adalah hasil pull terbaru dari semua mesin fingerprint. Centang data yang ingin diproses, lalu klik tombol "Konfirmasi Data Terpilih".
+                    </div>
+                </div>
+                
+                <!-- FILTER SECTION -->
+                <div class="filter-card">
+                    <h6>Report Absensi Fingerprint</h6>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Bulan</label>
+                            <select id="filterBulan">
+                                <option value="2026-01">Januari 2026</option>
+                                <option value="2026-02" selected>Februari 2026</option>
+                                <option value="2026-03">Maret 2026</option>
+                                <option value="2026-04">April 2026</option>
+                                <option value="2026-05">Mei 2026</option>
+                                <option value="2026-06">Juni 2026</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Departemen</label>
+                            <select id="filterDepartemen">
+                                <option value="">-- Semua Departemen --</option>
+                                <option value="produksi">Produksi</option>
+                                <option value="warehouse">Warehouse</option>
+                                <option value="qc">Quality Control</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Karyawan</label>
+                            <select id="filterKaryawan">
+                                <option value="">-- Semua Karyawan --</option>
+                                <option value="001">001 - Ahmad Budiman</option>
+                                <option value="002">002 - Siti Nurhaliza</option>
+                                <option value="003">003 - Budi Santoso</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="applyFilter()">
+                                <i class="fas fa-search"></i> Tampilkan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- TABLE ACTIONS -->
+                <div class="table-actions">
+                    <div class="table-actions-left">
+                        <button class="btn btn-success">
+                            <i class="fas fa-check-circle"></i> Konfirmasi Data Terpilih
+                        </button>
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-sync"></i> Refresh Data
+                        </button>
+                        <span class="selection-info">
+                            <strong>0</strong> data terpilih dari <strong>8</strong> total data
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- DATA TABLE -->
+                <div class="data-card">
+                    <h6><i class="fas fa-table"></i> Data Pull Fingerprint - <span id="tablePeriod">Februari 2026</span></h6>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;">
+                                    <input type="checkbox" id="selectAll">
+                                </th>
+                                <th>Tanggal</th>
+                                <th>Shift</th>
+                                <th>NIK</th>
+                                <th>Nama</th>
+                                <th>Masuk<br><small>Scan 1</small></th>
+                                <th>Terminal</th>
+                                <th>Keluar<br><small>Scan 1</small></th>
+                                <th>Terminal</th>
+                                <th>Istirahat 1<br><small>Masuk</small></th>
+                                <th>Istirahat 1<br><small>Keluar</small></th>
+                                <th>Istirahat 2<br><small>Masuk</small></th>
+                                <th>Istirahat 2<br><small>Keluar</small></th>
+                                <th>Durasi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox"></td>
+                                <td>03/02/2026</td>
+                                <td>S1c<br><small>Shift 1c</small></td>
+                                <td><strong>001</strong></td>
+                                <td>Ahmad Budiman</td>
+                                <td>07:30</td>
+                                <td>07:26</td>
+                                <td>15:30</td>
+                                <td>16:03</td>
+                                <td>11:00</td>
+                                <td>11:22</td>
+                                <td></td>
+                                <td></td>
+                                <td>08:15</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox"></td>
+                                <td>04/02/2026</td>
+                                <td>S2c<br><small>Shift 2b</small></td>
+                                <td><strong>002</strong></td>
+                                <td>Siti Nurhaliza</td>
+                                <td>15:30</td>
+                                <td>15:19</td>
+                                <td>23:30</td>
+                                <td>23:30</td>
+                                <td>17:51</td>
+                                <td>18:13</td>
+                                <td>21:22</td>
+                                <td>21:35</td>
+                                <td>07:38</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox"></td>
+                                <td>05/02/2026</td>
+                                <td>S1c<br><small>Shift 1c</small></td>
+                                <td><strong>003</strong></td>
+                                <td>Budi Santoso</td>
+                                <td>07:30</td>
+                                <td>07:24</td>
+                                <td>15:30</td>
+                                <td>15:32</td>
+                                <td>11:04</td>
+                                <td>11:38</td>
+                                <td></td>
+                                <td></td>
+                                <td>07:46</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox"></td>
+                                <td>06/02/2026</td>
+                                <td>S3c<br><small>Shift 3b</small></td>
+                                <td><strong>004</strong></td>
+                                <td>Dewi Kusuma</td>
+                                <td>23:30</td>
+                                <td>23:23</td>
+                                <td>07:30</td>
+                                <td>07:35</td>
+                                <td>02:33</td>
+                                <td>02:59</td>
+                                <td></td>
+                                <td></td>
+                                <td>07:46</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox"></td>
+                                <td>07/02/2026</td>
+                                <td>S2c<br><small>Shift 2b</small></td>
+                                <td><strong>005</strong></td>
+                                <td>Eko Prasetyo</td>
+                                <td>15:30</td>
+                                <td>15:25</td>
+                                <td>23:30</td>
+                                <td>23:32</td>
+                                <td>17:36</td>
+                                <td>18:07</td>
+                                <td>21:31</td>
+                                <td>21:42</td>
+                                <td>07:36</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox"></td>
+                                <td>10/02/2026</td>
+                                <td>S1c<br><small>Shift 1c</small></td>
+                                <td><strong>006</strong></td>
+                                <td>Fitri Handayani</td>
+                                <td>07:30</td>
+                                <td>07:27</td>
+                                <td>15:30</td>
+                                <td>15:31</td>
+                                <td>11:24</td>
+                                <td>11:56</td>
+                                <td></td>
+                                <td></td>
+                                <td>07:39</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox"></td>
+                                <td>11/02/2026</td>
+                                <td>S1c<br><small>Shift 1c</small></td>
+                                <td><strong>007</strong></td>
+                                <td>Gunawan Wibowo</td>
+                                <td>07:30</td>
+                                <td>06:46</td>
+                                <td>15:30</td>
+                                <td>15:31</td>
+                                <td>11:00</td>
+                                <td>11:31</td>
+                                <td></td>
+                                <td></td>
+                                <td>08:14</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox"></td>
+                                <td>12/02/2026</td>
+                                <td>S2c<br><small>Shift 2b</small></td>
+                                <td><strong>008</strong></td>
+                                <td>Hani Rahmawati</td>
+                                <td>15:30</td>
+                                <td>15:26</td>
+                                <td>23:30</td>
+                                <td>23:34</td>
+                                <td>18:32</td>
+                                <td>19:06</td>
+                                <td>21:34</td>
+                                <td>21:48</td>
+                                <td>07:32</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- FOOTER -->
+            <div class="footer">
+                © 2026, PT. Multi Sarana Jaya
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Select All Functionality
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+        const selectionInfo = document.querySelector('.selection-info');
+        const confirmButton = document.querySelector('.btn-success');
+        
+        function updateSelectionCount() {
+            const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+            const totalCount = rowCheckboxes.length;
+            selectionInfo.innerHTML = `<strong>${checkedCount}</strong> data terpilih dari <strong>${totalCount}</strong> total data`;
+            
+            // Enable/disable confirm button
+            confirmButton.disabled = checkedCount === 0;
+            confirmButton.style.opacity = checkedCount === 0 ? '0.6' : '1';
+            confirmButton.style.cursor = checkedCount === 0 ? 'not-allowed' : 'pointer';
+        }
+        
+        selectAllCheckbox.addEventListener('change', function() {
+            rowCheckboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            updateSelectionCount();
+        });
+        
+        rowCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const allChecked = Array.from(rowCheckboxes).every(cb => cb.checked);
+                selectAllCheckbox.checked = allChecked;
+                updateSelectionCount();
+            });
+        });
+        
+        // Confirm Button Action
+        confirmButton.addEventListener('click', function() {
+            const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+            if (checkedCount > 0) {
+                if (confirm(`Konfirmasi ${checkedCount} data fingerprint?\n\nData akan diproses ke sistem dan tersimpan di history.`)) {
+                    alert(`✓ Berhasil memproses ${checkedCount} data fingerprint!\n\nData telah disimpan ke history dan siap untuk report.`);
+                    // Reset checkboxes
+                    rowCheckboxes.forEach(checkbox => checkbox.checked = false);
+                    selectAllCheckbox.checked = false;
+                    updateSelectionCount();
+                }
+            }
+        });
+        
+        // Refresh Button Action
+        document.querySelector('.btn-secondary').addEventListener('click', function() {
+            if (confirm('Refresh data dari semua mesin fingerprint?\n\nProses ini akan mengambil data terbaru dari devices.')) {
+                // Simulate loading
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                this.disabled = true;
+                setTimeout(() => {
+                    alert('✓ Data berhasil di-refresh!\n\n8 data baru ditemukan.');
+                    this.innerHTML = '<i class="fas fa-sync"></i> Refresh Data';
+                    this.disabled = false;
+                }, 2000);
+            }
+        });
+        
+        // Filter Function
+        function applyFilter() {
+            const bulan = document.getElementById('filterBulan').value;
+            const departemen = document.getElementById('filterDepartemen').value;
+            const karyawan = document.getElementById('filterKaryawan').value;
+            
+            const bulanNames = {
+                '2026-01': 'Januari 2026',
+                '2026-02': 'Februari 2026',
+                '2026-03': 'Maret 2026',
+                '2026-04': 'April 2026',
+                '2026-05': 'Mei 2026',
+                '2026-06': 'Juni 2026'
+            };
+            
+            document.getElementById('tablePeriod').textContent = bulanNames[bulan];
+            
+            let filterText = 'Filter: ' + bulanNames[bulan];
+            if (departemen) filterText += ', Dept: ' + departemen;
+            if (karyawan) filterText += ', NIK: ' + karyawan;
+            
+            alert('✓ Filter diterapkan!\n\n' + filterText + '\n\nData telah diperbarui.');
+        }
+        
+        // Initialize
+        updateSelectionCount();
+    </script>
+</body>
+
+</html>

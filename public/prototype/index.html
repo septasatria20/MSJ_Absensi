@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSJ ABSENSI - Prototype Navigation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0A9294 0%, #067678 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        
+        .header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .info-box h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .info-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .info-box li {
+            padding: 8px 0;
+            font-size: 15px;
+        }
+        
+        .info-box li::before {
+            content: "✓ ";
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .screens-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .screen-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .screen-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+        }
+        
+        .screen-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #0A9294 0%, #067678 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        .screen-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #32325d;
+            margin-bottom: 8px;
+        }
+        
+        .screen-desc {
+            font-size: 14px;
+            color: #8898aa;
+            line-height: 1.6;
+        }
+        
+        .section-header {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        .badge-new {
+            background: #2dce89;
+            color: white;
+        }
+        
+        .badge-important {
+            background: #f5365c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 MSJ ABSENSI</h1>
+            <p>HTML Prototype untuk Import ke Figma</p>
+        </div>
+        
+        <div class="info-box">
+            <h3>📋 Cara Menggunakan:</h3>
+            <ul>
+                <li>Klik link di bawah untuk membuka setiap screen</li>
+                <li>Copy seluruh HTML (Ctrl+U lalu Ctrl+A, Ctrl+C)</li>
+                <li>Buka Figma → Install plugin "html.to.design"</li>
+                <li>Paste HTML → Convert ke Figma layers</li>
+                <li>Edit dan customize di Figma sesuai kebutuhan</li>
+            </ul>
+        </div>
+        
+        <h2 class="section-header">🔐 Authentication</h2>
+        <div class="screens-grid">
+            <a href="01-login.html" class="screen-card" target="_blank">
+                <div class="screen-icon">🔑</div>
+                <div class="screen-title">Login Page</div>
+                <div class="screen-desc">Halaman login dengan branding MSJ dan color #0A9294</div>
+            </a>
+        </div>
+        
+        <h2 class="section-header">📊 Dashboard</h2>
+        <div class="screens-grid">
+            <a href="02-dashboard.html" class="screen-card" target="_blank">
+                <div class="screen-icon">📈</div>
+                <div class="screen-title">Dashboard HR</div>
+                <div class="screen-desc">Dashboard dengan 8 metric cards, bar chart, pie chart, kalender cuti bersama, dan tabel departemen</div>
+                <span class="badge badge-important">Key Screen</span>
+            </a>
+        </div>
+        
+        <h2 class="section-header">📁 Master Data</h2>
+        <div class="screens-grid">
+            <a href="03-master-shift.html" class="screen-card" target="_blank">
+                <div class="screen-icon">⏰</div>
+                <div class="screen-title">Master Shift</div>
+                <div class="screen-desc">CRUD shift dengan time picker untuk jam masuk/pulang</div>
+            </a>
+            
+            <a href="#" class="screen-card" style="opacity: 0.6;">
+                <div class="screen-icon">🔗</div>
+                <div class="screen-title">Mapping NIK</div>
+                <div class="screen-desc">Mapping NIK HRIS ↔ Fingerspot (Similar structure)</div>
+            </a>
+            
+            <a href="#" class="screen-card" style="opacity: 0.6;">
+                <div class="screen-icon">👥</div>
+                <div class="screen-title">Group Karyawan</div>
+                <div class="screen-desc">Pengelompokan karyawan per shift (Similar structure)</div>
+            </a>
+            
+            <a href="#" class="screen-card" style="opacity: 0.6;">
+                <div class="screen-icon">📅</div>
+                <div class="screen-title">Hari Libur Non-Shift</div>
+                <div class="screen-desc">Master hari libur nasional (Similar structure)</div>
+            </a>
+            
+            <a href="#" class="screen-card" style="opacity: 0.6;">
+                <div class="screen-icon">🗓️</div>
+                <div class="screen-title">Hari Libur Shift</div>
+                <div class="screen-desc">Libur khusus karyawan shift (Similar structure)</div>
+            </a>
+            
+            <a href="#" class="screen-card" style="opacity: 0.6;">
+                <div class="screen-icon">👤</div>
+                <div class="screen-title">Karyawan HRIS</div>
+                <div class="screen-desc">View data karyawan dari database HRIS (Read-only)</div>
+            </a>
+            
+            <a href="09-master-kontak-karyawan.html" class="screen-card" target="_blank">
+                <div class="screen-icon">📱</div>
+                <div class="screen-title">Kontak Karyawan</div>
+                <div class="screen-desc">Master nomor telepon/WA untuk fitur hubungi</div>
+                <span class="badge badge-new">New!</span>
+            </a>
+        </div>
+        
+        <h2 class="section-header">💼 Transaksi</h2>
+        <div class="screens-grid">
+            <a href="#" class="screen-card" style="opacity: 0.6;">
+                <div class="screen-icon">🔄</div>
+                <div class="screen-title">Tukar Jadwal</div>
+                <div class="screen-desc">Penukaran jadwal shift antar karyawan (Similar structure)</div>
+            </a>
+            
+            <a href="#" class="screen-card" style="opacity: 0.6;">
+                <div class="screen-icon">☁️</div>
+                <div class="screen-title">Pull Finger</div>
+                <div class="screen-desc">Import data absensi dari mesin fingerspot (Similar structure)</div>
+            </a>
+            
+            <a href="12-transaksi-data-missing.html" class="screen-card" target="_blank">
+                <div class="screen-icon">⚠️</div>
+                <div class="screen-title">Data Missing</div>
+                <div class="screen-desc">Monitoring anomali (Mangkir, Terlambat, Pulang Cepat) dengan tombol hubungi WhatsApp dan window 24 jam</div>
+                <span class="badge badge-important">Key Feature</span>
+            </a>
+        </div>
+        
+        <h2 class="section-header">📄 Report</h2>
+        <div class="screens-grid">
+            <a href="13-report-finger.html" class="screen-card" target="_blank">
+                <div class="screen-icon">📊</div>
+                <div class="screen-title">Report Finger</div>
+                <div class="screen-desc">Laporan kehadiran harian dengan filter dan export Excel/PDF</div>
+            </a>
+            
+            <a href="#" class="screen-card" style="opacity: 0.6;">
+                <div class="screen-icon">📧</div>
+                <div class="screen-title">Report SP</div>
+                <div class="screen-desc">Laporan surat peringatan (Similar structure with filters)</div>
+            </a>
+        </div>
+        
+        <div class="info-box" style="margin-top: 50px;">
+            <h3>🎨 Design System:</h3>
+            <ul>
+                <li>Primary Color: #0A9294 (Hijau Sage)</li>
+                <li>Secondary Color: #067678 (Darker Sage)</li>
+                <li>Font: Open Sans, Segoe UI</li>
+                <li>Border Radius: 6px (buttons), 10px (cards)</li>
+                <li>Shadows: 0 2px 10px rgba(0,0,0,0.08)</li>
+                <li>Badge Colors: Success (#d4edda), Warning (#fff3cd), Danger (#f8d7da)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

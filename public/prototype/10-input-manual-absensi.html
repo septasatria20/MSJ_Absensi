@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>MSJ ABSENSI | Input Manual Absensi</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Open Sans', sans-serif; background: #f8f9fa; }
+        .dashboard-wrapper { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+        .sidebar { background: #ffffff; border-right: 1px solid #e9ecef; padding: 24px 16px; display: flex; flex-direction: column; gap: 8px; }
+        .sidebar-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin-bottom: 16px; border-bottom: 1px solid #e9ecef; }
+        .sidebar-header img { width: 36px; height: 36px; }
+        .sidebar-header span { font-weight: 700; font-size: 15px; color: #344767; }
+        .nav-item { padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; color: #67748e; font-size: 14px; transition: all 0.2s; }
+        .nav-item:hover { background: #f8f9fa; }
+        .nav-item.active { background: linear-gradient(135deg, #028284, #025f60); color: white; }
+        .nav-item i { font-size: 14px; width: 20px; text-align: center; }
+        .nav-item.active i { color: white; }
+        .nav-group-title { padding: 12px 16px; font-size: 13px; font-weight: 600; color: #344767; display: flex; align-items: center; gap: 12px; }
+        .nav-sub-items { padding-left: 24px; display: flex; flex-direction: column; gap: 4px; }
+        .main-content { background: #f8f9fa; display: flex; flex-direction: column; }
+        .topnav { background: linear-gradient(135deg, #028284, #025f60); padding: 20px 32px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .breadcrumb-section h6 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .breadcrumb-section p { font-size: 13px; opacity: 0.9; }
+        .user-profile { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 8px; }
+        .user-profile img { width: 32px; height: 32px; border-radius: 50%; }
+        .user-profile span { font-size: 14px; font-weight: 600; }
+        .page-content { padding: 32px; flex: 1; }
+        .page-header { background: white; padding: 20px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .page-header h6 { font-size: 16px; font-weight: 700; color: #344767; margin-bottom: 4px; }
+        .page-header p { font-size: 13px; color: #67748e; margin: 0; }
+        .form-card { background: white; border-radius: 12px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 24px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #344767; margin-bottom: 8px; }
+        .form-control { width: 100%; padding: 10px 12px; border: 1px solid #d2d6da; border-radius: 8px; font-size: 14px; }
+        .btn-group { display: flex; gap: 12px; justify-content: flex-end; }
+        .btn-primary { background: linear-gradient(135deg, #028284, #025f60); color: white; border: none; padding: 12px 32px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .btn-secondary { background: #6c757d; color: white; border: none; padding: 12px 32px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .footer { padding: 20px 32px; text-align: center; color: #67748e; font-size: 13px; border-top: 1px solid #e9ecef; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <div class="sidebar">
+            <div class="sidebar-header"><img src="../img/logo-small.png" alt="Logo"><span>MSJ ABSENSI</span></div>
+            <a href="02-dashboard.html" class="nav-item"><i class="fas fa-tv"></i><span>Dashboard</span></a>
+            <div class="nav-group-title"><i class="fas fa-folder"></i><span>Master Data</span></div>
+            <div class="nav-sub-items">
+                <a href="03-master-shift.html" class="nav-item"><i class="fas fa-clock"></i><span>Master Shift</span></a>
+                <a href="04-master-karyawan.html" class="nav-item"><i class="fas fa-user"></i><span>Master Karyawan</span></a>
+                <a href="05-master-mapping-nik.html" class="nav-item"><i class="fas fa-fingerprint"></i><span>Mapping NIK</span></a>
+                <a href="06-master-group-karyawan.html" class="nav-item"><i class="fas fa-users"></i><span>Group Karyawan</span></a>
+                <a href="09-master-kontak-karyawan.html" class="nav-item"><i class="fas fa-mobile"></i><span>Kontak Karyawan</span></a>
+                <a href="07-hari-libur-non-shift.html" class="nav-item"><i class="fas fa-calendar-times"></i><span>Hari Libur Non-Shift</span></a>
+                <a href="08-hari-libur-shift.html" class="nav-item"><i class="fas fa-calendar-day"></i><span>Hari Libur Shift</span></a>
+            </div>
+            <div class="nav-group-title"><i class="fas fa-th"></i><span>Transaksi</span></div>
+            <div class="nav-sub-items">
+                <a href="16-transaksi-pull-finger.html" class="nav-item"><i class="fas fa-download"></i><span>Pull Finger</span></a>
+                <a href="#" class="nav-item active"><i class="fas fa-edit"></i><span>Input Manual</span></a>
+                <a href="11-transaksi-tukar-jadwal.html" class="nav-item"><i class="fas fa-exchange-alt"></i><span>Tukar Jadwal</span></a>
+                <a href="12-transaksi-data-missing.html" class="nav-item"><i class="fas fa-search"></i><span>Data Missing</span></a>
+                <a href="17-transaksi-kirim-sp.html" class="nav-item"><i class="fas fa-paper-plane"></i><span>Kirim SP</span></a>
+            </div>
+            <div class="nav-group-title"><i class="fas fa-file-alt"></i><span>Report</span></div>
+            <div class="nav-sub-items">
+                <a href="13-report-finger.html" class="nav-item"><i class="fas fa-list"></i><span>Report Finger</span></a>
+                <a href="14-report-kehadiran.html" class="nav-item"><i class="fas fa-chart-bar"></i><span>Report Kehadiran</span></a>
+                <a href="15-report-keterlambatan.html" class="nav-item"><i class="fas fa-clock"></i><span>Report Keterlambatan</span></a>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="topnav">
+                <div class="breadcrumb-section"><h6>Input Manual Absensi</h6><p>Transaksi / Input Manual</p></div>
+                <div class="user-profile"><img src="../img/user-avatar.png" alt="User"><span>Admin User</span><i class="fas fa-chevron-down"></i></div>
+            </div>
+            <div class="page-content">
+                <div class="page-header"><h6>Input Manual Absensi Karyawan</h6><p>Form Input Absensi Manual untuk Karyawan yang Tidak Finger / Berhalangan</p></div>
+                <div class="form-card">
+                    <div class="form-row">
+                        <div class="form-group"><label>Karyawan *</label><select class="form-control"><option>-- Pilih Karyawan --</option><option>NIK001 - Ahmad Fauzi</option><option>NIK002 - Budi Santoso</option><option>NIK003 - Citra Dewi</option></select></div>
+                        <div class="form-group"><label>Tanggal *</label><input type="date" class="form-control" value="2026-02-12"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Jam Masuk *</label><input type="time" class="form-control" value="07:00"></div>
+                        <div class="form-group"><label>Jam Keluar *</label><input type="time" class="form-control" value="15:00"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Tipe *</label><select class="form-control"><option>Sakit (dengan surat)</option><option>Izin</option><option>Cuti</option><option>Lupa Finger</option><option>Dinas Luar</option></select></div>
+                        <div class="form-group"><label>Status *</label><select class="form-control"><option>Hadir</option><option>Sakit</option><option>Izin</option><option>Alpha</option></select></div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 24px;"><label>Keterangan</label><textarea class="form-control" rows="4" placeholder="Masukkan keterangan/alasan input manual..."></textarea></div>
+                    <div class="btn-group">
+                        <button class="btn-secondary">Reset</button>
+                        <button class="btn-primary"><i class="fas fa-save"></i> Simpan Data</button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">© 2026, PT. Multi Sarana Jaya</div>
+        </div>
+    </div>
+</body>
+</html>

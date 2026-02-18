@@ -20,6 +20,7 @@ class absens_gmenu extends Seeder
         DB::table('sys_auth')->where(['idroles' => 'hr', 'gmenu' => 'master', 'dmenu' => 'msthln'])->delete();
         DB::table('sys_auth')->where(['idroles' => 'hr', 'gmenu' => 'master', 'dmenu' => 'msthls'])->delete();
         DB::table('sys_auth')->where(['idroles' => 'hr', 'gmenu' => 'master', 'dmenu' => 'mstkry'])->delete();
+        DB::table('sys_auth')->where(['idroles' => 'hr', 'gmenu' => 'master', 'dmenu' => 'mstknk'])->delete();
         DB::table('sys_auth')->where(['idroles' => 'hr', 'gmenu' => 'transc', 'dmenu' => 'trstuk'])->delete();
         DB::table('sys_auth')->where(['idroles' => 'hr', 'gmenu' => 'transc', 'dmenu' => 'trspul'])->delete();
         DB::table('sys_auth')->where(['idroles' => 'hr', 'gmenu' => 'transc', 'dmenu' => 'trsmis'])->delete();
@@ -33,6 +34,7 @@ class absens_gmenu extends Seeder
         DB::table('sys_dmenu')->where(['gmenu' => 'master', 'dmenu' => 'msthln'])->delete();
         DB::table('sys_dmenu')->where(['gmenu' => 'master', 'dmenu' => 'msthls'])->delete();
         DB::table('sys_dmenu')->where(['gmenu' => 'master', 'dmenu' => 'mstkry'])->delete();
+        DB::table('sys_dmenu')->where(['gmenu' => 'master', 'dmenu' => 'mstknk'])->delete();
         DB::table('sys_dmenu')->where(['gmenu' => 'transc', 'dmenu' => 'trstuk'])->delete();
         DB::table('sys_dmenu')->where(['gmenu' => 'transc', 'dmenu' => 'trspul'])->delete();
         DB::table('sys_dmenu')->where(['gmenu' => 'transc', 'dmenu' => 'trsmis'])->delete();
@@ -103,6 +105,17 @@ class absens_gmenu extends Seeder
             'url' => 'mstkry',
             'icon' => 'ni-badge',
             'tabel' => 'mst_karyawan_hris',
+            'layout' => 'standr'
+        ]);
+
+        DB::table('sys_dmenu')->insert([
+            'gmenu' => 'master',
+            'dmenu' => 'mstknk',
+            'urut' => 16,
+            'name' => 'Kontak Karyawan',
+            'url' => 'mstknk',
+            'icon' => 'ni-mobile-button',
+            'tabel' => 'mst_kontak_karyawan',
             'layout' => 'standr'
         ]);
 
@@ -216,6 +229,15 @@ class absens_gmenu extends Seeder
             'add' => '0',
             'edit' => '0',
             'delete' => '0'
+        ]);
+
+        DB::table('sys_auth')->insert([
+            'idroles' => 'hr',
+            'gmenu' => 'master',
+            'dmenu' => 'mstknk',
+            'add' => '1',
+            'edit' => '1',
+            'delete' => '1'
         ]);
 
         DB::table('sys_auth')->insert([
