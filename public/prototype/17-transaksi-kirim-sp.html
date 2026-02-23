@@ -46,6 +46,7 @@
         .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
         .btn-primary { background: linear-gradient(135deg, #028284, #025f60); color: white; }
         .btn-success { background: #2dce89; color: white; }
+        .btn-info { background: #11cdef; color: white; }
         .btn-warning { background: #fb6340; color: white; }
         .btn-secondary { background: #67748e; color: white; }
         .btn-sm { padding: 6px 12px; font-size: 12px; }
@@ -271,8 +272,14 @@
                                     </select>
                                 </td>
                                 <td style="text-align: center;">
+                                    <button class="btn btn-info btn-sm" onclick="printSP('169987', 'Ahmad Fauzi')">
+                                        <i class="fas fa-print"></i> Cetak SP
+                                    </button>
                                     <button class="btn btn-success btn-sm" onclick="sendWhatsApp('169987', 'Ahmad Fauzi', '081234567890')">
                                         <i class="fab fa-whatsapp"></i> Hubungi WA
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" onclick="markAsComplete('169987', 'Ahmad Fauzi')">
+                                        <i class="fas fa-check"></i> Selesai
                                     </button>
                                 </td>
                             </tr>
@@ -292,8 +299,14 @@
                                     </select>
                                 </td>
                                 <td style="text-align: center;">
+                                    <button class="btn btn-info btn-sm" onclick="printSP('235578', 'Citra Dewi')">
+                                        <i class="fas fa-print"></i> Cetak SP
+                                    </button>
                                     <button class="btn btn-success btn-sm" onclick="sendWhatsApp('235578', 'Citra Dewi', '081298765432')">
                                         <i class="fab fa-whatsapp"></i> Hubungi WA
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" onclick="markAsComplete('235578', 'Citra Dewi')">
+                                        <i class="fas fa-check"></i> Selesai
                                     </button>
                                 </td>
                             </tr>
@@ -313,8 +326,14 @@
                                     </select>
                                 </td>
                                 <td style="text-align: center;">
+                                    <button class="btn btn-info btn-sm" onclick="printSP('007122', 'Gita Maharani')">
+                                        <i class="fas fa-print"></i> Cetak SP
+                                    </button>
                                     <button class="btn btn-success btn-sm" onclick="sendWhatsApp('007122', 'Gita Maharani', '081312345678')">
                                         <i class="fab fa-whatsapp"></i> Hubungi WA
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" onclick="markAsComplete('007122', 'Gita Maharani')">
+                                        <i class="fas fa-check"></i> Selesai
                                     </button>
                                 </td>
                             </tr>
@@ -334,8 +353,14 @@
                                     </select>
                                 </td>
                                 <td style="text-align: center;">
+                                    <button class="btn btn-info btn-sm" onclick="printSP('099744', 'Hari Purnomo')">
+                                        <i class="fas fa-print"></i> Cetak SP
+                                    </button>
                                     <button class="btn btn-success btn-sm" onclick="sendWhatsApp('099744', 'Hari Purnomo', '081387654321')">
                                         <i class="fab fa-whatsapp"></i> Hubungi WA
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" onclick="markAsComplete('099744', 'Hari Purnomo')">
+                                        <i class="fas fa-check"></i> Selesai
                                     </button>
                                 </td>
                             </tr>
@@ -355,8 +380,14 @@
                                     </select>
                                 </td>
                                 <td style="text-align: center;">
+                                    <button class="btn btn-info btn-sm" onclick="printSP('012345', 'Indah Permata')">
+                                        <i class="fas fa-print"></i> Cetak SP
+                                    </button>
                                     <button class="btn btn-success btn-sm" onclick="sendWhatsApp('012345', 'Indah Permata', '081456789012')">
                                         <i class="fab fa-whatsapp"></i> Hubungi WA
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" onclick="markAsComplete('012345', 'Indah Permata')">
+                                        <i class="fas fa-check"></i> Selesai
                                     </button>
                                 </td>
                             </tr>
@@ -376,8 +407,14 @@
                                     </select>
                                 </td>
                                 <td style="text-align: center;">
+                                    <button class="btn btn-info btn-sm" onclick="printSP('098765', 'Joko Widodo')">
+                                        <i class="fas fa-print"></i> Cetak SP
+                                    </button>
                                     <button class="btn btn-success btn-sm" onclick="sendWhatsApp('098765', 'Joko Widodo', '081567890123')">
                                         <i class="fab fa-whatsapp"></i> Hubungi WA
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" onclick="markAsComplete('098765', 'Joko Widodo')">
+                                        <i class="fas fa-check"></i> Selesai
                                     </button>
                                 </td>
                             </tr>
@@ -465,6 +502,88 @@
                 phone: phone,
                 status: 'Sent'
             });
+        }
+        
+        // Print SP Function
+        function printSP(nik, nama) {
+            // Get selected SP
+            const spSelect = document.querySelector(`select.sp-select[data-nik="${nik}"]`);
+            const spValue = spSelect.value;
+            
+            if (!spValue) {
+                alert('⚠️ Mohon pilih Surat Peringatan terlebih dahulu!');
+                spSelect.focus();
+                return;
+            }
+            
+            // Get SP name
+            const spText = spSelect.options[spSelect.selectedIndex].text;
+            
+            // Simulate opening print dialog
+            if (confirm(`Cetak ${spText} untuk ${nama} (${nik})?\n\nDokumen akan disiapkan untuk dicetak.`)) {
+                alert(`✓ ${spText} siap dicetak!\n\nDokumen untuk: ${nama}\nNIK: ${nik}\n\nJendela print akan terbuka...`);
+                
+                // In real implementation, this would open a PDF or print dialog
+                // window.open(`/api/sp/print/${nik}/${spValue}`, '_blank');
+                
+                // Log print activity
+                console.log('SP Print Activity:', {
+                    timestamp: new Date().toLocaleString('id-ID'),
+                    nik: nik,
+                    nama: nama,
+                    sp: spValue,
+                    action: 'Print'
+                });
+            }
+        }
+        
+        // Mark as Complete Function
+        function markAsComplete(nik, nama) {
+            // Get selected SP
+            const spSelect = document.querySelector(`select.sp-select[data-nik="${nik}"]`);
+            const spValue = spSelect.value;
+            
+            if (!spValue) {
+                alert('⚠️ Mohon pilih Surat Peringatan terlebih dahulu!');
+                spSelect.focus();
+                return;
+            }
+            
+            // Get absence counts from the row
+            const row = spSelect.closest('tr');
+            const mangkir = row.querySelector('.badge').textContent;
+            const izin = row.cells[4].textContent;
+            const cuti = row.cells[5].textContent;
+            
+            // Get SP name
+            const spText = spSelect.options[spSelect.selectedIndex].text;
+            
+            // Confirm completion
+            if (confirm(`Tandai sebagai selesai untuk ${nama}?\n\nData yang akan disimpan ke history:\n• NIK: ${nik}\n• Nama: ${nama}\n• ${spText}\n• Mangkir: ${mangkir}\n• Izin: ${izin}\n• Cuti: ${cuti}\n\nSetelah selesai, data akan dipindahkan ke history.`)) {
+                // Save to history
+                const historyData = {
+                    timestamp: new Date().toLocaleString('id-ID'),
+                    nik: nik,
+                    nama: nama,
+                    sp: spValue,
+                    mangkir: mangkir,
+                    izin: izin,
+                    cuti: cuti,
+                    status: 'Completed',
+                    completed_by: 'Admin User'
+                };
+                
+                console.log('SP Completed - Saved to History:', historyData);
+                
+                // Show success message
+                alert(`✓ Berhasil!\n\n${spText} untuk ${nama} telah selesai diproses.\n\nData telah disimpan ke history dan akan dihapus dari daftar ini.`);
+                
+                // In real implementation, remove the row from table
+                // row.remove();
+                
+                // Or refresh the page to load updated data
+                // location.reload();
+            }
         }
         
         // Auto-select SP based on mangkir count (optional feature)
