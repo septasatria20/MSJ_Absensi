@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Case Diagrams - Sistem Absensi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #d32f2f;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 50px;
+            font-size: 1.2em;
+        }
+        
+        .diagrams-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .diagram-section {
+            border: 3px solid #333;
+            border-radius: 15px;
+            padding: 30px;
+            background: #f9f9f9;
+        }
+        
+        .diagram-title {
+            color: #1976d2;
+            font-size: 1.8em;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        
+        .usecase-diagram {
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .actor {
+            position: absolute;
+            text-align: center;
+            width: 100px;
+        }
+        
+        .actor.left {
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .actor.right {
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .actor-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+        
+        .actor-name {
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .usecase-box {
+            border: 3px solid #333;
+            border-radius: 20px;
+            padding: 40px 30px;
+            background: white;
+            min-width: 280px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .usecase-item {
+            border: 2px solid #333;
+            border-radius: 50px;
+            padding: 12px 20px;
+            margin: 15px 0;
+            text-align: center;
+            background: #fff;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        
+        .usecase-item:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        
+        .caption {
+            text-align: center;
+            font-style: italic;
+            color: #0000EE;
+            margin-top: 20px;
+            font-size: 14px;
+            text-decoration: underline;
+        }
+        
+        .summary-table {
+            width: 100%;
+            margin-top: 50px;
+            border-collapse: collapse;
+        }
+        
+        .summary-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 1.1em;
+        }
+        
+        .summary-table td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+        
+        .summary-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .usecase-list {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+        
+        .usecase-list li {
+            padding: 8px 0;
+            color: #555;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .usecase-list li:before {
+            content: "▸ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .usecase-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin-top: 40px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .legend {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 40px 0;
+            border-left: 5px solid #667eea;
+        }
+        
+        .legend h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            color: #555;
+        }
+        
+        .legend-icon {
+            font-size: 24px;
+            margin-right: 15px;
+            width: 40px;
+            text-align: center;
+        }
+        
+        @media (max-width: 1024px) {
+            .diagrams-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Use Case Diagrams</h1>
+        <p class="subtitle">Sistem Manajemen Absensi - PT. Multi Sarana Jaya</p>
+        
+        <div class="diagrams-container">
+            <!-- DIAGRAM 1: TRANSAKSI -->
+            <div class="diagram-section">
+                <div class="diagram-title">Modul Transaksi</div>
+                <div class="usecase-diagram">
+                    <div class="actor left">
+                        <div class="actor-icon">👤</div>
+                        <div class="actor-name">Admin</div>
+                    </div>
+                    
+                    <div class="usecase-box">
+                        <div class="usecase-item">Pull Data Finger</div>
+                        <div class="usecase-item">Input Manual<br>Absensi</div>
+                        <div class="usecase-item">Approval Tukar<br>Jadwal</div>
+                        <div class="usecase-item">Cek Data<br>Missing</div>
+                        <div class="usecase-item">Kirim Surat<br>Peringatan</div>
+                    </div>
+                    
+                    <div class="actor right">
+                        <div class="actor-icon">👤</div>
+                        <div class="actor-name">HRD</div>
+                    </div>
+                </div>
+                <div class="caption">Gambar 1. Use Case Transaksi Absensi</div>
+            </div>
+            
+            <!-- DIAGRAM 2: REPORT -->
+            <div class="diagram-section">
+                <div class="diagram-title">Modul Report</div>
+                <div class="usecase-diagram">
+                    <div class="actor left">
+                        <div class="actor-icon">👤</div>
+                        <div class="actor-name">Admin</div>
+                    </div>
+                    
+                    <div class="usecase-box">
+                        <div class="usecase-item">Generate Report<br>Finger</div>
+                        <div class="usecase-item">Generate Report<br>Kehadiran</div>
+                        <div class="usecase-item">Generate Report<br>Keterlambatan</div>
+                        <div class="usecase-item">Export Report<br>Excel/PDF</div>
+                    </div>
+                    
+                    <div class="actor right">
+                        <div class="actor-icon">👤</div>
+                        <div class="actor-name">HRD</div>
+                    </div>
+                </div>
+                <div class="caption">Gambar 2. Use Case Report Absensi</div>
+            </div>
+        </div>
+        
+        <!-- LEGEND -->
+        <div class="legend">
+            <h3>📌 Keterangan</h3>
+            <div class="legend-item">
+                <div class="legend-icon">👤</div>
+                <div><strong>Aktor:</strong> Pengguna sistem (Admin dan HRD) yang berinteraksi dengan use case</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon">⭕</div>
+                <div><strong>Use Case:</strong> Fungsi atau fitur yang dapat dilakukan oleh aktor dalam sistem</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon">📦</div>
+                <div><strong>System Boundary:</strong> Batasan sistem (kotak dengan border) yang mencakup semua use case</div>
+            </div>
+        </div>
+        
+        <!-- SUMMARY TABLE -->
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>Kategori</th>
+                    <th>Use Cases</th>
+                    <th>Deskripsi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Transaksi</strong></td>
+                    <td>
+                        <ul class="usecase-list">
+                            <li>Pull Data Finger (UCT1)</li>
+                            <li>Input Manual Absensi (UCT2)</li>
+                            <li>Approval Tukar Jadwal (UCT3)</li>
+                            <li>Cek Data Missing (UCT4)</li>
+                            <li>Kirim Surat Peringatan (UCT5)</li>
+                        </ul>
+                    </td>
+                    <td>
+                        Modul transaksi menangani semua operasi harian terkait absensi, 
+                        mulai dari pengambilan data, input manual, approval, hingga 
+                        pengiriman surat peringatan.
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Report</strong></td>
+                    <td>
+                        <ul class="usecase-list">
+                            <li>Generate Report Finger (UCR1)</li>
+                            <li>Generate Report Kehadiran (UCR2)</li>
+                            <li>Generate Report Keterlambatan (UCR3)</li>
+                            <li>Export Report (UCR4)</li>
+                        </ul>
+                    </td>
+                    <td>
+                        Modul report menyediakan berbagai laporan analitik untuk 
+                        membantu manajemen dalam monitoring, evaluasi, dan pengambilan 
+                        keputusan terkait kehadiran karyawan.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- BUTTONS -->
+        <div class="btn-container">
+            <a href="usecase-index.html" class="btn">🏠 Kembali ke Index</a>
+            <a href="usecase-transaksi.html" class="btn" target="_blank">📋 Dokumentasi Transaksi</a>
+            <a href="usecase-report.html" class="btn" target="_blank">📊 Dokumentasi Report</a>
+        </div>
+    </div>
+</body>
+</html>

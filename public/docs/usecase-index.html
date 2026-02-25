@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumentasi Use Case - Sistem Absensi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 50px 40px;
+        }
+        
+        .intro {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .intro h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .intro p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid #f0f0f0;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+        
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.4em;
+        }
+        
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .card ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        
+        .card ul li {
+            padding: 8px 0;
+            color: #555;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .card ul li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .card ul li:last-child {
+            border-bottom: none;
+        }
+        
+        .btn {
+            display: block;
+            text-align: center;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .summary-section {
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 40px 0;
+        }
+        
+        .summary-section h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.8em;
+        }
+        
+        .actors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .actor-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .actor-card .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .actor-card h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        .actor-card p {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 40px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            min-width: 150px;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1em;
+            font-weight: 500;
+        }
+        
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Dokumentasi Use Case</h1>
+            <p>Sistem Manajemen Absensi - PT. Multi Sarana Jaya</p>
+        </div>
+        
+        <div class="content">
+            <div class="intro">
+                <h2>Tentang Dokumentasi Ini</h2>
+                <p>
+                    Dokumentasi use case ini menjelaskan secara detail semua fitur dan proses bisnis 
+                    dalam sistem manajemen absensi dari perspektif pengguna (Admin dan HRD). Setiap use case 
+                    dilengkapi dengan diagram, deskripsi lengkap, dan skenario alternatif.
+                </p>
+                <p>
+                    Dokumentasi ini bertujuan untuk memberikan pemahaman yang jelas tentang bagaimana 
+                    sistem bekerja, siapa yang terlibat, dan apa yang dapat dilakukan di setiap modul.
+                </p>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Total Use Cases</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Kategori Utama</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Aktor Utama</div>
+                </div>
+            </div>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">💼</div>
+                    <h3>Use Case Transaksi</h3>
+                    <p>Dokumentasi lengkap untuk semua proses transaksi dalam sistem absensi</p>
+                    <ul>
+                        <li>Pull Data Finger</li>
+                        <li>Input Manual Absensi</li>
+                        <li>Approval Tukar Jadwal</li>
+                        <li>Cek Data Missing</li>
+                        <li>Kirim Surat Peringatan</li>
+                    </ul>
+                    <a href="usecase-transaksi.html" class="btn" target="_blank">Lihat Detail Transaksi</a>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">📊</div>
+                    <h3>Use Case Report</h3>
+                    <p>Dokumentasi lengkap untuk semua fitur reporting dan analisa data</p>
+                    <ul>
+                        <li>Generate Report Finger</li>
+                        <li>Generate Report Kehadiran</li>
+                        <li>Generate Report Keterlambatan</li>
+                        <li>Export Report (Excel/PDF)</li>
+                    </ul>
+                    <a href="usecase-report.html" class="btn" target="_blank">Lihat Detail Report</a>
+                </div>
+            </div>
+            
+            <div class="summary-section">
+                <h2>👥 Aktor dalam Sistem</h2>
+                <div class="actors-grid">
+                    <div class="actor-card">
+                        <div class="icon">👨‍💼</div>
+                        <h4>Admin</h4>
+                        <p>
+                            Bertugas mengelola data master, melakukan transaksi absensi harian, 
+                            dan generate report untuk monitoring kehadiran karyawan.
+                        </p>
+                    </div>
+                    
+                    <div class="actor-card">
+                        <div class="icon">👩‍💼</div>
+                        <h4>HRD</h4>
+                        <p>
+                            Memiliki akses penuh untuk monitoring, approval, membuat kebijakan, 
+                            mengirim SP, dan generate report untuk evaluasi karyawan.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="summary-section">
+                <h2>📌 Fitur Utama Sistem</h2>
+                <div style="padding: 20px;">
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #667eea; margin-bottom: 10px;">🔄 Modul Transaksi</h3>
+                        <p style="color: #666; line-height: 1.8;">
+                            Modul transaksi menangani semua operasi harian terkait absensi, mulai dari 
+                            pengambilan data dari mesin fingerprint, input manual untuk kasus khusus, 
+                            approval pertukaran jadwal, identifikasi data missing, hingga pengiriman 
+                            surat peringatan untuk karyawan yang melanggar.
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 10px;">📈 Modul Report</h3>
+                        <p style="color: #666; line-height: 1.8;">
+                            Modul report menyediakan berbagai laporan analitik untuk membantu manajemen 
+                            dalam pengambilan keputusan. Laporan meliputi data raw fingerprint, rekap 
+                            kehadiran bulanan, analisa keterlambatan, dan dapat di-export dalam format 
+                            Excel atau PDF untuk keperluan presentasi dan arsip.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="summary-section">
+                <h2>🎯 Cara Menggunakan Dokumentasi Ini</h2>
+                <div style="padding: 20px;">
+                    <ol style="color: #666; line-height: 2; padding-left: 20px;">
+                        <li>Pilih kategori use case yang ingin Anda pelajari (Transaksi atau Report)</li>
+                        <li>Baca diagram use case untuk memahami gambaran umum interaksi</li>
+                        <li>Pelajari deskripsi detail setiap use case yang mencakup:
+                            <ul style="margin-top: 10px; padding-left: 20px;">
+                                <li>Tujuan dan manfaat</li>
+                                <li>Aktor yang terlibat</li>
+                                <li>Prasyarat dan hasil akhir</li>
+                                <li>Langkah-langkah proses (skenario utama)</li>
+                                <li>Skenario alternatif untuk kondisi khusus</li>
+                            </ul>
+                        </li>
+                        <li>Gunakan informasi ini sebagai panduan implementasi atau training pengguna</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div style="text-align: center; padding: 40px 0;">
+                <h2 style="color: #667eea; margin-bottom: 30px;">Akses Dokumentasi Lengkap</h2>
+                <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                    <a href="usecase-diagrams.html" class="btn" target="_blank" 
+                       style="display: inline-block; min-width: 200px;">
+                        🎨 Lihat Semua Diagram
+                    </a>
+                    <a href="usecase-transaksi.html" class="btn" target="_blank" 
+                       style="display: inline-block; min-width: 200px;">
+                        📋 Dokumentasi Transaksi
+                    </a>
+                    <a href="usecase-report.html" class="btn" target="_blank" 
+                       style="display: inline-block; min-width: 200px;">
+                        📊 Dokumentasi Report
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>PT. Multi Sarana Jaya</strong></p>
+            <p>Sistem Manajemen Absensi © 2026</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                Dokumen ini merupakan bagian dari dokumentasi teknis sistem absensi
+            </p>
+        </div>
+    </div>
+</body>
+</html>

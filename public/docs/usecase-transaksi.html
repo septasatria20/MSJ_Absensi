@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Case Transaksi Absensi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #d32f2f;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #1976d2;
+            margin-top: 40px;
+            border-bottom: 2px solid #1976d2;
+            padding-bottom: 10px;
+        }
+        .diagram-container {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            border: 2px solid #333;
+            background: #f5f5f5;
+        }
+        .usecase-diagram {
+            display: inline-block;
+            position: relative;
+            padding: 50px;
+        }
+        .actor {
+            text-align: center;
+            margin: 20px;
+            display: inline-block;
+            vertical-align: top;
+        }
+        .actor-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+        .actor-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .usecase-list {
+            display: inline-block;
+            vertical-align: top;
+            margin: 0 50px;
+            border: 3px solid #333;
+            padding: 40px 60px;
+            border-radius: 20px;
+            background: white;
+        }
+        .usecase-item {
+            border: 2px solid #333;
+            border-radius: 50px;
+            padding: 15px 30px;
+            margin: 20px 0;
+            text-align: center;
+            background: white;
+            min-width: 200px;
+        }
+        .usecase-item span {
+            font-size: 13px;
+            display: block;
+        }
+        .caption {
+            text-align: center;
+            font-style: italic;
+            color: #0000EE;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #333;
+        }
+        th {
+            background-color: #f0f0f0;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            padding: 12px;
+            vertical-align: top;
+        }
+        .red-underline {
+            color: #d32f2f;
+            text-decoration: underline;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        ol {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Usecase Transaksi Absensi</h1>
+
+    <!-- DIAGRAM -->
+    <div class="diagram-container">
+        <div class="usecase-diagram">
+            <div class="actor" style="position: absolute; left: 0; top: 150px;">
+                <div class="actor-icon">👤</div>
+                <div class="actor-name">Admin</div>
+            </div>
+            
+            <div class="usecase-list">
+                <div class="usecase-item">
+                    <span>Pull Data Finger</span>
+                </div>
+                <div class="usecase-item">
+                    <span>Input Manual<br>Absensi</span>
+                </div>
+                <div class="usecase-item">
+                    <span>Approval Tukar<br>Jadwal</span>
+                </div>
+                <div class="usecase-item">
+                    <span>Cek Data<br>Missing</span>
+                </div>
+                <div class="usecase-item">
+                    <span>Kirim Surat<br>Peringatan</span>
+                </div>
+            </div>
+
+            <div class="actor" style="position: absolute; right: 0; top: 150px;">
+                <div class="actor-icon">👤</div>
+                <div class="actor-name">HRD</div>
+            </div>
+        </div>
+        <div class="caption">Gambar 1. Use Case Transaksi Absensi</div>
+    </div>
+
+    <!-- DESKRIPSI USE CASE 1 -->
+    <h2>Deskripsi Use Case Transaksi – Pull Data Finger</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCT1</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Pull Data Finger</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">admin</span> untuk <span class="red-underline">mengambil data absensi</span> dari mesin fingerprint secara otomatis dan <span class="red-underline">menyimpannya ke database</span> sistem untuk keperluan monitoring kehadiran karyawan.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>Admin</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. Mesin Fingerprint<br>
+                b. Sistem Database Absensi
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan proses saat admin melakukan pull/tarik data absensi dari mesin fingerprint. Sistem akan terhubung ke mesin fingerprint, mengambil data absensi dalam periode tertentu, memvalidasi data, dan menyimpannya ke database.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>Admin telah login ke sistem</li>
+                    <li><span class="red-underline">Koneksi ke mesin fingerprint tersedia</span></li>
+                    <li>Admin memiliki akses ke menu Transaksi</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Data absensi dari fingerprint tersimpan di database</li>
+                    <li><span class="red-underline">Admin menerima notifikasi atau log hasil pull data</span></li>
+                    <li><span class="red-underline">Data dapat langsung dilihat di report kehadiran</span></li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>Admin mengakses menu "Transaksi > Pull Finger"</li>
+                    <li><span class="red-underline">Admin memilih mesin fingerprint yang akan di-pull</span></li>
+                    <li>Admin menentukan rentang tanggal data yang akan diambil</li>
+                    <li>Sistem melakukan koneksi ke mesin fingerprint</li>
+                    <li>Sistem mengambil data absensi sesuai parameter</li>
+                    <li>Sistem memvalidasi format dan kelengkapan data</li>
+                    <li><span class="red-underline">Sistem menyimpan data ke database dengan menghindari duplikasi</span></li>
+                    <li>Sistem menampilkan summary jumlah data yang berhasil di-pull</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Koneksi ke mesin gagal</strong><br>
+                1. Di langkah 4, jika koneksi ke mesin fingerprint gagal<br>
+                2. Sistem menampilkan pesan error "Koneksi ke mesin fingerprint gagal"<br>
+                3. Admin dapat mencoba kembali atau membatalkan proses<br><br>
+                
+                <strong>A2: Data duplikat terdeteksi</strong><br>
+                1. Di langkah 7, jika ditemukan data yang sudah ada<br>
+                2. Sistem akan skip data duplikat dan hanya menyimpan data baru<br>
+                3. Sistem menampilkan informasi jumlah data duplikat yang di-skip
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 2 -->
+    <h2>Deskripsi Use Case Transaksi – Input Manual Absensi</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCT2</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Input Manual Absensi</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">admin/HRD</span> untuk <span class="red-underline">menginput atau mengubah data absensi secara manual</span> untuk mengatasi kondisi khusus seperti lupa absen, mesin error, atau karyawan yang sedang dinas luar.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>Admin, HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>Sistem Database Absensi</td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan proses saat admin atau HRD melakukan input absensi secara manual untuk karyawan. Sistem akan memvalidasi data yang diinput, menyimpan ke database, dan mencatat siapa yang melakukan input manual tersebut.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD telah login ke sistem</li>
+                    <li><span class="red-underline">Data karyawan sudah terdaftar di sistem</span></li>
+                    <li>Admin/HRD memiliki hak akses untuk input manual</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Data absensi manual tersimpan di database</li>
+                    <li><span class="red-underline">Sistem mencatat log input manual (user, waktu, alasan)</span></li>
+                    <li>Data absensi manual dapat dilihat di report dengan indikator "Manual"</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD mengakses menu "Transaksi > Input Manual"</li>
+                    <li><span class="red-underline">Admin/HRD mencari dan memilih karyawan</span></li>
+                    <li>Admin/HRD memilih tanggal absensi</li>
+                    <li>Admin/HRD mengisi waktu check-in dan check-out</li>
+                    <li>Admin/HRD memilih status kehadiran (Hadir, Izin, Sakit, dll)</li>
+                    <li>Admin/HRD mengisi alasan input manual (wajib)</li>
+                    <li>Admin/HRD dapat upload dokumen pendukung (opsional)</li>
+                    <li>Sistem memvalidasi kelengkapan data</li>
+                    <li>Admin/HRD menekan tombol "Simpan"</li>
+                    <li><span class="red-underline">Sistem menyimpan data dengan flag "manual_input" dan mencatat user yang input</span></li>
+                    <li>Sistem menampilkan pesan sukses</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Data sudah ada</strong><br>
+                1. Di langkah 8, jika absensi untuk karyawan di tanggal tersebut sudah ada<br>
+                2. Sistem menampilkan warning dan opsi untuk "Replace" atau "Cancel"<br>
+                3. Jika "Replace", data lama akan diganti dengan data baru<br>
+                4. Sistem menyimpan history perubahan<br><br>
+                
+                <strong>A2: Validasi gagal</strong><br>
+                1. Di langkah 8, jika ada field yang tidak valid atau kosong<br>
+                2. Sistem menampilkan pesan error dengan detail field yang bermasalah<br>
+                3. Admin/HRD harus memperbaiki data sebelum dapat menyimpan
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 3 -->
+    <h2>Deskripsi Use Case Transaksi – Approval Tukar Jadwal</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCT3</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Approval Tukar Jadwal</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">admin/HRD</span> untuk <span class="red-underline">mereview dan menyetujui/menolak</span> permintaan pertukaran jadwal shift antar karyawan untuk menjaga kelancaran operasional.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>Admin, HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. Karyawan (Pemohon)<br>
+                b. Sistem Notifikasi
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan proses approval permintaan tukar jadwal shift. Admin/HRD dapat melihat detail permintaan, memvalidasi ketersediaan, dan memberikan keputusan approval atau rejection dengan catatan.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD telah login ke sistem</li>
+                    <li><span class="red-underline">Ada permintaan tukar jadwal dengan status "Pending"</span></li>
+                    <li>Admin/HRD memiliki hak akses approval</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Status permintaan berubah menjadi "Approved" atau "Rejected"</li>
+                    <li><span class="red-underline">Karyawan yang terlibat menerima notifikasi hasil approval</span></li>
+                    <li>Jika approved, jadwal shift kedua karyawan akan berubah otomatis</li>
+                    <li>Log approval tersimpan di sistem</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD mengakses menu "Transaksi > Tukar Jadwal"</li>
+                    <li>Sistem menampilkan daftar permintaan tukar jadwal</li>
+                    <li><span class="red-underline">Admin/HRD memfilter atau mencari permintaan dengan status "Pending"</span></li>
+                    <li>Admin/HRD klik detail salah satu permintaan</li>
+                    <li>Sistem menampilkan informasi lengkap:
+                        <ul>
+                            <li>Data karyawan A (pemohon) dan karyawan B (partner)</li>
+                            <li>Jadwal yang akan ditukar</li>
+                            <li>Alasan pertukaran</li>
+                            <li>Tanggal pengajuan</li>
+                        </ul>
+                    </li>
+                    <li><span class="red-underline">Admin/HRD melakukan validasi ketersediaan dan kesesuaian</span></li>
+                    <li>Admin/HRD memutuskan untuk "Approve" atau "Reject"</li>
+                    <li>Admin/HRD mengisi catatan/alasan keputusan</li>
+                    <li>Sistem update status permintaan</li>
+                    <li>Jika "Approve", sistem update jadwal shift kedua karyawan</li>
+                    <li><span class="red-underline">Sistem mengirim notifikasi ke kedua karyawan</span></li>
+                    <li>Sistem menampilkan pesan konfirmasi</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Catatan approval tidak diisi</strong><br>
+                1. Di langkah 8, jika admin/HRD tidak mengisi catatan saat reject<br>
+                2. Sistem menampilkan warning bahwa catatan wajib untuk rejection<br>
+                3. Admin/HRD harus mengisi catatan sebelum dapat submit<br><br>
+                
+                <strong>A2: Konflik jadwal terdeteksi</strong><br>
+                1. Di langkah 10, jika sistem mendeteksi konflik jadwal<br>
+                2. Sistem menampilkan warning tentang konflik<br>
+                3. Admin/HRD dapat memilih untuk tetap approve atau membatalkan
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 4 -->
+    <h2>Deskripsi Use Case Transaksi – Cek Data Missing</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCT4</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Cek Data Missing</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">admin/HRD</span> untuk <span class="red-underline">mengidentifikasi dan menangani data absensi yang hilang atau tidak lengkap</span> agar data kehadiran karyawan akurat dan lengkap.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>Admin, HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>Sistem Database Absensi</td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan proses identifikasi data absensi yang missing (tidak ada check-in/out, data tidak complete, dll). Admin dapat melihat daftar anomali dan melakukan tindakan korektif.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD telah login ke sistem</li>
+                    <li><span class="red-underline">Data absensi tersedia untuk dianalisa</span></li>
+                    <li>Sistem memiliki rules untuk mendeteksi data missing</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Daftar data missing teridentifikasi</li>
+                    <li><span class="red-underline">Admin/HRD dapat melakukan follow-up atau input manual</span></li>
+                    <li>Report data missing dapat diexport untuk keperluan analisa</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD mengakses menu "Transaksi > Data Missing"</li>
+                    <li>Sistem menampilkan form filter dengan opsi:
+                        <ul>
+                            <li>Periode tanggal</li>
+                            <li>Department/Group karyawan</li>
+                            <li>Jenis anomali (tidak ada check-in, tidak ada check-out, dll)</li>
+                        </ul>
+                    </li>
+                    <li><span class="red-underline">Admin/HRD mengisi filter dan klik "Cari"</span></li>
+                    <li>Sistem melakukan analisa data absensi</li>
+                    <li>Sistem menampilkan tabel data missing dengan informasi:
+                        <ul>
+                            <li>NIK dan Nama Karyawan</li>
+                            <li>Tanggal</li>
+                            <li>Jenis anomali</li>
+                            <li>Status penanganan</li>
+                            <li>Action button</li>
+                        </ul>
+                    </li>
+                    <li><span class="red-underline">Admin/HRD dapat melakukan action:</span>
+                        <ul>
+                            <li>Input manual untuk melengkapi data</li>
+                            <li>Tandai sebagai "Tidak perlu ditindaklanjuti" dengan alasan</li>
+                            <li>Export ke Excel untuk follow-up</li>
+                        </ul>
+                    </li>
+                    <li>Sistem mencatat tindakan yang dilakukan</li>
+                    <li>Sistem update status data missing</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Tidak ada data missing</strong><br>
+                1. Di langkah 5, jika tidak ditemukan data missing<br>
+                2. Sistem menampilkan pesan "Tidak ada data missing dalam periode tersebut"<br>
+                3. Admin/HRD dapat mengubah filter atau keluar dari halaman<br><br>
+                
+                <strong>A2: Banyak data missing</strong><br>
+                1. Di langkah 5, jika ditemukan banyak data missing (>100 record)<br>
+                2. Sistem menampilkan warning dan saran untuk mempersempit filter<br>
+                3. Admin dapat melanjutkan melihat semua atau menyesuaikan filter
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 5 -->
+    <h2>Deskripsi Use Case Transaksi – Kirim Surat Peringatan</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCT5</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Kirim Surat Peringatan</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">HRD</span> untuk <span class="red-underline">membuat dan mengirimkan surat peringatan</span> kepada karyawan yang melakukan pelanggaran absensi secara otomatis melalui sistem.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. Karyawan (Penerima SP)<br>
+                b. Sistem Email/Notifikasi<br>
+                c. Atasan/Supervisor Karyawan
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan proses pembuatan dan pengiriman surat peringatan berdasarkan data pelanggaran absensi. HRD dapat memilih karyawan, jenis pelanggaran, tingkat SP, dan mengirimnya secara digital.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem</li>
+                    <li><span class="red-underline">Data pelanggaran absensi karyawan tersedia</span></li>
+                    <li>Template surat peringatan sudah dikonfigurasi</li>
+                    <li>Email/kontak karyawan tersedia di sistem</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Surat peringatan tercatat di database</li>
+                    <li><span class="red-underline">Karyawan menerima surat peringatan via email/notifikasi</span></li>
+                    <li>Atasan/Supervisor menerima copy surat peringatan</li>
+                    <li>History SP karyawan terupdate</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD mengakses menu "Transaksi > Kirim SP"</li>
+                    <li>Sistem menampilkan daftar karyawan yang memiliki pelanggaran</li>
+                    <li><span class="red-underline">HRD dapat melihat detail pelanggaran (jenis, frekuensi, tanggal)</span></li>
+                    <li>HRD memilih karyawan yang akan diberi SP</li>
+                    <li>HRD memilih tingkat SP (SP 1, SP 2, SP 3)</li>
+                    <li>Sistem menampilkan preview surat dengan template yang sesuai</li>
+                    <li>HRD dapat mengedit konten surat jika diperlukan</li>
+                    <li>HRD memilih metode pengiriman (Email, Print, atau keduanya)</li>
+                    <li>HRD memasukkan nama saksi/pihak terkait (jika ada)</li>
+                    <li><span class="red-underline">HRD klik tombol "Kirim Surat Peringatan"</span></li>
+                    <li>Sistem menyimpan data SP ke database</li>
+                    <li>Sistem mengirim email ke karyawan dan atasan</li>
+                    <li>Jika dipilih print, sistem generate PDF untuk dicetak</li>
+                    <li>Sistem menampilkan konfirmasi pengiriman sukses</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Email karyawan tidak tersedia</strong><br>
+                1. Di langkah 12, jika email karyawan tidak ada atau tidak valid<br>
+                2. Sistem menampilkan warning<br>
+                3. HRD hanya dapat memilih opsi "Print" atau perlu update email terlebih dahulu<br><br>
+                
+                <strong>A2: Konfirmasi untuk SP tingkat tinggi</strong><br>
+                1. Di langkah 10, jika tingkat SP adalah SP 3 (terakhir)<br>
+                2. Sistem menampilkan dialog konfirmasi tambahan<br>
+                3. HRD harus confirm ulang sebelum SP dikirim<br><br>
+
+                <strong>A3: Pengiriman email gagal</strong><br>
+                1. Di langkah 12, jika pengiriman email gagal<br>
+                2. Sistem tetap menyimpan data SP dengan status "Email Failed"<br>
+                3. Sistem menampilkan notifikasi error<br>
+                4. HRD dapat retry pengiriman atau menggunakan metode lain
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

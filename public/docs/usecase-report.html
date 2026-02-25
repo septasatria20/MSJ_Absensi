@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Case Report Absensi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #d32f2f;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #1976d2;
+            margin-top: 40px;
+            border-bottom: 2px solid #1976d2;
+            padding-bottom: 10px;
+        }
+        .diagram-container {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            border: 2px solid #333;
+            background: #f5f5f5;
+        }
+        .usecase-diagram {
+            display: inline-block;
+            position: relative;
+            padding: 50px;
+        }
+        .actor {
+            text-align: center;
+            margin: 20px;
+            display: inline-block;
+            vertical-align: top;
+        }
+        .actor-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+        .actor-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .usecase-list {
+            display: inline-block;
+            vertical-align: top;
+            margin: 0 50px;
+            border: 3px solid #333;
+            padding: 40px 60px;
+            border-radius: 20px;
+            background: white;
+        }
+        .usecase-item {
+            border: 2px solid #333;
+            border-radius: 50px;
+            padding: 15px 30px;
+            margin: 20px 0;
+            text-align: center;
+            background: white;
+            min-width: 200px;
+        }
+        .usecase-item span {
+            font-size: 13px;
+            display: block;
+        }
+        .caption {
+            text-align: center;
+            font-style: italic;
+            color: #0000EE;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #333;
+        }
+        th {
+            background-color: #f0f0f0;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            padding: 12px;
+            vertical-align: top;
+        }
+        .red-underline {
+            color: #d32f2f;
+            text-decoration: underline;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        ol {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Usecase Report Absensi</h1>
+
+    <!-- DIAGRAM -->
+    <div class="diagram-container">
+        <div class="usecase-diagram">
+            <div class="actor" style="position: absolute; left: 0; top: 100px;">
+                <div class="actor-icon">👤</div>
+                <div class="actor-name">Admin</div>
+            </div>
+            
+            <div class="usecase-list">
+                <div class="usecase-item">
+                    <span>Generate Report<br>Finger</span>
+                </div>
+                <div class="usecase-item">
+                    <span>Generate Report<br>Kehadiran</span>
+                </div>
+                <div class="usecase-item">
+                    <span>Generate Report<br>Keterlambatan</span>
+                </div>
+                <div class="usecase-item">
+                    <span>Export Report<br>ke Excel/PDF</span>
+                </div>
+            </div>
+
+            <div class="actor" style="position: absolute; right: 0; top: 100px;">
+                <div class="actor-icon">👤</div>
+                <div class="actor-name">HRD</div>
+            </div>
+        </div>
+        <div class="caption">Gambar 1. Use Case Report Absensi</div>
+    </div>
+
+    <!-- DESKRIPSI USE CASE 1 -->
+    <h2>Deskripsi Use Case Report – Generate Report Finger</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCR1</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Generate Report Finger</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">admin/HRD</span> untuk <span class="red-underline">melihat dan menganalisa data raw</span> dari mesin fingerprint dalam format tabel untuk keperluan audit dan verifikasi data absensi.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>Admin, HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>Sistem Database Absensi</td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan proses generate report data finger mentah yang telah di-pull dari mesin. Report menampilkan semua record absensi dengan detail waktu, lokasi mesin, dan status.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD telah login ke sistem</li>
+                    <li><span class="red-underline">Data fingerprint sudah di-pull ke database</span></li>
+                    <li>Admin/HRD memiliki akses ke menu Report</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Report finger ditampilkan di browser</li>
+                    <li><span class="red-underline">Admin/HRD dapat export report ke Excel atau PDF</span></li>
+                    <li>Log akses report tercatat di sistem</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD mengakses menu "Report > Report Finger"</li>
+                    <li>Sistem menampilkan form filter dengan opsi:
+                        <ul>
+                            <li>Periode tanggal (dari - sampai)</li>
+                            <li>NIK atau Nama Karyawan</li>
+                            <li>Mesin fingerprint (lokasi)</li>
+                            <li>Department/Group</li>
+                        </ul>
+                    </li>
+                    <li><span class="red-underline">Admin/HRD mengisi filter sesuai kebutuhan</span></li>
+                    <li>Admin/HRD klik tombol "Generate Report"</li>
+                    <li>Sistem melakukan query ke database</li>
+                    <li>Sistem menampilkan tabel report dengan kolom:
+                        <ul>
+                            <li>No</li>
+                            <li>Tanggal & Waktu</li>
+                            <li>NIK</li>
+                            <li>Nama Karyawan</li>
+                            <li>Mesin (Lokasi)</li>
+                            <li>Status (Check-in/Check-out)</li>
+                            <li>Tipe (Fingerprint/Manual)</li>
+                        </ul>
+                    </li>
+                    <li>Sistem menyediakan fitur sorting dan pagination</li>
+                    <li><span class="red-underline">Admin/HRD dapat memilih untuk export dengan format Excel atau PDF</span></li>
+                    <li>Jika export, sistem generate file dan trigger download</li>
+                    <li>Sistem mencatat aktivitas generate report</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Data tidak ditemukan</strong><br>
+                1. Di langkah 6, jika tidak ada data sesuai filter<br>
+                2. Sistem menampilkan pesan "Data tidak ditemukan untuk periode tersebut"<br>
+                3. Admin/HRD dapat mengubah filter atau keluar<br><br>
+                
+                <strong>A2: Data terlalu banyak</strong><br>
+                1. Di langkah 6, jika data hasil query lebih dari 10.000 record<br>
+                2. Sistem menampilkan warning untuk mempersempit periode<br>
+                3. Admin dapat melanjutkan (dengan pagination) atau menyesuaikan filter<br><br>
+
+                <strong>A3: Export timeout</strong><br>
+                1. Di langkah 9, jika proses export memakan waktu lama<br>
+                2. Sistem menampilkan progress bar<br>
+                3. Jika timeout, sistem dapat mengirim file via email sebagai alternatif
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 2 -->
+    <h2>Deskripsi Use Case Report – Generate Report Kehadiran</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCR2</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Generate Report Kehadiran</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">admin/HRD</span> untuk <span class="red-underline">melihat rekap kehadiran karyawan</span> dalam periode tertentu yang sudah diproses dan dianalisa untuk keperluan evaluasi dan payroll.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>Admin, HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. Sistem Perhitungan Kehadiran<br>
+                b. Sistem Database Absensi
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan proses generate report kehadiran yang menampilkan summary kehadiran per karyawan meliputi jumlah hadir, izin, sakit, alpa, dan statistik lainnya.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD telah login ke sistem</li>
+                    <li><span class="red-underline">Data absensi sudah tersedia dan diproses</span></li>
+                    <li>Rules perhitungan kehadiran sudah dikonfigurasi</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Report kehadiran ditampilkan dengan summary lengkap</li>
+                    <li><span class="red-underline">Admin/HRD dapat melihat breakdown detail per hari</span></li>
+                    <li>Report dapat diexport untuk analisa lebih lanjut</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD mengakses menu "Report > Report Kehadiran"</li>
+                    <li>Sistem menampilkan form filter:
+                        <ul>
+                            <li>Periode (Bulan/Tahun atau custom date range)</li>
+                            <li>Department/Divisi</li>
+                            <li>Group/Shift</li>
+                            <li>NIK atau Nama Karyawan</li>
+                        </ul>
+                    </li>
+                    <li><span class="red-underline">Admin/HRD memilih periode dan filter lainnya</span></li>
+                    <li>Admin/HRD klik "Generate Report"</li>
+                    <li>Sistem melakukan perhitungan:
+                        <ul>
+                            <li>Total hari hadir</li>
+                            <li>Total hari izin</li>
+                            <li>Total hari sakit</li>
+                            <li>Total hari alpa</li>
+                            <li>Total cuti</li>
+                            <li>Persentase kehadiran</li>
+                        </ul>
+                    </li>
+                    <li>Sistem menampilkan report dalam bentuk tabel dengan kolom:
+                        <ul>
+                            <li>No</li>
+                            <li>NIK & Nama</li>
+                            <li>Department</li>
+                            <li>Hadir</li>
+                            <li>Izin</li>
+                            <li>Sakit</li>
+                            <li>Alpa</li>
+                            <li>Cuti</li>
+                            <li>Persentase (%)</li>
+                            <li>Action (Lihat Detail)</li>
+                        </ul>
+                    </li>
+                    <li><span class="red-underline">Admin/HRD dapat klik "Lihat Detail" untuk melihat breakdown per hari</span></li>
+                    <li>Sistem menampilkan kalender/tabel detail kehadiran harian karyawan tersebut</li>
+                    <li>Admin/HRD dapat export report ke Excel/PDF</li>
+                    <li>Sistem juga menampilkan grafik summary kehadiran</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Report per Department</strong><br>
+                1. Di langkah 3, jika admin memilih filter per Department tanpa karyawan spesifik<br>
+                2. Sistem menampilkan summary per department dengan total agregat<br>
+                3. Admin dapat drill down ke list karyawan per department<br><br>
+                
+                <strong>A2: View grafik statistik</strong><br>
+                1. Setelah langkah 6, admin dapat switch ke view grafik<br>
+                2. Sistem menampilkan pie chart atau bar chart kehadiran<br>
+                3. Admin dapat switch kembali ke view tabel<br><br>
+
+                <strong>A3: Periode belum selesai</strong><br>
+                1. Di langkah 3, jika periode yang dipilih masih berjalan (bulan ini)<br>
+                2. Sistem menampilkan info "Data masih berjalan, report dapat berubah"<br>
+                3. Admin dapat melanjutkan generate report dengan data yang sudah ada
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 3 -->
+    <h2>Deskripsi Use Case Report – Generate Report Keterlambatan</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCR3</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Generate Report Keterlambatan</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">admin/HRD</span> untuk <span class="red-underline">mengidentifikasi dan menganalisa pola keterlambatan karyawan</span> untuk keperluan evaluasi kinerja dan tindakan disiplin.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>Admin, HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. Sistem Perhitungan Keterlambatan<br>
+                b. Sistem Database Absensi
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan proses generate report keterlambatan yang menampilkan daftar karyawan yang terlambat, frekuensi, durasi keterlambatan, dan analisa trend untuk membantu pengambilan keputusan tindakan disiplin.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD telah login ke sistem</li>
+                    <li><span class="red-underline">Data absensi dan jadwal shift sudah tersedia</span></li>
+                    <li>Rules keterlambatan (toleransi waktu) sudah dikonfigurasi</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Report keterlambatan ditampilkan dengan detail lengkap</li>
+                    <li><span class="red-underline">HRD dapat menggunakan data untuk tindakan disiplin</span></li>
+                    <li>Report dapat diexport atau digunakan untuk generate SP otomatis</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD mengakses menu "Report > Report Keterlambatan"</li>
+                    <li>Sistem menampilkan form filter:
+                        <ul>
+                            <li>Periode tanggal</li>
+                            <li>Department/Divisi</li>
+                            <li>Minimum frekuensi keterlambatan</li>
+                            <li>Minimum durasi terlambat (menit)</li>
+                            <li>NIK atau Nama Karyawan</li>
+                        </ul>
+                    </li>
+                    <li><span class="red-underline">Admin/HRD mengisi filter yang diinginkan</span></li>
+                    <li>Admin/HRD klik "Generate Report"</li>
+                    <li>Sistem melakukan analisa keterlambatan:
+                        <ul>
+                            <li>Bandingkan waktu check-in vs jadwal shift</li>
+                            <li>Hitung selisih waktu terlambat</li>
+                            <li>Hitung frekuensi keterlambatan per karyawan</li>
+                            <li>Identifikasi pola (hari tertentu, etc)</li>
+                        </ul>
+                    </li>
+                    <li>Sistem menampilkan report dengan kolom:
+                        <ul>
+                            <li>No</li>
+                            <li>NIK & Nama Karyawan</li>
+                            <li>Department</li>
+                            <li>Tanggal</li>
+                            <li>Jadwal Masuk</li>
+                            <li>Waktu Check-in Aktual</li>
+                            <li>Durasi Terlambat</li>
+                            <li>Frekuensi (dalam periode)</li>
+                            <li>Status Tindakan</li>
+                        </ul>
+                    </li>
+                    <li><span class="red-underline">Sistem juga menampilkan summary:</span>
+                        <ul>
+                            <li>Total karyawan yang terlambat</li>
+                            <li>Rata-rata durasi keterlambatan</li>
+                            <li>Departemen dengan keterlambatan tertinggi</li>
+                            <li>Grafik trend keterlambatan</li>
+                        </ul>
+                    </li>
+                    <li>Admin/HRD dapat sorting berdasarkan frekuensi atau durasi</li>
+                    <li><span class="red-underline">Admin/HRD dapat memilih karyawan dan langsung membuat SP</span></li>
+                    <li>Admin/HRD dapat export report ke Excel/PDF</li>
+                    <li>Sistem mencatat aktivitas akses report</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Filter berdasarkan tingkat severity</strong><br>
+                1. Di langkah 3, admin dapat memilih filter "Hanya Critical" (>3 kali atau >30 menit)<br>
+                2. Sistem hanya menampilkan karyawan dengan keterlambatan kritis<br>
+                3. List berkurang fokus pada yang perlu tindakan segera<br><br>
+                
+                <strong>A2: Tidak ada keterlambatan</strong><br>
+                1. Di langkah 6, jika tidak ada data keterlambatan dalam periode tersebut<br>
+                2. Sistem menampilkan pesan "Tidak ada keterlambatan terdeteksi"<br>
+                3. Admin dapat mengubah filter atau melihat periode lain<br><br>
+
+                <strong>A3: Quick action untuk SP</strong><br>
+                1. Di langkah 9, jika admin klik "Buat SP"<br>
+                2. Sistem membuka form Kirim SP dengan data karyawan dan pelanggaran sudah terisi<br>
+                3. Admin tinggal review dan kirim SP<br>
+                4. Setelah SP terkirim, status di report berubah menjadi "SP Dikirim"
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 4 -->
+    <h2>Deskripsi Use Case Report – Export Report ke Excel/PDF</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCR4</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Export Report ke Excel/PDF</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">admin/HRD</span> untuk <span class="red-underline">mengexport data report</span> dalam format Excel atau PDF untuk keperluan presentasi, distribusi, atau analisa offline.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>Admin, HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. Sistem Export Service<br>
+                b. Library Excel (PHPSpreadsheet)<br>
+                c. Library PDF (mPDF/TCPDF)
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan proses export report yang sudah di-generate ke format file Excel (.xlsx) atau PDF dengan format yang rapi dan siap digunakan untuk berbagai keperluan.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD telah login ke sistem</li>
+                    <li><span class="red-underline">Report sudah di-generate dan ditampilkan</span></li>
+                    <li>Admin/HRD memiliki hak akses untuk export</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>File Excel atau PDF berhasil di-generate</li>
+                    <li><span class="red-underline">File otomatis ter-download ke komputer user</span></li>
+                    <li>Log aktivitas export tercatat di sistem</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>Admin/HRD sudah berada di halaman report (Finger/Kehadiran/Keterlambatan)</li>
+                    <li>Report sudah ditampilkan dengan data sesuai filter</li>
+                    <li><span class="red-underline">Admin/HRD klik tombol "Export"</span></li>
+                    <li>Sistem menampilkan pilihan format:
+                        <ul>
+                            <li>Excel (.xlsx)</li>
+                            <li>PDF (.pdf)</li>
+                        </ul>
+                    </li>
+                    <li>Admin/HRD memilih format yang diinginkan</li>
+                    <li>Jika PDF, sistem menanyakan orientasi (Portrait/Landscape)</li>
+                    <li>Sistem mulai proses generate file:
+                        <ul>
+                            <li>Ambil data dari query atau session</li>
+                            <li>Format data sesuai template</li>
+                            <li>Tambahkan header (judul report, logo, periode, dll)</li>
+                            <li>Susun data dalam tabel yang rapi</li>
+                            <li>Tambahkan footer (tanggal export, halaman, dll)</li>
+                        </ul>
+                    </li>
+                    <li>Sistem tampilkan progress bar "Generating file..."</li>
+                    <li><span class="red-underline">Setelah selesai, sistem trigger download file</span></li>
+                    <li>File tersimpan di folder download user dengan nama format:
+                        <ul>
+                            <li>ReportKehadiran_2026-02_20260224.xlsx</li>
+                            <li>ReportKeterlambatan_2026-02_20260224.pdf</li>
+                        </ul>
+                    </li>
+                    <li>Sistem menampilkan notifikasi "File berhasil didownload"</li>
+                    <li>Sistem mencatat log aktivitas export</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Data terlalu besar untuk export</strong><br>
+                1. Di langkah 7, jika data lebih dari 50.000 record<br>
+                2. Sistem menampilkan warning "Data terlalu besar, export mungkin memakan waktu lama"<br>
+                3. Sistem memberikan opsi:
+                    <ul>
+                        <li>Lanjutkan export (all data)</li>
+                        <li>Export hanya 1000 record teratas</li>
+                        <li>Kirim via email setelah selesai</li>
+                    </ul>
+                4. Admin memilih opsi dan proses dilanjutkan<br><br>
+                
+                <strong>A2: Export gagal/error</strong><br>
+                1. Di langkah 7, jika terjadi error saat generate file<br>
+                2. Sistem menampilkan error message dengan detail error<br>
+                3. Admin dapat retry atau melaporkan ke IT support<br>
+                4. Sistem mencatat error log untuk troubleshooting<br><br>
+
+                <strong>A3: Custom format export</strong><br>
+                1. Di langkah 4, admin dapat klik "Advanced Options"<br>
+                2. Sistem menampilkan opsi tambahan:
+                    <ul>
+                        <li>Pilih kolom yang akan diexport</li>
+                        <li>Sort order</li>
+                        <li>Tambahkan summary/total</li>
+                        <li>Sertakan grafik (untuk PDF)</li>
+                    </ul>
+                3. Admin kustomisasi sesuai kebutuhan<br>
+                4. Proses export dilanjutkan dengan setting custom
+            </td>
+        </tr>
+    </table>
+
+    <h2>Catatan Umum untuk Semua Report</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">Keamanan Data</th>
+            <td>
+                <ul>
+                    <li>Semua akses report dicatat dengan timestamp dan user ID</li>
+                    <li>Admin hanya dapat melihat report sesuai department yang di-assign</li>
+                    <li>HRD dapat melihat semua department</li>
+                    <li>Data personal (gaji, dll) di-mask jika diakses oleh role tertentu</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <th>Performance</th>
+            <td>
+                <ul>
+                    <li>Report dengan data besar (>5000 record) menggunakan pagination</li>
+                    <li>Query database dioptimasi dengan indexing</li>
+                    <li>Hasil report dapat di-cache untuk periode yang sudah lewat</li>
+                    <li>Export besar dapat dijalankan sebagai background job</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <th>Integrasi</th>
+            <td>
+                <ul>
+                    <li>Report dapat dijadwalkan untuk generate otomatis (scheduled report)</li>
+                    <li>Hasil report dapat dikirim ke email secara otomatis</li>
+                    <li>Data report dapat diintegrasikan dengan sistem payroll</li>
+                    <li>API tersedia untuk integrasi dengan sistem eksternal</li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

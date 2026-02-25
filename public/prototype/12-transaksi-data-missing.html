@@ -289,6 +289,188 @@
             color: #2dce89;
         }
         
+        /* BUTTON STYLES */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        
+        .btn-warning-custom {
+            background: #fb6340;
+            color: white;
+        }
+        
+        .btn-warning-custom:hover {
+            background: #fa441d;
+            transform: translateY(-1px);
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        /* MODAL STYLES */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .modal-header h5 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #344767;
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #67748e;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .modal-close:hover {
+            background: #f8f9fa;
+            color: #344767;
+        }
+        
+        .modal-body {
+            margin-bottom: 24px;
+        }
+        
+        .modal-body .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .modal-body .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #344767;
+            margin-bottom: 8px;
+        }
+        
+        .modal-body .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d2d6da;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #344767;
+        }
+        
+        .modal-body .info-text {
+            font-size: 13px;
+            color: #67748e;
+            margin-bottom: 8px;
+        }
+        
+        .modal-body .info-text strong {
+            color: #344767;
+        }
+        
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        
+        .btn-secondary {
+            background: #67748e;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #525f7f;
+        }
+        
+        .btn-success {
+            background: #2dce89;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #24a46d;
+        }
+        
+        /* CHECKBOX STYLES */
+        .checkbox-cell {
+            text-align: center;
+            width: 50px;
+        }
+        
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #028284;
+        }
+        
+        /* TABLE OVERFLOW */
+        .table-card {
+            overflow-x: auto;
+        }
+        
         /* FOOTER */
         .footer {
             padding: 20px 32px;
@@ -446,66 +628,195 @@
                     </div>
                 </div>
                 
+                <!-- ACTION BAR -->
+                <div class="filter-section" style="margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button class="btn-primary" onclick="toggleSelectAll()">
+                                <i class="fas fa-check-square"></i> Pilih Semua
+                            </button>
+                            <button class="btn btn-success" onclick="konfirmasiSelected()">
+                                <i class="fas fa-check-circle"></i> Konfirmasi Data Terpilih
+                            </button>
+                            <button class="btn btn-secondary" onclick="window.location.reload()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div style="color: #67748e; font-size: 14px; font-weight: 600;">
+                            <i class="fas fa-info-circle"></i> <span id="selectedCount">0</span> data terpilih
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- DATA TABLE -->
                 <div class="table-card">
                     <table>
                         <thead>
                             <tr>
+                                <th class="checkbox-cell">
+                                    <input type="checkbox" id="selectAll" onclick="toggleSelectAll()">
+                                </th>
                                 <th>No</th>
                                 <th>Tanggal</th>
                                 <th>NIK</th>
                                 <th>Nama Karyawan</th>
                                 <th>Shift</th>
                                 <th>Jam Masuk</th>
+                                <th>Terlambat</th>
                                 <th>Jam Keluar</th>
+                                <th>Pulang Cepat</th>
                                 <th>Status</th>
                                 <th>Keterangan</th>
+                                <th style="text-align: center;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr data-id="1">
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" class="row-checkbox" value="1" onchange="updateSelectAll()">
+                                </td>
                                 <td>1</td>
                                 <td>2026-02-12</td>
                                 <td><strong>169987</strong></td>
                                 <td>Ahmad Fauzi</td>
                                 <td>Shift Pagi</td>
                                 <td>07:05</td>
+                                <td></td>
                                 <td><span class="badge badge-warning">Missing</span></td>
+                                <td>07:05</td>
                                 <td><span class="badge badge-warning">Belum Finger Out</span></td>
                                 <td><span class="badge badge-success">Izin Pulang Cepat</span></td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-warning-custom btn-sm" onclick="openEditModal('169987', 'Ahmad Fauzi', '2026-02-12', 'Izin Pulang Cepat')">
+                                        <i class="fas fa-edit"></i> Edit Keterangan
+                                    </button>
+                                </td>
                             </tr>
-                            <tr>
+                            <tr data-id="2">
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" class="row-checkbox" value="2" onchange="updateSelectAll()">
+                                </td>
                                 <td>2</td>
                                 <td>2026-02-11</td>
                                 <td><strong>235578</strong></td>
                                 <td>Citra Dewi</td>
                                 <td>Shift Siang</td>
                                 <td><span class="badge badge-warning">Missing</span></td>
-                                <td>23:10</td>
+                                <td></td>
+                                <td>07:05</td>
+                                <td></td>
                                 <td><span class="badge badge-warning">Belum Finger In</span></td>
                                 <td><span class="badge badge-danger">Mangkir/Tanpa Keterangan</span></td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-warning-custom btn-sm" onclick="openEditModal('235578', 'Citra Dewi', '2026-02-11', 'Mangkir/Tanpa Keterangan')">
+                                        <i class="fas fa-edit"></i> Edit Keterangan
+                                    </button>
+                                </td>
                             </tr>
-                            <tr>
+                            <tr data-id="3">
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" class="row-checkbox" value="3" onchange="updateSelectAll()">
+                                </td>
                                 <td>3</td>
                                 <td>2026-02-10</td>
                                 <td><strong>007122</strong></td>
                                 <td>Gita Maharani</td>
                                 <td>Shift Malam</td>
                                 <td><span class="badge badge-warning">Missing</span></td>
+                                <td></td>
                                 <td><span class="badge badge-warning">Missing</span></td>
+                                <td></td>
                                 <td><span class="badge badge-warning">Data Tidak Ada</span></td>
                                 <td><span class="badge badge-success">Cuti Tahunan</span></td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-warning-custom btn-sm" onclick="openEditModal('007122', 'Gita Maharani', '2026-02-10', 'Cuti Tahunan')">
+                                        <i class="fas fa-edit"></i> Edit Keterangan
+                                    </button>
+                                </td>
                             </tr>
-                            <tr>
+                            <tr data-id="4">
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" class="row-checkbox" value="4" onchange="updateSelectAll()">
+                                </td>
                                 <td>4</td>
                                 <td>2026-02-09</td>
                                 <td><strong>099744</strong></td>
                                 <td>Hari Purnomo</td>
                                 <td>Shift Pagi</td>
                                 <td>07:15</td>
+                                <td></td>
+                                <td>00:05</td>
+                                <td>07:05</td>
+                                <td><span class="badge badge-warning">Terlambat</span></td>
+                                <td><span class="badge badge-success">Sakit</span></td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-warning-custom btn-sm" onclick="openEditModal('099744', 'Hari Purnomo', '2026-02-09', 'Sakit')">
+                                        <i class="fas fa-edit"></i> Edit Keterangan
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr data-id="5">
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" class="row-checkbox" value="5" onchange="updateSelectAll()">
+                                </td>
+                                <td>5</td>
+                                <td>2026-02-09</td>
+                                <td><strong>099744</strong></td>
+                                <td>Hari Purnomo</td>
+                                <td>Shift Pagi</td>
+                                <td>07:10</td>
+                                <td></td>
+                                <td>07:05</td>
+                                <td></td>
+                                <td><span class="badge badge-warning">Pulang Cepat</span></td>
+                                <td><span class="badge badge-success">Sakit</span></td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-warning-custom btn-sm" onclick="openEditModal('099744', 'Hari Purnomo', '2026-02-09', 'Sakit')">
+                                        <i class="fas fa-edit"></i> Edit Keterangan
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr data-id="6">
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" class="row-checkbox" value="6" onchange="updateSelectAll()">
+                                </td>
+                                <td>6</td>
+                                <td>2026-02-09</td>
+                                <td><strong>099744</strong></td>
+                                <td>Hari Purnomo</td>
+                                <td>Shift Pagi</td>
+                                <td>07:15</td>
+                                <td></td>
+                                <td>00:05</td>
+                                <td>23:10</td>
+                                <td><span class="badge badge-warning">Terlambat</span> <span class="badge badge-warning">Pulang Cepat</span></td>
+                                <td><span class="badge badge-success">Sakit</span></td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-warning-custom btn-sm" onclick="openEditModal('099744', 'Hari Purnomo', '2026-02-09', 'Sakit')">
+                                        <i class="fas fa-edit"></i> Edit Keterangan
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr data-id="7">
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" class="row-checkbox" value="7" onchange="updateSelectAll()">
+                                </td>
+                                <td>7</td>
+                                <td>2026-02-09</td>
+                                <td><strong>099744</strong></td>
+                                <td>Hari Purnomo</td>
+                                <td>Shift Pagi</td>
+                                <td>07:10</td>
+                                <td></td>
                                 <td><span class="badge badge-warning">Missing</span></td>
+                                <td></td>
                                 <td><span class="badge badge-warning">Belum Finger Out</span></td>
-                                <td><span class="badge badge-info">Izin Sakit</span></td>
+                                <td><span class="badge badge-danger">Mangkir/Tanpa Keterangan</span></td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-warning-custom btn-sm" onclick="openEditModal('099744', 'Hari Purnomo', '2026-02-09', 'Mangkir/Tanpa Keterangan')">
+                                        <i class="fas fa-edit"></i> Edit Keterangan
+                                    </button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -518,6 +829,210 @@
             </div>
         </div>
     </div>
+    
+    <!-- MODAL EDIT KETERANGAN -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5><i class="fas fa-edit"></i> Edit Keterangan</h5>
+                <button class="modal-close" onclick="closeEditModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="info-text">
+                    <strong>NIK:</strong> <span id="modalNIK"></span><br>
+                    <strong>Nama:</strong> <span id="modalNama"></span><br>
+                    <strong>Tanggal:</strong> <span id="modalTanggal"></span>
+                </div>
+                <div class="form-group">
+                    <label for="keteranganSelect">Pilih Keterangan *</label>
+                    <select id="keteranganSelect" class="form-control">
+                        <option value="">-- Pilih Keterangan --</option>
+                        <option value="Cuti Tahunan">Cuti Tahunan</option>
+                        <option value="Cuti Sakit">Cuti Sakit</option>
+                        <option value="Cuti Melahirkan">Cuti Melahirkan</option>
+                        <option value="Izin Pulang Cepat">Izin Pulang Cepat</option>
+                        <option value="Izin Sakit">Izin Sakit</option>
+                        <option value="Izin Keluarga">Izin Keluarga</option>
+                        <option value="Izin Pribadi">Izin Pribadi</option>
+                        <option value="Dinas Luar">Dinas Luar</option>
+                        <option value="WFH (Work From Home)">WFH (Work From Home)</option>
+                        <option value="Mangkir/Tanpa Keterangan">Mangkir/Tanpa Keterangan</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditModal()">
+                    <i class="fas fa-times"></i> Batal
+                </button>
+                <button class="btn btn-success" onclick="saveKeterangan()">
+                    <i class="fas fa-save"></i> Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentEditData = {};
+        
+        // CHECKBOX FUNCTIONS
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            updateSelectedCount();
+        }
+        
+        function updateSelectAll() {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            const selectAll = document.getElementById('selectAll');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            const noneChecked = Array.from(checkboxes).every(cb => !cb.checked);
+            
+            selectAll.checked = allChecked;
+            selectAll.indeterminate = !allChecked && !noneChecked;
+            updateSelectedCount();
+        }
+        
+        function updateSelectedCount() {
+            const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+            document.getElementById('selectedCount').textContent = checkboxes.length;
+        }
+        
+        // KONFIRMASI MULTIPLE RECORDS
+        function konfirmasiSelected() {
+            const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+            if (checkboxes.length === 0) {
+                alert('⚠️ Mohon pilih minimal satu data untuk dikonfirmasi!');
+                return;
+            }
+            
+            const selectedData = [];
+            checkboxes.forEach(cb => {
+                const row = cb.closest('tr');
+                const id = cb.value;
+                const nik = row.querySelector('td:nth-child(4) strong').textContent;
+                const nama = row.querySelector('td:nth-child(5)').textContent;
+                const tanggal = row.querySelector('td:nth-child(3)').textContent;
+                const keterangan = row.querySelector('td:nth-child(12)').textContent.trim();
+                selectedData.push({ id, nik, nama, tanggal, keterangan });
+            });
+            
+            if (confirm(`Konfirmasi ${selectedData.length} data missing yang dipilih?\n\nData akan dipindahkan ke report dan dihapus dari Data Missing.`)) {
+                // Log to server (simulate)
+                console.log('Multiple Data Missing Confirmed:', {
+                    count: selectedData.length,
+                    data: selectedData,
+                    confirmed_at: new Date().toLocaleString('id-ID'),
+                    confirmed_by: 'Admin User',
+                    status: 'Moved to Report'
+                });
+                
+                alert(`✓ ${selectedData.length} data berhasil dikonfirmasi!\n\nData telah dipindahkan ke report.`);
+                
+                // Remove selected rows
+                checkboxes.forEach(cb => {
+                    const row = cb.closest('tr');
+                    row.style.transition = 'opacity 0.3s';
+                    row.style.opacity = '0';
+                    setTimeout(() => row.remove(), 300);
+                });
+                
+                setTimeout(() => {
+                    document.getElementById('selectAll').checked = false;
+                    updateSelectedCount();
+                }, 300);
+                
+                // In real implementation:
+                // - Bulk update database: status = 'completed'
+                // - Move records to attendance_report table
+                // - Remove from data_missing view
+            }
+        }
+        
+        // MODAL FUNCTIONS
+        // Open Modal
+        function openEditModal(nik, nama, tanggal, currentKeterangan) {
+            currentEditData = { nik, nama, tanggal };
+            
+            document.getElementById('modalNIK').textContent = nik;
+            document.getElementById('modalNama').textContent = nama;
+            document.getElementById('modalTanggal').textContent = tanggal;
+            document.getElementById('keteranganSelect').value = currentKeterangan;
+            
+            document.getElementById('editModal').classList.add('active');
+        }
+        
+        // Close Modal
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+            currentEditData = {};
+        }
+        
+        // Save Keterangan
+        function saveKeterangan() {
+            const keterangan = document.getElementById('keteranganSelect').value;
+            
+            if (!keterangan) {
+                alert('⚠️ Mohon pilih keterangan terlebih dahulu!');
+                return;
+            }
+            
+            // Confirm save
+            if (confirm(`Simpan perubahan keterangan?\n\nNIK: ${currentEditData.nik}\nNama: ${currentEditData.nama}\nTanggal: ${currentEditData.tanggal}\nKeterangan Baru: ${keterangan}`)) {
+                // In real implementation, this would send data to server
+                console.log('Keterangan Updated:', {
+                    nik: currentEditData.nik,
+                    nama: currentEditData.nama,
+                    tanggal: currentEditData.tanggal,
+                    keterangan: keterangan,
+                    updated_at: new Date().toLocaleString('id-ID'),
+                    updated_by: 'Admin User'
+                });
+                
+                // Show success message
+                alert('✓ Keterangan berhasil diperbarui!\n\nData telah disimpan ke database.');
+                
+                // Update the keterangan badge in the table
+                const rows = document.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const nikCell = row.querySelector('td:nth-child(4) strong');
+                    if (nikCell && nikCell.textContent === currentEditData.nik) {
+                        const keteranganCell = row.querySelector('td:nth-child(12)');
+                        
+                        // Determine badge class based on keterangan
+                        let badgeClass = 'badge-success';
+                        if (keterangan === 'Mangkir/Tanpa Keterangan') {
+                            badgeClass = 'badge-danger';
+                        }
+                        
+                        keteranganCell.innerHTML = `<span class="badge ${badgeClass}">${keterangan}</span>`;
+                    }
+                });
+                
+                // Close modal
+                closeEditModal();
+                
+                // In real implementation, reload or update the table row
+                // location.reload();
+            }
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditModal();
+            }
+        });
+        
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeEditModal();
+            }
+        });
+    </script>
 </body>
 
 </html>
