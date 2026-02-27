@@ -4,13 +4,13 @@
     <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                @if ($title_group && $title_group != '-')
+                @if (isset($title_group) && $title_group && $title_group != '-')
                     <li class="breadcrumb-item text-sm"><a class="text-white" href="javascript:;">{{ $title_group }}</a>
                     </li>
                 @endif
-                <li class="breadcrumb-item text-sm text-white active" aria-current="page">{{ $title_menu }}</li>
+                <li class="breadcrumb-item text-sm text-white active" aria-current="page">{{ $title_menu ?? '' }}</li>
             </ol>
-            <h6 class="font-weight-bolder text-white mb-0">{{ $title }} {{ $title_menu }}</h6>
+            <h6 class="font-weight-bolder text-white mb-0">{{ $title ?? '' }} {{ $title_menu ?? '' }}</h6>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
             <li class="nav-item d-xl-none ps-3 d-flex align-items-center">

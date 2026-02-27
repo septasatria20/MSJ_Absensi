@@ -1,0 +1,623 @@
+@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
+
+@section('content')
+    @include('layouts.navbars.auth.topnav', ['title' => 'Pull Finger'])
+    
+    <div class="container-fluid py-4">
+        {{-- PAGE HEADER --}}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <h6 class="mb-1 text-dark font-weight-bold">Pull Finger</h6>
+                        <p class="text-sm mb-0 text-secondary">Tarik Data Absensi dari Fingerprint Device (FTM)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ALERT INFO --}}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-info-circle fa-lg me-3"></i>
+                <div>
+                    <strong>Informasi:</strong> Data yang ditampilkan adalah hasil pull terbaru dari mesin fingerprint. 
+                    Pilih data yang ingin dikonfirmasi untuk diproses ke sistem absensi.
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        {{-- FILTER SECTION --}}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h6 class="text-dark font-weight-bold mb-3">
+                    <i class="fas fa-filter me-2"></i>Report Absensi Fingerprint
+                </h6>
+                <form id="filterForm" method="GET">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="bulan" class="form-label text-sm font-weight-bold">Bulan</label>
+                            <select class="form-select" id="bulan" name="bulan">
+                                <option value="">-- Semua Bulan --</option>
+                                <option value="2026-01">Januari 2026</option>
+                                <option value="2026-02">Februari 2026</option>
+                                <option value="2026-03">Maret 2026</option>
+                                <option value="2026-04">April 2026</option>
+                                <option value="2026-05">Mei 2026</option>
+                                <option value="2026-06">Juni 2026</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="departemen" class="form-label text-sm font-weight-bold">Departemen</label>
+                            <select class="form-select" id="departemen" name="departemen">
+                                <option value="">-- Semua Departemen --</option>
+                                <option value="produksi">Produksi</option>
+                                <option value="warehouse">Warehouse</option>
+                                <option value="qc">Quality Control</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="karyawan" class="form-label text-sm font-weight-bold">Karyawan</label>
+                            <input type="text" class="form-control" id="karyawan" name="karyawan" 
+                                   placeholder="Cari NIK atau Nama..." autocomplete="off">
+                            <div id="karyawanDropdown" class="autocomplete-dropdown" style="display: none;"></div>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-primary w-100" onclick="pullFingerData()">
+                                <i class="fas fa-search me-2"></i>Tampilkan
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- TABLE ACTIONS --}}
+        <div class="card shadow-sm mb-3" id="tableActions" style="display: none;">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-success" onclick="konfirmasiSelected()">
+                            <i class="fas fa-check-circle me-1"></i>Konfirmasi Data Terpilih
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="pullFingerFromDevice()">
+                            <i class="fas fa-sync me-1"></i>Refresh Data
+                        </button>
+                        <span class="text-sm">
+                            <strong class="text-primary" id="selectedCount">0</strong> data terpilih dari 
+                            <strong class="text-dark" id="totalCount">0</strong> total data
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- DATA TABLE --}}
+        <div class="card shadow-sm" id="dataTableCard" style="display: none;">
+            <div class="card-header pb-0">
+                <h6 class="text-dark font-weight-bold">
+                    <i class="fas fa-table me-2"></i>Data Pull Fingerprint - <span id="displayMonth">-</span>
+                </h6>
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+                <div class="table-responsive p-0">
+                    <table class="table align-items-center mb-0" id="pullFingerTable">
+                        <thead>
+                            <tr>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" style="width: 50px;">
+                                    <input type="checkbox" id="selectAll" onclick="toggleSelectAll()">
+                                </th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tanggal</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Shift</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">NIK</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Masuk<br><small>Scan 1</small></th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Terminal</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Keluar<br><small>Scan 1</small></th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Terminal</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Istirahat 1<br><small>Masuk</small></th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Istirahat 1<br><small>Keluar</small></th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Istirahat 2<br><small>Masuk</small></th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Istirahat 2<br><small>Keluar</small></th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Durasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            {{-- Data akan di-load via AJAX setelah filter --}}
+                        </tbody>
+                    </table>
+                </div>
+                                </td>
+                                <td class="text-xs font-weight-bold">14698</td>
+                                <td class="text-xs text-dark">Ahmad Budiman</td>
+                                <td class="text-center text-xs">07:30</td>
+                                <td class="text-center text-xs">07:26</td>
+                                <td class="text-center text-xs">-</td>
+                                <td class="text-center text-xs">15:30</td>
+                                <td class="text-center text-xs">15:00</td>
+                                <td class="text-center text-xs">-</td>
+                                <td class="text-center text-xs">11:00</td>
+                                <td class="text-center text-xs">11:22</td>
+                                <td class="text-center text-xs">-</td>
+                                <td class="text-center text-xs">-</td>
+                                <td class="text-center text-xs">08:15</td>
+                            </tr>
+
+                            <tr data-id="2">
+                                <td class="text-center">
+                                    <input type="checkbox" class="row-checkbox" value="2" onchange="updateSelectedCount()">
+                                </td>
+                                <td class="text-xs">
+                                    <span class="text-dark font-weight-bold">04/02/2026</span>
+                                    <small class="text-secondary d-block">Selasa</small>
+                                </td>
+                                <td class="text-xs">
+                                    <span class="badge badge-sm bg-gradient-warning">S2c <small>Shift 2c</small></span>
+                                </td>
+                                <td class="text-xs font-weight-bold">74114</td>
+                                <td class="text-xs text-dark">Siti Nurhaliza</td>
+                                <td class="text-center text-xs">15:30</td>
+                                <td class="text-center text-xs">15:19</td>
+                                <td class="text-center text-xs">-</td>
+                                <td class="text-center text-xs">23:30</td>
+                                <td class="text-center text-xs">23:30</td>
+                                <td class="text-center text-xs">-</td>
+                                <td class="text-center text-xs">17:51</td>
+                                <td class="text-center text-xs">18:13</td>
+                                <td class="text-center text-xs">21:22</td>
+                                <td class="text-center text-xs">21:35</td>
+                                <td class="text-center text-xs">07:38</td>
+                            </tr>
+
+                            <tr data-id="3">
+                                <td class="text-center">
+                                    <input type="checkbox" class="row-checkbox" value="3" onchange="updateSelectedCount()">
+                                </td>
+                                <td class="text-xs">
+                                    <span class="text-dark font-weight-bold">05/02/2026</span>
+                                    <small class="text-secondary d-block">Rabu</small>
+                                </td>
+                                <td class="text-xs">
+                                    <span class="badge badge-sm bg-gradient-info">S1c <small>Shift 1c</small></span>
+                                </td>
+                                <td class="text-xs font-weight-bold">00415</td>
+                                <td class="text-xs text-dark">Budi Santoso</td>
+                                <td class="text-center text-xs">07:30</td>
+                                <td class="text-center text-xs">07:35</td>
+                                <td class="text-center text-xs">
+                                    <span class="badge badge-sm bg-gradient-danger">00:05</span>
+                                </td>
+                                <td class="text-center text-xs">15:30</td>
+                                <td class="text-center text-xs">15:32</td>
+                                <td class="text-center text-xs">-</td>
+                                <td class="text-center text-xs">11:04</td>
+                                <td class="text-center text-xs">11:38</td>
+                                <td class="text-center text-xs">-</td>
+                                <td class="text-center text-xs">-</td>
+                                <td class="text-center text-xs">07:46</td>
+                            </tr>
+
+                            {{-- More sample rows... --}}
+                        </tbody>
+                    </table>
+                </div>
+                
+                {{-- Loading State --}}
+                <div id="loadingState" class="text-center py-5" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-sm text-secondary mt-3">Memuat data dari fingerprint device...</p>
+                </div>
+
+                {{-- Empty State --}}
+                <div id="emptyState" class="text-center py-5" style="display: none;">
+                    <i class="fas fa-inbox fa-3x text-secondary mb-3"></i>
+                    <p class="text-sm text-secondary">Tidak ada data fingerprint untuk periode yang dipilih</p>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="pullFingerFromDevice()">
+                        <i class="fas fa-download me-1"></i>Pull Data dari Device
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {{-- JAVASCRIPT --}}
+    @push('js')
+    <style>
+        .autocomplete-dropdown {
+            position: absolute;
+            background: white;
+            border: 1px solid #d2d6da;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            width: calc(100% - 30px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .autocomplete-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        .autocomplete-item:hover {
+            background: #f8f9fa;
+        }
+        .autocomplete-item strong {
+            color: #028284;
+        }
+    </style>
+    <script>
+        // Global Variables
+        let selectedKaryawan = null;
+
+        // Dummy data karyawan untuk autocomplete (nanti akan dari AJAX)
+        const karyawanData = [
+            { nik: '001', nama: 'Ahmad Budiman' },
+            { nik: '002', nama: 'Siti Nurhaliza' },
+            { nik: '003', nama: 'Budi Santoso' },
+            { nik: '004', nama: 'Dewi Kusuma' },
+            { nik: '005', nama: 'Eko Prasetyo' },
+            { nik: '006', nama: 'Fitri Handayani' },
+            { nik: '007', nama: 'Gunawan Wibowo' },
+            { nik: '008', nama: 'Hani Rahmawati' }
+        ];
+
+        // Initialize on page load
+        $(document).ready(function() {
+            setupKaryawanAutocomplete();
+        });
+
+        // Setup Karyawan Autocomplete
+        function setupKaryawanAutocomplete() {
+            const input = document.getElementById('karyawan');
+            const dropdown = document.getElementById('karyawanDropdown');
+
+            input.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                
+                if (query.length === 0) {
+                    dropdown.style.display = 'none';
+                    selectedKaryawan = null;
+                    return;
+                }
+
+                // Filter karyawan by NIK or Nama
+                const filtered = karyawanData.filter(k => 
+                    k.nik.includes(query) || 
+                    k.nama.toLowerCase().includes(query)
+                );
+
+                if (filtered.length > 0) {
+                    let html = '';
+                    filtered.forEach(k => {
+                        html += `<div class="autocomplete-item" onclick="selectKaryawan('${k.nik}', '${k.nama}')">
+                            <strong>${k.nik}</strong> - ${k.nama}
+                        </div>`;
+                    });
+                    dropdown.innerHTML = html;
+                    dropdown.style.display = 'block';
+                } else {
+                    dropdown.innerHTML = '<div class="autocomplete-item">Tidak ada hasil</div>';
+                    dropdown.style.display = 'block';
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (e.target !== input && e.target !== dropdown) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        }
+
+        // Select Karyawan from Autocomplete
+        function selectKaryawan(nik, nama) {
+            document.getElementById('karyawan').value = `${nik} - ${nama}`;
+            document.getElementById('karyawanDropdown').style.display = 'none';
+            selectedKaryawan = nik;
+        }
+
+        // Pull Finger Data (Filter & Display)
+        function pullFingerData() {
+            const bulan = document.getElementById('bulan').value;
+            const departemen = document.getElementById('departemen').value;
+            const karyawan = selectedKaryawan;
+
+            // Tidak perlu validasi - semua filter optional
+            // Jika kosong semua, tampilkan semua data
+
+            // Show loading
+            document.getElementById('dataTableCard').style.display = 'block';
+            document.getElementById('tableActions').style.display = 'none';
+            document.getElementById('tableBody').innerHTML = `
+                <tr>
+                    <td colspan="14" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="text-sm text-secondary mt-3">Memuat data fingerprint...</p>
+                    </td>
+                </tr>
+            `;
+
+            // AJAX Request to get filtered data
+            $.ajax({
+                url: '{{ url("/trspul/ajax") }}',
+                method: 'GET',
+                data: {
+                    bulan: bulan,
+                    departemen: departemen,
+                    karyawan: karyawan
+                },
+                success: function(response) {
+                    if (response.success && response.data.length > 0) {
+                        renderTable(response.data);
+                        document.getElementById('tableActions').style.display = 'block';
+                        
+                        // Update display month
+                        const bulanNames = {
+                            '2026-01': 'Januari 2026',
+                            '2026-02': 'Februari 2026',
+                            '2026-03': 'Maret 2026',
+                            '2026-04': 'April 2026',
+                            '2026-05': 'Mei 2026',
+                            '2026-06': 'Juni 2026'
+                        };
+                        docum': 'Semua Bulan',
+                            '2026-01': 'Januari 2026',
+                            '2026-02': 'Februari 2026',
+                            '2026-03': 'Maret 2026',
+                            '2026-04': 'April 2026',
+                            '2026-05': 'Mei 2026',
+                            '2026-06': 'Juni 2026'
+                        };
+                        document.getElementById('displayMonth').textContent = bulanNames[bulan] || 'Semua Bulan'
+                            </tr>
+                        `;
+                        document.getElementById('tableActions').style.display = 'none';
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal memuat data. Silakan coba lagi.',
+                        confirmButtonColor: '#028284'
+                    });
+                }
+            });
+        }
+
+        // Render Table
+        function renderTable(data) {
+            let html = '';
+            data.forEach((row, index) => {
+                html += `
+                    <tr>
+                        <td class="text-center">
+                            <input type="checkbox" class="row-checkbox" value="${row.id_pull || index}" onchange="updateSelectedCount()">
+                        </td>
+                        <td class="text-center text-xs">${row.tanggal_pull || '-'}</td>
+                        <td class="text-center text-xs">${row.shift_code || 'S1c'}<br><small class="text-secondary">${row.shift_name || 'Shift 1c'}</small></td>
+                        <td class="text-center text-xs font-weight-bold">${row.nik || '-'}</td>
+                        <td class="text-xs ps-2">${row.nama || '-'}</td>
+                        <td class="text-center text-xs">${row.jam_masuk || '-'}</td>
+                        <td class="text-center text-xs">${row.scan_masuk || '-'}</td>
+                        <td class="text-center text-xs">${row.jam_keluar || '-'}</td>
+                        <td class="text-center text-xs">${row.scan_keluar || '-'}</td>
+                        <td class="text-center text-xs">${row.istirahat1_masuk || '-'}</td>
+                        <td class="text-center text-xs">${row.istirahat1_keluar || '-'}</td>
+                        <td class="text-center text-xs">${row.istirahat2_masuk || '-'}</td>
+                        <td class="text-center text-xs">${row.istirahat2_keluar || '-'}</td>
+                        <td class="text-center text-xs">${row.durasi || '-'}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('tableBody').innerHTML = html;
+            updateTotalCount();
+        }
+
+        // Toggle Select All Checkboxes
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            updateSelectedCount();
+        }
+
+        // Update Selected Count
+        function updateSelectedCount() {
+            const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+            const selectAll = document.getElementById('selectAll');
+            const allCheckboxes = document.querySelectorAll('.row-checkbox');
+            
+            document.getElementById('selectedCount').textContent = checkboxes.length;
+            
+            // Update select all state
+            const allChecked = Array.from(allCheckboxes).every(cb => cb.checked);
+            const noneChecked = Array.from(allCheckboxes).every(cb => !cb.checked);
+            
+            selectAll.checked = allChecked;
+            selectAll.indeterminate = !allChecked && !noneChecked;
+        }
+
+        // Update Total Count
+        function updateTotalCount() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            totalData = rows.length;
+            document.getElementById('totalCount').textContent = totalData;
+        }
+
+        // Pull Finger Data (Filter)
+        function pullFingerData() {
+            const bulan = document.getElementById('bulan').value;
+            const departemen = document.getElementById('departemen').value;
+            const karyawan = document.getElementById('karyawan').value;
+
+            // Show loading
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('tableBody').style.display = 'none';
+
+            // AJAX Request to get filtered data
+            $.ajax({
+                url: '{{ url("/trspul/ajax") }}',
+                method: 'GET',
+                data: {
+                    bulan: bulan,
+                    departemen: departemen,
+                    karyawan: karyawan,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    // Hide loading
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('tableBody').style.display = '';
+                    
+                    if (response.success) {
+                        renderTable(response.data);
+                        updateTotalCount();
+                        
+                        // Update display month
+                        if (bulan) {
+                            const months = {
+                                '2026-01': 'Januari 2026',
+                                '2026-02': 'Februari 2026',
+                                '2026-03': 'Maret 2026',
+                                '2026-04': 'April 2026',
+                                '2026-05': 'Mei 2026',
+                                '2026-06': 'Juni 2026'
+                            };
+                            document.getElementById('displayMonth').textContent = months[bulan];
+                        }
+                    } else {
+                        document.getElementById('emptyState').style.display = 'block';
+                        document.getElementById('tableBody').innerHTML = '';
+                    }
+                },
+                error: function() {
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('tableBody').style.display = '';
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal memuat data. Silakan coba lagi.'
+                    });
+                }
+            });
+        }
+
+        // Render Table Rows
+        function renderTable(data) {
+            // Implementation will be added based on data structure
+            console.log('Rendering table with data:', data);
+        }
+
+        // Pull Finger from Device
+        function pullFingerFromDevice() {
+            Swal.fire({
+                title: 'Pull Data dari Fingerprint Device?',
+                text: 'Proses ini akan mengambil data terbaru dari mesin fingerprint (FTM)',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-download me-1"></i> Ya, Pull Data',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#028284',
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    return $.ajax({
+                        url: '{{ url("/trspul/pull-device") }}',
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        }
+                    });
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        html: `Data berhasil di-pull dari device<br>
+                               <strong>${result.value.total_records}</strong> record berhasil diambil`,
+                        confirmButtonColor: '#028284'
+                    }).then(() => {
+                        // Reload page or refresh table
+                        location.reload();
+                    });
+                }
+            });
+        }
+
+        // Konfirmasi Selected Data
+        function konfirmasiSelected() {
+            const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+            
+            if (checkboxes.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Peringatan',
+                    text: 'Pilih minimal satu data untuk dikonfirmasi',
+                    confirmButtonColor: '#028284'
+                });
+                return;
+            }
+
+            const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+
+            Swal.fire({
+                title: 'Konfirmasi Data Terpilih?',
+                html: `Anda akan mengkonfirmasi <strong>${selectedIds.length}</strong> data fingerprint.<br>
+                       Data yang dikonfirmasi akan diproses ke sistem absensi.`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-check me-1"></i> Ya, Konfirmasi',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#028284',
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    return $.ajax({
+                        url: '{{ url("/trspul/konfirmasi") }}',
+                        method: 'POST',
+                        data: {
+                            ids: selectedIds,
+                            _token: '{{ csrf_token() }}'
+                        }
+                    });
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        html: `<strong>${result.value.confirmed}</strong> data berhasil dikonfirmasi dan diproses ke sistem absensi`,
+                        confirmButtonColor: '#028284'
+                    }).then(() => {
+                        // Remove confirmed rows
+                        checkboxes.forEach(cb => {
+                            const row = cb.closest('tr');
+                            row.style.transition = 'opacity 0.3s';
+                            row.style.opacity = '0';
+                            setTimeout(() => row.remove(), 300);
+                        });
+
+                        setTimeout(() => {
+                            document.getElementById('selectAll').checked = false;
+                            updateSelectedCount();
+                            updateTotalCount();
+                        }, 300);
+                    });
+                }
+            });
+        }
+    </script>
+    @endpush
+@endsection

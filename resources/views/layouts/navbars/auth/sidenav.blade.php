@@ -56,16 +56,16 @@
                 @else
                     <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#{{ $g->gmenu }}"
-                            class="nav-link {{ $g->name == $title_group ? 'active' : '' }}"
+                            class="nav-link {{ (isset($title_group) && $g->name == $title_group) ? 'active' : '' }}"
                             aria-controls="{{ $g->gmenu }}" role="button"
-                            {{ $g->name == $title_group ? 'aria-expanded=true' : '' }}>
+                            {{ (isset($title_group) && $g->name == $title_group) ? 'aria-expanded=true' : '' }}>
                             <div
                                 class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
                                 <i class="ni {{ $g->icon }} text-primary text-sm opacity-10"></i>
                             </div>
                             <span class="nav-link-text ms-1">{{ $g->name }}</span>
                         </a>
-                        <div class="collapse {{ $g->name == $title_group ? 'show' : '' }}" id="{{ $g->gmenu }}"
+                        <div class="collapse {{ (isset($title_group) && $g->name == $title_group) ? 'show' : '' }}" id="{{ $g->gmenu }}"
                             style="">
                             <ul class="nav ms-4">
                                 {{-- Query DMenu --}}

@@ -95,7 +95,13 @@ class PageController extends Controller
                 $data['jsmenu'] = $menu->jsmenu;
                 // check authorize tombol
                 $data['authorize'] = DB::table('sys_auth')->where(['gmenu' => $data['gmenuid'], 'dmenu' => $data['dmenu']])->whereIn('idroles', $users_rules)->first();
-                ($menu->layout != 'manual') ? $page = $menu->layout : '';
+                // Set controller based on layout
+                if ($menu->layout != 'manual') {
+                    $page = $menu->layout;
+                } else {
+                    // For manual layout, use menu URL as controller name
+                    $page = $menu->url;
+                }
                 // check action API
                 if ($action == 'api') {
                     //set variable page and action

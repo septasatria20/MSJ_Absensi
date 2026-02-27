@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Case Transaksi - Sistem Absensi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #d32f2f;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #1976d2;
+            margin-top: 40px;
+            border-bottom: 2px solid #1976d2;
+            padding-bottom: 10px;
+        }
+        .diagram-container {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            border: 2px solid #333;
+            background: #f5f5f5;
+        }
+        .diagram-img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+        }
+        .caption {
+            text-align: center;
+            font-style: italic;
+            color: #0000EE;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #333;
+        }
+        th {
+            background-color: #f0f0f0;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            padding: 12px;
+            vertical-align: top;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        ol {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        ul {
+            margin: 5px 0;
+            padding-left: 40px;
+        }
+        .sub-list {
+            list-style-type: lower-alpha;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Usecase Transaksi</h1>
+
+    <!-- DIAGRAM -->
+    <div class="diagram-container">
+        <p style="text-align: center; font-size: 1.2em; margin-bottom: 20px;">
+            <strong>Diagram Use Case Transaksi</strong>
+        </p>
+        <div style="text-align: center; padding: 40px; background: white; border: 3px solid #333; margin: 20px auto; max-width: 800px;">
+            <p><em>Diagram menampilkan:</em></p>
+            <ul style="list-style: none; padding: 0;">
+                <li>▸ Aktor: <strong>HR (HRD)</strong> di kiri</li>
+                <li>▸ Aktor Sekunder: <strong>HRIS</strong> (sistem perusahaan) dan <strong>FTM</strong> (Fingerspot) di kanan</li>
+                <li>▸ 4 Use Case dalam system boundary:</li>
+                <li style="margin-left: 20px;">1. Tarik Data Full Finger</li>
+                <li style="margin-left: 20px;">2. Verifikasi dan Editable Data Missing</li>
+                <li style="margin-left: 20px;">3. Tambah Tukar Jadwal dan View History Tukar Jadwal</li>
+                <li style="margin-left: 20px;">4. Kirim Surat Peringatan</li>
+            </ul>
+        </div>
+        <div class="caption">Gambar 1. Use Case Transaksi Absensi</div>
+    </div>
+
+    <!-- DESKRIPSI USE CASE 1 -->
+    <h2>Deskripsi Use Case Transaksi - Tarik Data Full Finger</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCT1</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Tarik Data Full Finger</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan HRD untuk melakukan pengambilan data absensi secara lengkap dari mesin fingerprint (FTM) dan menyimpannya ke dalam database sistem untuk keperluan pemrosesan kehadiran dan laporan.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. FTM (Fingerspot/Mesin Fingerprint)<br>
+                b. HRIS (Sistem Informasi SDM Perusahaan)<br>
+                c. Database Sistem Absensi
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan proses saat HRD melakukan penarikan data absensi secara full/lengkap dari mesin fingerprint. Sistem akan terhubung ke FTM, mengambil semua data absensi dalam periode tertentu, melakukan validasi dengan data karyawan dari HRIS, dan menyimpannya ke database sistem.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem</li>
+                    <li>Koneksi ke mesin fingerprint (FTM) tersedia</li>
+                    <li>Data mapping PIN-NIK sudah dikonfigurasi</li>
+                    <li>Data karyawan dari HRIS tersedia untuk validasi</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Data absensi dari fingerprint tersimpan di database sistem</li>
+                    <li>HRD menerima notifikasi atau log hasil proses tarik data</li>
+                    <li>Data siap untuk diproses di modul verifikasi atau report</li>
+                    <li>Log aktivitas pull data tercatat di sistem</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD login ke sistem absensi</li>
+                    <li>HRD membuka menu "Transaksi > Tarik Data Finger" atau "Pull Finger"</li>
+                    <li>Sistem menampilkan form dengan parameter:
+                        <ul class="sub-list">
+                            <li>Pilihan mesin fingerprint (jika ada multiple lokasi/mesin)</li>
+                            <li>Rentang tanggal (dari tanggal - sampai tanggal)</li>
+                            <li>Opsi: Tarik semua data atau hanya data baru</li>
+                        </ul>
+                    </li>
+                    <li>HRD memilih mesin fingerprint yang akan di-pull</li>
+                    <li>HRD menentukan periode tanggal data yang akan diambil</li>
+                    <li>HRD klik tombol "Tarik Data" atau "Pull Data"</li>
+                    <li>Sistem menampilkan loading/progress bar</li>
+                    <li>Sistem melakukan koneksi ke mesin fingerprint (FTM)</li>
+                    <li>Sistem mengambil data absensi sesuai parameter yang ditentukan</li>
+                    <li>Sistem melakukan matching PIN dari FTM dengan NIK dari HRIS menggunakan tabel mapping</li>
+                    <li>Sistem memvalidasi kelengkapan data:
+                        <ul class="sub-list">
+                            <li>Cek apakah PIN ter-mapping ke NIK</li>
+                            <li>Cek apakah karyawan masih aktif di HRIS</li>
+                            <li>Cek duplikasi data (jika data sudah ada)</li>
+                        </ul>
+                    </li>
+                    <li>Sistem menyimpan data yang valid ke database dengan flag "from_fingerprint"</li>
+                    <li>Sistem menampilkan summary hasil pull:
+                        <ul class="sub-list">
+                            <li>Total record yang berhasil di-pull</li>
+                            <li>Jumlah data baru yang ditambahkan</li>
+                            <li>Jumlah data duplikat yang di-skip</li>
+                            <li>Jumlah data error/tidak valid (PIN tidak ter-mapping, dll)</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat melihat detail log atau download report hasil pull</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Koneksi ke Mesin Fingerprint Gagal</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 8, jika sistem tidak dapat terhubung ke FTM</li>
+                    <li>Sistem menampilkan error message "Koneksi ke mesin fingerprint gagal"</li>
+                    <li>Sistem memberikan detail error (timeout, IP tidak dapat dijangkau, dll)</li>
+                    <li>HRD dapat:
+                        <ul>
+                            <li>Cek koneksi jaringan</li>
+                            <li>Verify IP address dan port mesin</li>
+                            <li>Retry koneksi</li>
+                            <li>Contact IT support jika masalah berlanjut</li>
+                        </ul>
+                    </li>
+                </ol>
+                <br>
+                <strong>A2: Ditemukan Data dengan PIN Tidak Ter-mapping</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 11, jika ditemukan record dengan PIN yang belum di-mapping ke NIK</li>
+                    <li>Sistem tetap menyimpan data tersebut tapi dengan flag "unmapped"</li>
+                    <li>Sistem mencatat PIN yang unmapped dalam report</li>
+                    <li>Di summary, HRD dapat melihat daftar PIN yang perlu di-mapping</li>
+                    <li>HRD dapat langsung navigasi ke menu "Mapping PIN" untuk update</li>
+                </ol>
+                <br>
+                <strong>A3: Data Duplikat Terdeteksi</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 11, jika sistem menemukan data yang sudah ada di database</li>
+                    <li>Sistem melakukan pengecekan berdasarkan: NIK/PIN + Tanggal + Waktu</li>
+                    <li>Jika benar-benar duplikat (data identik), sistem skip data tersebut</li>
+                    <li>Jika ada perbedaan waktu sedikit (selisih &lt;1 menit), sistem ambil yang terbaru</li>
+                    <li>Sistem mencatat jumlah duplikat dalam summary</li>
+                </ol>
+                <br>
+                <strong>A4: Proses Pull Timeout atau Terlalu Lama</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Jika data yang di-pull sangat banyak (ribuan record) dan melebihi timeout</li>
+                    <li>Sistem memberikan warning "Proses memakan waktu lama, silakan tunggu"</li>
+                    <li>Sistem tetap lanjutkan proses di background</li>
+                    <li>Setelah selesai, sistem kirim notifikasi atau email ke HRD</li>
+                    <li>HRD dapat melihat hasil di menu "Log History Pull"</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 2 -->
+    <h2>Deskripsi Use Case Transaksi - Verifikasi dan Editable Data Missing</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCT2</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Verifikasi dan Editable Data Missing</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan HRD untuk melakukan verifikasi terhadap data absensi yang tidak lengkap atau missing (tidak ada check-in/check-out), dan melakukan edit atau input manual untuk melengkapi data tersebut agar valid untuk pemrosesan payroll dan report.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. HRIS (untuk validasi data karyawan)<br>
+                b. Database Sistem Absensi<br>
+                c. Sistem Notifikasi
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat mengidentifikasi data absensi yang tidak lengkap (missing check-in, missing check-out, atau tidak ada data sama sekali pada hari kerja), melakukan verifikasi dengan karyawan atau supervisor, dan mengedit data tersebut untuk melengkapi informasi absensi.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem</li>
+                    <li>Data absensi sudah di-pull dari fingerprint atau sudah ada di database</li>
+                    <li>Data jadwal kerja karyawan tersedia untuk identifikasi missing</li>
+                    <li>HRD memiliki hak akses untuk edit/verifikasi data</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Data missing teridentifikasi dan ditampilkan</li>
+                    <li>HRD berhasil melakukan edit/input untuk melengkapi data</li>
+                    <li>Data hasil edit tersimpan dengan flag "verified" atau "manual_input"</li>
+                    <li>Log aktivitas verifikasi tercatat (siapa, kapan, perubahan apa)</li>
+                    <li>Data siap untuk proses payroll atau report</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD login ke sistem</li>
+                    <li>HRD membuka menu "Transaksi > Data Missing" atau "Verifikasi Absensi"</li>
+                    <li>Sistem menampilkan form filter:
+                        <ul class="sub-list">
+                            <li>Periode tanggal</li>
+                            <li>Departemen/Divisi</li>
+                            <li>Tipe missing (No Check-in, No Check-out, No Data)</li>
+                            <li>Status verifikasi (Belum/Sudah diverifikasi)</li>
+                        </ul>
+                    </li>
+                    <li>HRD mengisi filter sesuai kebutuhan (misalnya: periode bulan ini, departemen IT)</li>
+                    <li>HRD klik "Cari" atau "Filter"</li>
+                    <li>Sistem melakukan analisa data absensi:
+                        <ul class="sub-list">
+                            <li>Compare data absensi dengan jadwal kerja karyawan</li>
+                            <li>Identifikasi hari kerja yang tidak ada data check-in/out</li>
+                            <li>Identifikasi data yang hanya ada check-in tanpa check-out atau sebaliknya</li>
+                        </ul>
+                    </li>
+                    <li>Sistem menampilkan tabel data missing dengan kolom:
+                        <ul class="sub-list">
+                            <li>Tanggal</li>
+                            <li>NIK & Nama Karyawan</li>
+                            <li>Departemen</li>
+                            <li>Jadwal (jam kerja seharusnya)</li>
+                            <li>Check-in (ada/kosong)</li>
+                            <li>Check-out (ada/kosong)</li>
+                            <li>Jenis Missing (No In/No Out/No Data)</li>
+                            <li>Status (Belum/Sudah Verified)</li>
+                            <li>Action (Edit/Verifikasi)</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat sorting atau export data untuk analisa</li>
+                    <li>HRD memilih salah satu record dan klik tombol "Edit" atau "Verifikasi"</li>
+                    <li>Sistem menampilkan form edit dengan field:
+                        <ul class="sub-list">
+                            <li>Tanggal (read-only)</li>
+                            <li>Karyawan (read-only)</li>
+                            <li>Waktu Check-in (editable - time picker)</li>
+                            <li>Waktu Check-out (editable - time picker)</li>
+                            <li>Status Kehadiran (dropdown: Hadir, Izin, Sakit, Cuti, Alpa, Dinas Luar)</li>
+                            <li>Catatan/Alasan (required)</li>
+                            <li>Upload Dokumen Pendukung (optional - foto surat, screenshot, dll)</li>
+                        </ul>
+                    </li>
+                    <li>HRD mengisi atau melengkapi data yang missing</li>
+                    <li>HRD mengisi alasan verifikasi (contoh: "Sudah konfirmasi dengan supervisor", "Data dari email approval", dll)</li>
+                    <li>HRD bisa upload dokumen pendukung jika ada</li>
+                    <li>HRD klik tombol "Simpan" atau "Update"</li>
+                    <li>Sistem memvalidasi kelengkapan data (cek required fields)</li>
+                    <li>Sistem menyimpan data dengan flag:
+                        <ul class="sub-list">
+                            <li>"verified_by": ID user HRD</li>
+                            <li>"verified_at": timestamp</li>
+                            <li>"data_source": "manual_verification"</li>
+                        </ul>
+                    </li>
+                    <li>Sistem mencatat log perubahan (before-after)</li>
+                    <li>Sistem update status record menjadi "Verified"</li>
+                    <li>Sistem menampilkan notifikasi "Data berhasil diupdate"</li>
+                    <li>HRD kembali ke list dan dapat melanjutkan verifikasi record lain</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Bulk Verification (Verifikasi Massal)</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 9, HRD dapat memilih multiple records dengan checkbox</li>
+                    <li>HRD klik "Bulk Edit" atau "Verifikasi Massal"</li>
+                    <li>Sistem menampilkan form untuk apply perubahan ke semua record terpilih</li>
+                    <li>HRD mengisi status dan alasan yang sama untuk semua record</li>
+                    <li>Sistem update semua record sekaligus dan log masing-masing perubahan</li>
+                </ol>
+                <br>
+                <strong>A2: Data Sudah Diverifikasi Sebelumnya</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 10, jika HRD klik record yang sudah verified</li>
+                    <li>Sistem menampilkan warning "Data ini sudah diverifikasi sebelumnya"</li>
+                    <li>Sistem tampilkan info: siapa yang verify, kapan, dan alasan</li>
+                    <li>HRD dapat memilih:
+                        <ul>
+                            <li>"Edit Ulang" - untuk revisi verifikasi sebelumnya</li>
+                            <li>"Cancel" - untuk kembali ke list</li>
+                        </ul>
+                    </li>
+                    <li>Jika edit ulang, sistem simpan history verifikasi lama dan buat entry baru</li>
+                </ol>
+                <br>
+                <strong>A3: Validasi Gagal</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 15, jika ada field required yang tidak diisi atau format waktu tidak valid</li>
+                    <li>Sistem menampilkan error message dengan detail field yang bermasalah</li>
+                    <li>HRD harus melengkapi atau memperbaiki data sebelum bisa save</li>
+                    <li>Form tetap terbuka dengan data yang sudah diisi (tidak hilang)</li>
+                </ol>
+                <br>
+                <strong>A4: Export Data Missing untuk Follow-up</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 8, setelah data missing ditampilkan</li>
+                    <li>HRD klik tombol "Export to Excel"</li>
+                    <li>Sistem generate file Excel dengan list data missing</li>
+                    <li>HRD dapat share file ini ke supervisor untuk klarifikasi</li>
+                    <li>Setelah dapat info, HRD kembali ke sistem untuk verifikasi</li>
+                </ol>
+                <br>
+                <strong>A5: Reject Data (Tandai sebagai tidak valid)</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 10, selain "Edit", HRD dapat klik "Reject" atau "Tandai Invalid"</li>
+                    <li>Sistem menampilkan dialog konfirmasi</li>
+                    <li>HRD mengisi alasan reject (contoh: "Karyawan keluar/resign", "Cuti panjang", dll)</li>
+                    <li>Sistem update status menjadi "Rejected/Invalid"</li>
+                    <li>Record ini tidak akan muncul lagi di list missing kecuali filter "Show Rejected"</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 3 -->
+    <h2>Deskripsi Use Case Transaksi - Tambah Tukar Jadwal dan View History Tukar Jadwal</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCT3</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Tambah Tukar Jadwal dan View History Tukar Jadwal</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan HRD untuk mengelola permintaan pertukaran jadwal shift antar karyawan, melakukan approval atau rejection, serta melihat history semua transaksi tukar jadwal untuk keperluan audit dan monitoring.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. HRIS (untuk data karyawan dan jadwal)<br>
+                b. Database Sistem Absensi<br>
+                c. Sistem Notifikasi (untuk notif ke karyawan)<br>
+                d. Karyawan (indirect - pembuat request)
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat membuat permintaan tukar jadwal shift (atas nama karyawan atau inisiatif HRD), melakukan approval terhadap permintaan yang masuk, dan melihat history lengkap semua transaksi tukar jadwal yang pernah terjadi beserta status dan perubahannya.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem</li>
+                    <li>Data karyawan dan jadwal shift tersedia di HRIS</li>
+                    <li>Data mapping karyawan ke shift sudah dikonfigurasi</li>
+                    <li>HRD memiliki hak akses untuk create dan approve tukar jadwal</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Permintaan tukar jadwal tersimpan di database</li>
+                    <li>Jika approved, jadwal shift kedua karyawan ter-update otomatis</li>
+                    <li>Karyawan yang terlibat menerima notifikasi</li>
+                    <li>History tukar jadwal tercatat lengkap dengan status dan timeline</li>
+                    <li>Log aktivitas tersimpan untuk audit trail</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <strong>Bagian A: Tambah/Create Tukar Jadwal</strong>
+                <ol>
+                    <li>HRD login ke sistem</li>
+                    <li>HRD membuka menu "Transaksi > Tukar Jadwal"</li>
+                    <li>Sistem menampilkan halaman dengan 2 tab:
+                        <ul class="sub-list">
+                            <li>Tab "Daftar Permintaan" - untuk approval</li>
+                            <li>Tab "Tambah Baru" - untuk create request</li>
+                        </ul>
+                    </li>
+                    <li>HRD klik tab "Tambah Baru" atau tombol "+ Tambah Tukar Jadwal"</li>
+                    <li>Sistem menampilkan form dengan field:
+                        <ul class="sub-list">
+                            <li>Karyawan A (pencari dengan dropdown/autocomplete)</li>
+                            <li>Jadwal Shift Karyawan A (auto-load setelah pilih karyawan)</li>
+                            <li>Tanggal yang akan ditukar</li>
+                            <li>Karyawan B (partner tukar - dropdown/autocomplete)</li>
+                            <li>Jadwal Shift Karyawan B (auto-load)</li>
+                            <li>Tanggal shift Karyawan B</li>
+                            <li>Alasan Pertukaran (textarea - required)</li>
+                            <li>Status Approval (dropdown: Pending, Approved, Rejected)</li>
+                            <li>Catatan HRD (textarea - optional)</li>
+                        </ul>
+                    </li>
+                    <li>HRD memilih Karyawan A (yang akan tukar shift)</li>
+                    <li>Sistem menampilkan jadwal shift Karyawan A untuk tanggal tertentu</li>
+                    <li>HRD memilih tanggal yang akan ditukar</li>
+                    <li>HRD memilih Karyawan B (partner tukar)</li>
+                    <li>Sistem validasi:
+                        <ul class="sub-list">
+                            <li>Apakah kedua karyawan dalam departemen/group yang sama (atau allowed)</li>
+                            <li>Apakah shift kompatibel (tidak bentrok dengan aturan)</li>
+                            <li>Apakah tidak ada cuti/izin pada tanggal tersebut</li>
+                        </ul>
+                    </li>
+                    <li>HRD mengisi alasan pertukaran</li>
+                    <li>HRD memilih status:
+                        <ul class="sub-list">
+                            <li>Jika "Pending" - request akan masuk ke queue approval</li>
+                            <li>Jika "Approved" - langsung approved dan shift berubah</li>
+                            <li>Jika "Rejected" - request ditolak dengan alasan</li>
+                        </ul>
+                    </li>
+                    <li>HRD klik tombol "Simpan"</li>
+                    <li>Sistem menyimpan permintaan tukar jadwal</li>
+                    <li>Jika status "Approved", sistem langsung update jadwal shift di database</li>
+                    <li>Sistem kirim notifikasi ke Karyawan A dan B</li>
+                    <li>Sistem menampilkan konfirmasi "Permintaan tukar jadwal berhasil disimpan"</li>
+                    <li>HRD kembali ke list permintaan</li>
+                </ol>
+                <br>
+                <strong>Bagian B: View History Tukar Jadwal</strong>
+                <ol>
+                    <li>Dari menu "Transaksi > Tukar Jadwal"</li>
+                    <li>HRD klik tab "History" atau "Riwayat"</li>
+                    <li>Sistem menampilkan filter history:
+                        <ul class="sub-list">
+                            <li>Periode (dari tanggal - sampai tanggal)</li>
+                            <li>Karyawan (cari by nama/NIK)</li>
+                            <li>Departemen</li>
+                            <li>Status (All, Pending, Approved, Rejected)</li>
+                        </ul>
+                    </li>
+                    <li>HRD mengisi filter atau langsung klik "Tampilkan History"</li>
+                    <li>Sistem menampilkan tabel history dengan kolom:
+                        <ul class="sub-list">
+                            <li>No</li>
+                            <li>Tanggal Pengajuan</li>
+                            <li>Karyawan A (NIK & Nama)</li>
+                            <li>Shift Awal A → Shift Baru A</li>
+                            <li>Karyawan B (NIK & Nama)</li>
+                            <li>Shift Awal B → Shift Baru B</li>
+                            <li>Tanggal Efektif Tukar</li>
+                            <li>Status (badge: Pending/Approved/Rejected)</li>
+                            <li>Approved/Rejected By</li>
+                            <li>Tanggal Approval</li>
+                            <li>Action (View Detail)</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat sorting by tanggal atau status</li>
+                    <li>HRD dapat klik "View Detail" pada salah satu record</li>
+                    <li>Sistem menampilkan popup/modal detail history dengan informasi lengkap:
+                        <ul class="sub-list">
+                            <li>Info lengkap karyawan A dan B</li>
+                            <li>Perubahan shift detail (before-after)</li>
+                            <li>Alasan pertukaran</li>
+                            <li>Timeline (diajukan kapan, approved kapan, dll)</li>
+                            <li>Catatan HRD</li>
+                            <li>Dokumen pendukung (jika ada)</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat export history ke Excel/PDF untuk laporan</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Approval Permintaan yang Pending</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di Tab "Daftar Permintaan", HRD melihat list request dengan status Pending</li>
+                    <li>HRD klik "Review" atau "Approve/Reject" pada salah satu request</li>
+                    <li>Sistem menampilkan detail lengkap permintaan</li>
+                    <li>HRD review kelayakan pertukaran</li>
+                    <li>HRD memilih action:
+                        <ul>
+                            <li>"Approve" - setujui dan shift akan berubah otomatis</li>
+                            <li>"Reject" - tolak dengan mengisi alasan penolakan</li>
+                        </ul>
+                    </li>
+                    <li>Jika Approve: Sistem update status, update shift, kirim notif approval</li>
+                    <li>Jika Reject: Sistem update status, kirim notif rejection dengan alasan</li>
+                </ol>
+                <br>
+                <strong>A2: Validasi Konflik Shift Gagal</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 10 (validasi), jika ditemukan konflik:
+                        <ul>
+                            <li>Karyawan sudah ada cuti/izin di tanggal tersebut</li>
+                            <li>Shift tidak kompatibel (misal: shift malam ke shift pagi di hari yang sama)</li>
+                            <li>Sudah ada request tukar jadwal lain yang bentrok</li>
+                        </ul>
+                    </li>
+                    <li>Sistem menampilkan error message dengan detail konflik</li>
+                    <li>HRD harus memilih karyawan/tanggal lain atau cancel request</li>
+                </ol>
+                <br>
+                <strong>A3: Bulk Approval (untuk banyak request sekaligus)</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di Tab "Daftar Permintaan", HRD dapat select multiple request dengan checkbox</li>
+                    <li>HRD klik "Bulk Approve" atau "Approve Selected"</li>
+                    <li>Sistem validasi semua request yang dipilih</li>
+                    <li>Sistem approve semua yang valid dan skip yang error</li>
+                    <li>Sistem tampilkan summary: berapa yang approved, berapa yang skip/error</li>
+                </ol>
+                <br>
+                <strong>A4: Cancel Tukar Jadwal yang Sudah Approved</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di History, HRD menemukan tukar jadwal yang perlu di-cancel</li>
+                    <li>HRD klik "Cancel" atau "Batalkan"</li>
+                    <li>Sistem menampilkan konfirmasi "Apakah yakin membatalkan tukar jadwal ini?"</li>
+                    <li>HRD confirm dan isi alasan pembatalan</li>
+                    <li>Sistem rollback perubahan shift ke kondisi semula</li>
+                    <li>Sistem update status menjadi "Cancelled"</li>
+                    <li>Sistem kirim notifikasi pembatalan ke karyawan terkait</li>
+                </ol>
+                <br>
+                <strong>A5: Filter History dengan Multiple Criteria</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>HRD dapat kombinasi filter (misal: Departemen IT + Status Approved + Periode Januari 2026)</li>
+                    <li>Sistem apply semua filter dan tampilkan hasil yang match semua criteria</li>
+                    <li>HRD dapat save filter sebagai "Quick Filter" untuk digunakan lagi</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 4 -->
+    <h2>Deskripsi Use Case Transaksi - Kirim Surat Peringatan</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCT4</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Kirim Surat Peringatan</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan HRD untuk membuat, mengelola, dan mengirimkan surat peringatan (SP) kepada karyawan yang melakukan pelanggaran absensi atau kedisiplinan berdasarkan data kehadiran dan keterlambatan yang tercatat di sistem.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. HRIS (untuk data karyawan dan email)<br>
+                b. Database Sistem Absensi (untuk data pelanggaran)<br>
+                c. Sistem Email/Notifikasi<br>
+                d. Sistem Document Generator (untuk PDF SP)<br>
+                e. Atasan/Supervisor Karyawan (indirect)
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat mengidentifikasi karyawan yang melakukan pelanggaran absensi (keterlambatan berulang, alpa, dll), membuat surat peringatan dengan template yang sudah tersedia, customize isi surat jika perlu, dan mengirimkannya via email atau print untuk diserahkan secara fisik kepada karyawan yang bersangkutan.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem</li>
+                    <li>Data pelanggaran absensi karyawan tersedia di database</li>
+                    <li>Template surat peringatan (SP 1, SP 2, SP 3) sudah dikonfigurasi</li>
+                    <li>Data email karyawan tersedia di HRIS</li>
+                    <li>HRD memiliki hak akses untuk create dan kirim SP</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Surat peringatan tersimpan di database dengan status "Draft" atau "Sent"</li>
+                    <li>Jika dikirim, karyawan menerima SP via email atau print</li>
+                    <li>Atasan/Supervisor menerima copy SP (cc)</li>
+                    <li>History SP karyawan ter-update (jumlah SP yang pernah diterima)</li>
+                    <li>Log aktivitas kirim SP tercatat untuk audit</li>
+                    <li>Dokumen PDF SP tersimpan di storage sistem</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD login ke sistem</li>
+                    <li>HRD membuka menu "Transaksi > Kirim Surat Peringatan" atau "Kirim SP"</li>
+                    <li>Sistem menampilkan dashboard dengan informasi:
+                        <ul class="sub-list">
+                            <li>Jumlah karyawan yang berpotensi dapat SP (berdasarkan threshold pelanggaran)</li>
+                            <li>List karyawan dengan keterlambatan/alpa berulang</li>
+                            <li>Quick stats: Total SP yang sudah dikirim bulan ini</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat melihat list karyawan yang disarankan sistem untuk diberi SP</li>
+                    <li>HRD klik tombol "+ Buat Surat Peringatan" atau pilih karyawan dari list</li>
+                    <li>Sistem menampilkan form dengan field:
+                        <ul class="sub-list">
+                            <li>Cari Karyawan (autocomplete by NIK/Nama)</li>
+                            <li>Tingkat SP (dropdown: SP 1, SP 2, SP 3)</li>
+                            <li>Jenis Pelanggaran (dropdown: Keterlambatan, Alpa, Izin tidak resmi, dll)</li>
+                            <li>Periode Pelanggaran (tanggal dari - sampai)</li>
+                            <li>Detail Pelanggaran (auto-populated dari data absensi)</li>
+                            <li>Tanggal Surat</li>
+                            <li>Nomor Surat (auto-generate atau manual)</li>
+                        </ul>
+                    </li>
+                    <li>HRD memilih karyawan yang akan diberi SP</li>
+                    <li>Sistem auto-load data karyawan dari HRIS:
+                        <ul class="sub-list">
+                            <li>Nama lengkap, NIK</li>
+                            <li>Jabatan, Departemen</li>
+                            <li>Email</li>
+                            <li>Nama Atasan/Supervisor</li>
+                        </ul>
+                    </li>
+                    <li>Sistem menampilkan history SP karyawan (jika sudah pernah dapat SP sebelumnya)</li>
+                    <li>HRD memilih tingkat SP (sistem bisa suggest berdasarkan history)</li>
+                    <li>HRD memilih jenis pelanggaran</li>
+                    <li>Sistem auto-generate detail pelanggaran dari data absensi:
+                        <ul class="sub-list">
+                            <li>Daftar tanggal terlambat dengan durasi</li>
+                            <li>Daftar tanggal alpa</li>
+                            <li>Summary: Total keterlambatan, total alpa, dll</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat edit atau tambahkan detail pelanggaran manual jika perlu</li>
+                    <li>HRD klik "Preview Surat"</li>
+                    <li>Sistem generate preview surat berdasarkan template SP yang dipilih</li>
+                    <li>Preview menampilkan surat lengkap dengan:
+                        <ul class="sub-list">
+                            <li>Header perusahaan</li>
+                            <li>Nomor dan tanggal surat</li>
+                            <li>Perihal: Surat Peringatan [Tingkat]</li>
+                            <li>Kepada: [Nama Karyawan]</li>
+                            <li>Isi surat dengan detail pelanggaran</li>
+                            <li>Sanksi atau tindakan yang akan diambil</li>
+                            <li>Tanda tangan HRD Manager (digital)</li>
+                        </ul>
+                    </li>
+                    <li>HRD review preview surat</li>
+                    <li>Jika perlu edit, HRD klik "Edit Content" untuk customize isi surat</li>
+                    <li>Setelah OK, HRD memilih metode pengiriman:
+                        <ul class="sub-list">
+                            <li>"Kirim via Email" - kirim soft copy ke email karyawan</li>
+                            <li>"Generate PDF untuk Print" - download PDF untuk print dan serahkan fisik</li>
+                            <li>"Keduanya" - kirim email dan generate PDF</li>
+                        </ul>
+                    </li>
+                    <li>HRD klik "Kirim Surat Peringatan"</li>
+                    <li>Sistem meminta konfirmasi final: "Apakah yakin mengirim SP [Tingkat] ke [Nama Karyawan]?"</li>
+                    <li>HRD confirm</li>
+                    <li>Sistem proses:
+                        <ul class="sub-list">
+                            <li>Generate PDF surat peringatan</li>
+                            <li>Simpan PDF ke storage/document management</li>
+                            <li>Jika kirim email: Kirim email dengan attachment PDF ke karyawan</li>
+                            <li>Kirim copy (cc) ke atasan/supervisor</li>
+                            <li>Update history SP karyawan di database</li>
+                            <li>Log aktivitas dengan detail timestamp, user, dll</li>
+                        </ul>
+                    </li>
+                    <li>Sistem menampilkan notifikasi: "Surat Peringatan berhasil dikirim"</li>
+                    <li>HRD dapat:
+                        <ul class="sub-list">
+                            <li>Download PDF yang sudah di-generate</li>
+                            <li>Lihat status email (terkirim/gagal)</li>
+                            <li>Kembali ke dashboard untuk create SP lain</li>
+                        </ul>
+                    </li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Email Karyawan Tidak Tersedia</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 8, jika sistem tidak menemukan email karyawan di HRIS</li>
+                    <li>Sistem menampilkan warning "Email karyawan tidak tersedia"</li>
+                    <li>Opsi "Kirim via Email" menjadi disabled</li>
+                    <li>HRD hanya dapat pilih "Generate PDF untuk Print"</li>
+                    <li>HRD perlu update email di HRIS atau serahkan SP secara fisik</li>
+                </ol>
+                <br>
+                <strong>A2: Konfirmasi untuk SP Tingkat Tinggi (SP 3)</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 22, jika tingkat SP adalah SP 3 (biasanya SP terakhir sebelum PHK)</li>
+                    <li>Sistem menampilkan konfirmasi extra dengan warning</li>
+                    <li>Sistem tampilkan info: "SP 3 adalah surat peringatan terakhir. Pelanggaran berikutnya dapat berakibat PHK"</li>
+                    <li>HRD harus confirm 2x atau input password ulang untuk security</li>
+                    <li>Sistem juga kirim notifikasi ke HR Manager atau Director untuk transparency</li>
+                </ol>
+                <br>
+                <strong>A3: Pengiriman Email Gagal</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 24, jika pengiriman email gagal (mail server error, email invalid, dll)</li>
+                    <li>Sistem tetap simpan data SP dengan status "Email Failed"</li>
+                    <li>Sistem menampilkan error notification dengan detail error</li>
+                    <li>HRD dapat:
+                        <ul>
+                            <li>"Retry" - coba kirim ulang email</li>
+                            <li>"Download PDF" - download untuk kirim manual via email lain</li>
+                            <li>"Mark as Sent" - tandai sudah dikirim secara manual</li>
+                        </ul>
+                    </li>
+                    <li>Log tetap mencatat attempt pengiriman dan error</li>
+                </ol>
+                <br>
+                <strong>A4: Bulk Create SP (untuk multiple karyawan sekaligus)</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 5, HRD dapat pilih "Bulk Create SP"</li>
+                    <li>HRD select multiple karyawan dari list menggunakan checkbox</li>
+                    <li>HRD pilih tingkat SP dan jenis pelanggaran yang sama untuk semua</li>
+                    <li>Sistem generate preview untuk setiap karyawan (dengan data masing-masing)</li>
+                    <li>HRD review dan confirm</li>
+                    <li>Sistem proses semua SP sekaligus</li>
+                    <li>Sistem tampilkan summary: berapa SP berhasil dikirim, berapa yang gagal</li>
+                </ol>
+                <br>
+                <strong>A5: View History SP Karyawan</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>HRD dapat klik "History SP" pada dashboard</li>
+                    <li>Sistem menampilkan filter: Karyawan, Periode, Tingkat SP, Status</li>
+                    <li>Sistem tampilkan tabel history semua SP yang pernah dikirim</li>
+                    <li>HRD dapat view detail SP, download PDF, atau resend jika perlu</li>
+                    <li>HRD dapat generate report history SP untuk periode tertentu</li>
+                </ol>
+                <br>
+                <strong>A6: Cancel/Recall SP yang Sudah Dikirim</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Jika ada kesalahan, HRD dapat cancel SP yang baru saja dikirim</li>
+                    <li>HRD pilih SP dari history dan klik "Cancel" atau "Recall"</li>
+                    <li>Sistem menampilkan konfirmasi dan meminta alasan pembatalan</li>
+                    <li>Sistem update status SP menjadi "Cancelled"</li>
+                    <li>Sistem kirim email pemberitahuan pembatalan ke karyawan (jika perlu)</li>
+                    <li>SP yang dibatalkan tetap tercatat di history dengan status cancelled</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div style="margin-top: 60px; padding: 30px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #1976d2;">
+        <h3 style="color: #1976d2; margin-bottom: 15px;">📌 Catatan Umum Use Case Transaksi</h3>
+        <p style="line-height: 1.8; color: #555;">
+            <strong>Perbedaan dengan Use Case Master Data:</strong><br>
+            Use case transaksi bersifat <strong>operasional</strong> dan mengubah state/status data di sistem. Setiap transaksi 
+            akan menghasilkan perubahan data dan harus di-log dengan baik untuk audit trail.
+            <br><br>
+            <strong>Integrasi Sistem:</strong>
+            <ul style="margin-top: 10px;">
+                <li><strong>FTM (Fingerspot):</strong> Source data absensi raw yang di-pull ke sistem</li>
+                <li><strong>HRIS:</strong> Validasi data karyawan, email, struktur organisasi</li>
+                <li><strong>Email Service:</strong> Untuk notifikasi dan pengiriman SP</li>
+                <li><strong>Document Generator:</strong> Generate PDF surat peringatan dengan template</li>
+            </ul>
+            <br>
+            <strong>Best Practices:</strong>
+            <ul>
+                <li>Selalu log siapa yang melakukan transaksi, kapan, dan perubahan apa</li>
+                <li>Implementasi approval workflow untuk transaksi yang sensitive (tukar jadwal, SP tingkat 3)</li>
+                <li>Backup data sebelum bulk operation untuk recovery jika terjadi error</li>
+                <li>Notifikasi real-time ke pihak terkait agar transparency terjaga</li>
+            </ul>
+        </p>
+    </div>
+
+    <div style="text-align: center; margin-top: 50px;">
+        <a href="usecase-index.html" style="display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 25px; font-weight: bold;">
+            🏠 Kembali ke Index
+        </a>
+    </div>
+
+</body>
+</html>

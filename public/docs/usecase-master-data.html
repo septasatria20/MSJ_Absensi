@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Case Master Data - Sistem Absensi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #d32f2f;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #1976d2;
+            margin-top: 40px;
+            border-bottom: 2px solid #1976d2;
+            padding-bottom: 10px;
+        }
+        .diagram-container {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            border: 2px solid #333;
+            background: #f5f5f5;
+        }
+        .diagram-img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+        }
+        .caption {
+            text-align: center;
+            font-style: italic;
+            color: #0000EE;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #333;
+        }
+        th {
+            background-color: #f0f0f0;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            padding: 12px;
+            vertical-align: top;
+        }
+        .red-underline {
+            color: #000;
+            text-decoration: none;
+            font-weight: normal;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        ol {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        ul {
+            margin: 5px 0;
+            padding-left: 40px;
+        }
+        .sub-list {
+            list-style-type: lower-alpha;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Usecase Master Data</h1>
+
+    <!-- DIAGRAM -->
+    <div class="diagram-container">
+        <p style="text-align: center; font-size: 1.2em; margin-bottom: 20px;">
+            <strong>Diagram Use Case Master Data</strong>
+        </p>
+        <div style="text-align: center; padding: 40px; background: white; border: 3px solid #333; margin: 20px auto; max-width: 800px;">
+            <p><em>Diagram menampilkan:</em></p>
+            <ul style="list-style: none; padding: 0;">
+                <li>▸ Aktor: <strong>HR (HRD)</strong> di kiri</li>
+                <li>▸ Aktor Sekunder: <strong>HRIS</strong> (sistem perusahaan) dan <strong>FTM</strong> (Fingerspot) di kanan</li>
+                <li>▸ 5 Use Case dalam system boundary:</li>
+                <li style="margin-left: 20px;">1. Lihat daftar karyawan dan departemen</li>
+                <li style="margin-left: 20px;">2. Lihat link pin karyawan</li>
+                <li style="margin-left: 20px;">3. Lihat grup kerja</li>
+                <li style="margin-left: 20px;">4. Lihat jadwal shift</li>
+                <li style="margin-left: 20px;">5. Lihat kalender shift dan kalender non shift</li>
+            </ul>
+        </div>
+        <div class="caption">Gambar 1. Use Case Master Data</div>
+    </div>
+
+    <!-- DESKRIPSI USE CASE 1 -->
+    <h2>Deskripsi Use Case Master Data - Lihat Daftar Karyawan dan Departemen</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCMD1</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td><span class="red-underline">Lihat Daftar Karyawan dan Departemen</span></td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">HRD</span> untuk <span class="red-underline">melihat dan mengakses daftar karyawan beserta informasi departemen</span> mereka yang diambil dari sistem HRIS perusahaan untuk keperluan monitoring dan manajemen absensi.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. HRIS (Sistem Informasi SDM Perusahaan)<br>
+                b. Database Sistem Absensi
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat <span class="red-underline">melihat daftar karyawan aktif</span> beserta informasi departemen, jabatan, dan data terkait lainnya yang <span class="red-underline">diambil dari sistem HRIS perusahaan</span> dan ditampilkan dalam format yang mudah dibaca.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem absensi</li>
+                    <li><span class="red-underline">Koneksi ke sistem HRIS tersedia dan dapat diakses</span></li>
+                    <li>Data karyawan di HRIS sudah ter-update</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Daftar karyawan dan departemen ditampilkan di layar</li>
+                    <li><span class="red-underline">HRD dapat melihat informasi detail setiap karyawan</span></li>
+                    <li>Data dapat digunakan untuk proses lain seperti mapping atau filtering</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD login ke sistem</li>
+                    <li>HRD membuka menu "Master Data" atau "Data Karyawan"</li>
+                    <li>Sistem melakukan koneksi ke HRIS perusahaan</li>
+                    <li>Sistem mengambil data karyawan aktif dari HRIS dengan informasi:
+                        <ul class="sub-list">
+                            <li>NIK (Nomor Induk Karyawan)</li>
+                            <li>Nama lengkap karyawan</li>
+                            <li>Departemen/Divisi</li>
+                            <li>Jabatan</li>
+                            <li>Status karyawan (Aktif/Non-aktif)</li>
+                            <li>Tanggal bergabung</li>
+                        </ul>
+                    </li>
+                    <li><span class="red-underline">Sistem menampilkan daftar karyawan dalam bentuk tabel</span></li>
+                    <li>HRD dapat melakukan filter berdasarkan departemen atau jabatan</li>
+                    <li>HRD dapat melakukan pencarian berdasarkan NIK atau nama</li>
+                    <li>HRD dapat melihat detail karyawan dengan klik pada baris data</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Koneksi ke HRIS Gagal</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 3, jika koneksi ke HRIS gagal atau timeout</li>
+                    <li>Sistem menampilkan pesan error "Tidak dapat terhubung ke sistem HRIS"</li>
+                    <li>Sistem menampilkan data karyawan dari cache terakhir (jika ada)</li>
+                    <li>HRD dapat mencoba refresh atau contact IT support</li>
+                </ol>
+                <br>
+                <strong>A2: Data Tidak Ditemukan</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 7, jika pencarian tidak menemukan hasil</li>
+                    <li>Sistem menampilkan pesan "Data tidak ditemukan"</li>
+                    <li>HRD dapat mengubah kata kunci pencarian atau menghapus filter</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 2 -->
+    <h2>Deskripsi Use Case Master Data - Lihat Link PIN Karyawan</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCMD2</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td><span class="red-underline">Lihat Link PIN Karyawan</span></td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">HRD</span> untuk <span class="red-underline">melihat dan mengelola mapping PIN fingerprint karyawan</span> dengan data NIK di sistem untuk memastikan data absensi dari mesin fingerprint dapat terintegrasi dengan benar.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. HRIS (Sistem Informasi SDM Perusahaan)<br>
+                b. FTM (Fingerspot/Mesin Fingerprint)<br>
+                c. Database Sistem Absensi
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat <span class="red-underline">melihat mapping antara PIN di mesin fingerprint dengan NIK karyawan</span> di sistem HRIS, sehingga data absensi yang ditarik dari FTM dapat diidentifikasi dengan benar ke karyawan yang tepat.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem absensi</li>
+                    <li><span class="red-underline">Data karyawan dari HRIS sudah tersedia</span></li>
+                    <li>Data PIN dari mesin fingerprint (FTM) sudah di-pull</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Daftar mapping PIN-NIK ditampilkan</li>
+                    <li><span class="red-underline">HRD dapat mengidentifikasi PIN yang sudah/belum ter-mapping</span></li>
+                    <li>Data mapping dapat digunakan untuk validasi integrasi data absensi</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD login ke sistem</li>
+                    <li>HRD membuka menu "Master Data > Mapping PIN" atau "Link PIN Karyawan"</li>
+                    <li>Sistem mengambil data karyawan dari HRIS</li>
+                    <li>Sistem mengambil data PIN dari FTM (Fingerspot)</li>
+                    <li><span class="red-underline">Sistem menampilkan tabel mapping dengan kolom:</span>
+                        <ul class="sub-list">
+                            <li>PIN (ID di mesin fingerprint)</li>
+                            <li>NIK (dari HRIS)</li>
+                            <li>Nama Karyawan</li>
+                            <li>Departemen</li>
+                            <li>Status Mapping (Aktif/Belum Mapping)</li>
+                            <li>Action (Edit/Update)</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat melihat PIN mana yang sudah ter-link dengan NIK</li>
+                    <li>HRD dapat filter berdasarkan status mapping atau departemen</li>
+                    <li>HRD dapat melakukan pencarian berdasarkan PIN atau NIK</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: PIN Belum Ter-mapping</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 6, jika ditemukan PIN yang belum ter-link dengan NIK</li>
+                    <li>Sistem menampilkan warning atau highlight pada baris tersebut</li>
+                    <li>HRD dapat klik "Edit" untuk melakukan mapping manual</li>
+                    <li>HRD memilih NIK yang sesuai dari dropdown list</li>
+                    <li>Sistem menyimpan mapping baru</li>
+                </ol>
+                <br>
+                <strong>A2: Duplikasi PIN atau NIK</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Jika sistem mendeteksi duplikasi (satu NIK ter-link ke multiple PIN atau sebaliknya)</li>
+                    <li>Sistem menampilkan alert "Terdeteksi duplikasi mapping"</li>
+                    <li>HRD perlu review dan perbaiki mapping yang error</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 3 -->
+    <h2>Deskripsi Use Case Master Data - Lihat Grup Kerja</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCMD3</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td><span class="red-underline">Lihat Grup Kerja</span></td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">HRD</span> untuk <span class="red-underline">melihat dan mengelola pengelompokan karyawan</span> berdasarkan grup kerja atau tim untuk keperluan penugasan jadwal shift dan monitoring kehadiran berdasarkan grup.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. HRIS (Sistem Informasi SDM Perusahaan)<br>
+                b. Database Sistem Absensi
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat <span class="red-underline">melihat daftar grup kerja yang ada</span>, melihat anggota setiap grup, dan <span class="red-underline">informasi terkait seperti supervisor atau jadwal kerja grup</span> tersebut.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem absensi</li>
+                    <li><span class="red-underline">Data grup kerja sudah dikonfigurasi di sistem</span></li>
+                    <li>Data karyawan dari HRIS tersedia</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Daftar grup kerja ditampilkan</li>
+                    <li><span class="red-underline">HRD dapat melihat detail anggota setiap grup</span></li>
+                    <li>Informasi grup dapat digunakan untuk assignment jadwal atau report</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD login ke sistem</li>
+                    <li>HRD membuka menu "Master Data > Grup Kerja" atau "Group Karyawan"</li>
+                    <li>Sistem mengambil data grup kerja dari database</li>
+                    <li><span class="red-underline">Sistem menampilkan daftar grup dalam bentuk card atau tabel dengan informasi:</span>
+                        <ul class="sub-list">
+                            <li>Nama Grup Kerja</li>
+                            <li>Kode Grup</li>
+                            <li>Jumlah Anggota</li>
+                            <li>Supervisor/Leader</li>
+                            <li>Tipe Kerja (Shift/Non-Shift)</li>
+                            <li>Status (Aktif/Non-aktif)</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat klik pada salah satu grup untuk melihat detail</li>
+                    <li>Sistem menampilkan detail grup dengan daftar anggota karyawan</li>
+                    <li>HRD dapat melakukan filter atau pencarian grup</li>
+                    <li>HRD dapat melihat jadwal shift yang di-assign ke grup tersebut</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Grup Tidak Memiliki Anggota</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 6, jika grup yang dipilih belum memiliki anggota</li>
+                    <li>Sistem menampilkan pesan "Grup ini belum memiliki anggota"</li>
+                    <li>HRD dapat menambahkan anggota atau menutup detail grup</li>
+                </ol>
+                <br>
+                <strong>A2: View Berdasarkan Departemen</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 4, HRD dapat memilih filter "Berdasarkan Departemen"</li>
+                    <li>Sistem mengelompokkan dan menampilkan grup per departemen</li>
+                    <li>HRD dapat expand/collapse setiap departemen untuk melihat grup di dalamnya</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 4 -->
+    <h2>Deskripsi Use Case Master Data - Lihat Jadwal Shift</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCMD4</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td><span class="red-underline">Lihat Jadwal Shift</span></td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">HRD</span> untuk <span class="red-underline">melihat dan memonitor jadwal shift karyawan</span> yang sudah dikonfigurasi dalam sistem untuk memastikan pembagian jadwal kerja yang tepat dan sesuai operasional.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. FTM (Fingerspot - untuk validasi waktu absen)<br>
+                b. Database Sistem Absensi
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat <span class="red-underline">melihat master jadwal shift yang tersedia</span>, detail waktu kerja setiap shift, dan <span class="red-underline">karyawan atau grup mana yang di-assign ke shift tersebut</span>.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem absensi</li>
+                    <li><span class="red-underline">Data master shift sudah dikonfigurasi di sistem</span></li>
+                    <li>Data karyawan dan grup kerja tersedia</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Daftar jadwal shift ditampilkan dengan detail lengkap</li>
+                    <li><span class="red-underline">HRD dapat melihat assignment karyawan ke shift tertentu</span></li>
+                    <li>Informasi shift dapat digunakan untuk validasi absensi dan report</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD login ke sistem</li>
+                    <li>HRD membuka menu "Master Data > Jadwal Shift" atau "Master Shift"</li>
+                    <li>Sistem mengambil data master shift dari database</li>
+                    <li><span class="red-underline">Sistem menampilkan daftar shift dalam bentuk tabel dengan informasi:</span>
+                        <ul class="sub-list">
+                            <li>Kode Shift (contoh: Shift A, Shift B, Pagi, Siang, Malam)</li>
+                            <li>Nama Shift</li>
+                            <li>Jam Masuk (Check-in time)</li>
+                            <li>Jam Keluar (Check-out time)</li>
+                            <li>Total Jam Kerja</li>
+                            <li>Toleransi Keterlambatan</li>
+                            <li>Jumlah Karyawan Ter-assign</li>
+                            <li>Status Shift (Aktif/Non-aktif)</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat klik pada salah satu shift untuk melihat detail lengkap</li>
+                    <li>Sistem menampilkan detail shift termasuk daftar karyawan/grup yang menggunakan shift tersebut</li>
+                    <li>HRD dapat melihat breakdown waktu (jam masuk, istirahat, pulang)</li>
+                    <li>HRD dapat filter shift berdasarkan status atau tipe (pagi/siang/malam)</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: View Shift dengan Assignment Karyawan</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 6, HRD klik "Lihat Karyawan" pada salah satu shift</li>
+                    <li>Sistem menampilkan modal/page baru dengan daftar karyawan yang di-assign ke shift tersebut</li>
+                    <li>HRD dapat melihat NIK, nama, departemen, dan periode assignment</li>
+                    <li>HRD dapat export daftar karyawan per shift jika diperlukan</li>
+                </ol>
+                <br>
+                <strong>A2: Tidak Ada Shift Aktif</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 4, jika tidak ada shift yang berstatus aktif</li>
+                    <li>Sistem menampilkan pesan "Belum ada jadwal shift aktif"</li>
+                    <li>HRD dapat membuat shift baru atau mengaktifkan shift yang non-aktif</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 5 -->
+    <h2>Deskripsi Use Case Master Data - Lihat Kalender Shift dan Kalender Non Shift</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCMD5</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td><span class="red-underline">Lihat Kalender Shift dan Kalender Non Shift</span></td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan <span class="red-underline">HRD</span> untuk <span class="red-underline">melihat kalender hari libur dan hari kerja</span> untuk karyawan shift dan non-shift, sehingga dapat mengelola jadwal dengan mempertimbangkan hari libur nasional, cuti bersama, dan pengaturan khusus lainnya.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. FTM (Fingerspot - untuk referensi hari kerja)<br>
+                b. Database Sistem Absensi
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat <span class="red-underline">melihat kalender kerja yang membedakan antara karyawan shift dan non-shift</span>, termasuk <span class="red-underline">hari libur nasional, cuti bersama, dan hari kerja khusus</span> yang sudah dikonfigurasi dalam sistem.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem absensi</li>
+                    <li><span class="red-underline">Data kalender dan hari libur sudah dikonfigurasi di sistem</span></li>
+                    <li>Sistem dapat membedakan karyawan shift dan non-shift</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Kalender shift dan non-shift ditampilkan dengan jelas</li>
+                    <li><span class="red-underline">HRD dapat melihat hari libur, hari kerja, dan status khusus lainnya</span></li>
+                    <li>Informasi kalender dapat digunakan untuk planning dan scheduling</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD login ke sistem</li>
+                    <li>HRD membuka menu "Master Data > Kalender" atau "Hari Libur"</li>
+                    <li>Sistem menampilkan pilihan view:
+                        <ul class="sub-list">
+                            <li>Kalender Shift (untuk karyawan shift)</li>
+                            <li>Kalender Non-Shift (untuk karyawan non-shift)</li>
+                        </ul>
+                    </li>
+                    <li>HRD memilih tipe kalender yang ingin dilihat</li>
+                    <li><span class="red-underline">Sistem menampilkan kalender dalam format bulanan atau tahunan dengan legend:</span>
+                        <ul class="sub-list">
+                            <li>Hari kerja normal (warna putih/default)</li>
+                            <li>Hari libur nasional (warna merah)</li>
+                            <li>Cuti bersama (warna kuning)</li>
+                            <li>Hari libur khusus shift (warna biru - jika ada)</li>
+                            <li>Weekend (warna abu-abu untuk non-shift)</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat navigasi antar bulan atau tahun</li>
+                    <li>HRD dapat klik pada tanggal tertentu untuk melihat detail (jenis libur, keterangan, dll)</li>
+                    <li>Sistem menampilkan informasi lengkap pada popup atau sidebar</li>
+                    <li>HRD dapat melihat summary:
+                        <ul class="sub-list">
+                            <li>Total hari kerja dalam bulan/tahun</li>
+                            <li>Total hari libur</li>
+                            <li>Total cuti bersama</li>
+                        </ul>
+                    </li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Switch Antara Kalender Shift dan Non-Shift</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 4, HRD dapat dengan mudah switch antara kedua kalender dengan toggle atau tab</li>
+                    <li>Sistem reload kalender sesuai tipe yang dipilih</li>
+                    <li>Perbedaan utama muncul pada weekend (shift tetap kerja, non-shift libur)</li>
+                </ol>
+                <br>
+                <strong>A2: Export Kalender</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Setelah langkah 5, HRD dapat klik tombol "Export Kalender"</li>
+                    <li>Sistem generate file PDF atau Excel berisi kalender lengkap dengan keterangan</li>
+                    <li>File dapat didownload untuk keperluan sosialisasi atau print</li>
+                </ol>
+                <br>
+                <strong>A3: Tidak Ada Data Kalender untuk Tahun Tertentu</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Jika HRD navigasi ke tahun yang belum dikonfigurasi</li>
+                    <li>Sistem menampilkan pesan "Data kalender untuk tahun ini belum tersedia"</li>
+                    <li>HRD dapat kembali ke tahun sebelumnya atau request konfigurasi kalender baru</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div style="margin-top: 60px; padding: 30px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #1976d2;">
+        <h3 style="color: #1976d2; margin-bottom: 15px;">📌 Catatan Umum Use Case Master Data</h3>
+        <p style="line-height: 1.8; color: #555;">
+            Semua use case master data bersifat <strong>read-only</strong> atau <strong>view-only</strong> dalam konteks ini. 
+            HRD dapat melihat dan memonitor data, namun untuk proses <strong>Create, Update, Delete (CUD)</strong> 
+            biasanya dilakukan pada sistem terpisah (HRIS untuk data karyawan, atau konfigurasi sistem untuk shift dan kalender).
+            <br><br>
+            <strong>Integrasi dengan HRIS dan FTM:</strong>
+            <ul style="margin-top: 10px;">
+                <li>Data karyawan dan departemen di-pull dari <strong>HRIS</strong> secara periodik atau real-time</li>
+                <li>Data PIN dan waktu absensi diambil dari <strong>FTM (Fingerspot)</strong></li>
+                <li>Sistem absensi bertindak sebagai <strong>middleware</strong> yang mengintegrasikan kedua sistem untuk keperluan monitoring dan reporting</li>
+            </ul>
+        </p>
+    </div>
+
+    <div style="text-align: center; margin-top: 50px;">
+        <a href="usecase-index.html" style="display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 25px; font-weight: bold;">
+            🏠 Kembali ke Index
+        </a>
+    </div>
+
+</body>
+</html>

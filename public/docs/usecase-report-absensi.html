@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Case Report - Sistem Absensi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #d32f2f;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #1976d2;
+            margin-top: 40px;
+            border-bottom: 2px solid #1976d2;
+            padding-bottom: 10px;
+        }
+        .diagram-container {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            border: 2px solid #333;
+            background: #f5f5f5;
+        }
+        .diagram-img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+        }
+        .caption {
+            text-align: center;
+            font-style: italic;
+            color: #0000EE;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #333;
+        }
+        th {
+            background-color: #f0f0f0;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            padding: 12px;
+            vertical-align: top;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        ol {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        ul {
+            margin: 5px 0;
+            padding-left: 40px;
+        }
+        .sub-list {
+            list-style-type: lower-alpha;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Usecase Report</h1>
+
+    <!-- DIAGRAM -->
+    <div class="diagram-container">
+        <p style="text-align: center; font-size: 1.2em; margin-bottom: 20px;">
+            <strong>Diagram Use Case Report</strong>
+        </p>
+        <div style="text-align: center; padding: 40px; background: white; border: 3px solid #333; margin: 20px auto; max-width: 800px;">
+            <p><em>Diagram menampilkan:</em></p>
+            <ul style="list-style: none; padding: 0;">
+                <li>▸ Aktor: <strong>HR (HRD)</strong> di kiri</li>
+                <li>▸ 6 Use Case dalam system boundary:</li>
+                <li style="margin-left: 20px;">1. Lihat Rekap Data FTM</li>
+                <li style="margin-left: 20px;">2. Lihat Rekap Finger</li>
+                <li style="margin-left: 20px;">3. Lihat Rekap Data Missing</li>
+                <li style="margin-left: 20px;">4. Lihat Rekap Surat Peringatan</li>
+                <li style="margin-left: 20px;">5. Atur Layout Filter</li>
+                <li style="margin-left: 20px;">6. Ekspor Data Excel/PDF/Print</li>
+            </ul>
+        </div>
+        <div class="caption">Gambar 1. Use Case Report Absensi</div>
+    </div>
+
+    <!-- DESKRIPSI USE CASE 1 -->
+    <h2>Deskripsi Use Case Report - Lihat Rekap Data FTM</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCR1</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Lihat Rekap Data FTM</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan HRD untuk melihat laporan rekap data absensi yang berasal langsung dari mesin fingerprint (FTM/Fingerspot) dalam periode tertentu, untuk keperluan monitoring, validasi, dan analisa data mentah dari mesin.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. FTM (Fingerspot/Mesin Fingerprint)<br>
+                b. Database Sistem Absensi<br>
+                c. HRIS (untuk data karyawan)
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat mengakses dan melihat rekap data absensi raw yang berasal dari mesin fingerprint. Data ditampilkan dalam format tabel dengan berbagai filter dan dapat digunakan untuk analisa atau troubleshooting masalah data absensi.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem</li>
+                    <li>Data absensi sudah di-pull dari mesin FTM ke database</li>
+                    <li>Data mapping PIN-NIK tersedia</li>
+                    <li>HRD memiliki hak akses untuk melihat report</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>HRD berhasil melihat rekap data FTM dalam bentuk tabel</li>
+                    <li>Data dapat difilter, disort, dan dianalisa</li>
+                    <li>Log aktivitas view report tercatat</li>
+                    <li>Data siap untuk di-export jika diperlukan</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD login ke sistem</li>
+                    <li>HRD membuka menu "Report > Rekap Data FTM"</li>
+                    <li>Sistem menampilkan halaman report dengan panel filter:
+                        <ul class="sub-list">
+                            <li>Periode (dari tanggal - sampai tanggal)</li>
+                            <li>Pilih Mesin FTM (jika multiple mesin)</li>
+                            <li>Departemen/Divisi</li>
+                            <li>Karyawan (search by NIK/Nama)</li>
+                            <li>Status Mapping (All, Mapped, Unmapped)</li>
+                        </ul>
+                    </li>
+                    <li>HRD mengisi filter periode (misalnya: 1-31 Januari 2026)</li>
+                    <li>HRD memilih mesin FTM jika ada lebih dari satu lokasi</li>
+                    <li>HRD dapat mengisi filter lain (departemen, karyawan) atau langsung klik "Tampilkan Data"</li>
+                    <li>Sistem melakukan query ke database untuk mengambil data sesuai filter</li>
+                    <li>Sistem menampilkan tabel rekap data FTM dengan kolom:
+                        <ul class="sub-list">
+                            <li>No (auto-increment)</li>
+                            <li>Tanggal</li>
+                            <li>Waktu (timestamp dari mesin)</li>
+                            <li>PIN (dari mesin fingerprint)</li>
+                            <li>NIK (hasil mapping)</li>
+                            <li>Nama Karyawan (dari HRIS)</li>
+                            <li>Departemen</li>
+                            <li>Status Verifikasi (finger/card/password)</li>
+                            <li>Mesin (device ID/name)</li>
+                            <li>Status Mapping (Mapped/Unmapped)</li>
+                        </ul>
+                    </li>
+                    <li>Di atas tabel, sistem menampilkan summary:
+                        <ul class="sub-list">
+                            <li>Total Records: [jumlah]</li>
+                            <li>Total Karyawan Unik: [jumlah]</li>
+                            <li>Data Mapped: [jumlah]</li>
+                            <li>Data Unmapped: [jumlah]</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat melakukan sorting dengan klik header kolom (tanggal, PIN, nama, dll)</li>
+                    <li>HRD dapat melakukan pagination (next/previous page) jika data banyak</li>
+                    <li>HRD dapat klik salah satu row untuk melihat detail lengkap record</li>
+                    <li>Sistem menampilkan popup detail dengan informasi:
+                        <ul class="sub-list">
+                            <li>Full timestamp (tahun-bulan-tanggal jam:menit:detik)</li>
+                            <li>PIN raw dari mesin</li>
+                            <li>Info lengkap karyawan (jika ter-mapping)</li>
+                            <li>Device info (mesin ID, lokasi, IP address)</li>
+                            <li>Verification method (fingerprint/card/password)</li>
+                            <li>Status: apakah data ini sudah diproses atau masih raw</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat close popup dan kembali ke tabel</li>
+                    <li>HRD dapat mengubah filter untuk melihat data periode lain atau karyawan lain</li>
+                    <li>HRD dapat klik "Refresh Data" untuk reload jika ada data baru yang di-pull</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Data Tidak Ditemukan</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 8, jika tidak ada data yang match dengan filter</li>
+                    <li>Sistem menampilkan message "Tidak ada data ditemukan untuk filter yang dipilih"</li>
+                    <li>Sistem memberikan suggestion:
+                        <ul>
+                            <li>Coba periode tanggal yang lebih luas</li>
+                            <li>Cek apakah data sudah di-pull dari mesin</li>
+                            <li>Coba filter departemen "All" untuk melihat semua data</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat adjust filter dan search lagi</li>
+                </ol>
+                <br>
+                <strong>A2: Filter Data Unmapped Only</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 6, HRD dapat pilih filter Status Mapping = "Unmapped"</li>
+                    <li>Sistem hanya tampilkan data dengan PIN yang belum di-mapping ke NIK</li>
+                    <li>HRD dapat melihat daftar PIN yang perlu di-mapping</li>
+                    <li>Dari report ini, HRD dapat langsung navigasi ke menu "Mapping PIN" untuk update</li>
+                </ol>
+                <br>
+                <strong>A3: Group by Karyawan</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di panel filter, HRD dapat aktifkan toggle "Group by Karyawan"</li>
+                    <li>Sistem menampilkan data dalam format grouped:
+                        <ul>
+                            <li>Header: NIK - Nama Karyawan</li>
+                            <li>Sub-rows: List semua check-in/out karyawan tersebut</li>
+                            <li>Sub-total: Jumlah records per karyawan</li>
+                        </ul>
+                    </li>
+                    <li>Format ini memudahkan HRD untuk analisa per individu</li>
+                </ol>
+                <br>
+                <strong>A4: Compare Data Antar Mesin</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Jika perusahaan punya multiple mesin FTM di lokasi berbeda</li>
+                    <li>HRD dapat pilih "All Machines" di filter</li>
+                    <li>Sistem menampilkan data dari semua mesin dengan kolom tambahan "Lokasi Mesin"</li>
+                    <li>HRD dapat bandingkan data dari mesin utama vs mesin backup</li>
+                    <li>Berguna untuk identifikasi mesin yang bermasalah atau data duplikat</li>
+                </ol>
+                <br>
+                <strong>A5: Real-time Monitoring Mode</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>HRD dapat aktifkan toggle "Auto Refresh" di panel filter</li>
+                    <li>Sistem akan auto refresh data setiap X detik (configurable, default 30 detik)</li>
+                    <li>Berguna untuk monitoring real-time saat jam masuk/pulang karyawan</li>
+                    <li>HRD dapat melihat data terbaru tanpa perlu manual refresh</li>
+                    <li>Ada indicator "Last Updated: [timestamp]" untuk transparansi</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 2 -->
+    <h2>Deskripsi Use Case Report - Lihat Rekap Finger</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCR2</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Lihat Rekap Finger</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan HRD untuk melihat laporan rekap absensi finger yang sudah diproses dan dipasangkan dengan jadwal kerja karyawan, termasuk informasi check-in, check-out, status kehadiran, keterlambatan, dan overtime dalam periode tertentu.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. Database Sistem Absensi<br>
+                b. HRIS (untuk data karyawan dan jadwal)<br>
+                c. Sistem Kalender dan Shift
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat melihat rekap absensi yang sudah dipasangkan dengan jadwal kerja dan sudah dihitung status kehadirannya (hadir tepat waktu, terlambat, pulang cepat, overtime, dll). Ini adalah report utama untuk monitoring kehadiran harian karyawan.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem</li>
+                    <li>Data absensi sudah di-pull dan diproses (matched dengan jadwal)</li>
+                    <li>Data jadwal kerja karyawan tersedia</li>
+                    <li>Kalender kerja (hari libur, cuti bersama) sudah dikonfigurasi</li>
+                    <li>HRD memiliki hak akses untuk melihat report</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>HRD berhasil melihat rekap absensi finger yang sudah diproses</li>
+                    <li>Data ditampilkan dengan perhitungan keterlambatan dan overtime</li>
+                    <li>Summary statistik kehadiran tersedia</li>
+                    <li>Log aktivitas view report tercatat</li>
+                    <li>Data siap untuk analisa lebih lanjut atau export</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD login ke sistem</li>
+                    <li>HRD membuka menu "Report > Rekap Finger" atau "Report > Kehadiran"</li>
+                    <li>Sistem menampilkan halaman report dengan panel filter:
+                        <ul class="sub-list">
+                            <li>Periode (dari tanggal - sampai tanggal) - default: bulan berjalan</li>
+                            <li>Departemen/Divisi (dropdown multi-select)</li>
+                            <li>Karyawan (search/autocomplete)</li>
+                            <li>Status Kehadiran (All, Hadir, Terlambat, Alpa, Izin, Cuti, Sakit)</li>
+                            <li>Shift (All, Pagi, Siang, Malam, dst)</li>
+                            <li>Tampilan (Harian, Summary per Karyawan)</li>
+                        </ul>
+                    </li>
+                    <li>HRD mengisi filter periode (misalnya: 1-31 Januari 2026)</li>
+                    <li>HRD dapat pilih departemen tertentu atau "All Departments"</li>
+                    <li>HRD dapat pilih tampilan "Harian" (detail per hari) atau "Summary" (ringkasan)</li>
+                    <li>HRD klik "Tampilkan Report"</li>
+                    <li>Sistem query database dan melakukan processing data</li>
+                    <li>Jika pilih tampilan "Harian", sistem menampilkan tabel dengan kolom:
+                        <ul class="sub-list">
+                            <li>Tanggal</li>
+                            <li>NIK</li>
+                            <li>Nama Karyawan</li>
+                            <li>Departemen</li>
+                            <li>Shift (Pagi/Siang/Malam/Off)</li>
+                            <li>Jadwal Masuk (jam seharusnya)</li>
+                            <li>Check-in Aktual</li>
+                            <li>Terlambat (menit) - dengan highlight jika &gt; 0</li>
+                            <li>Jadwal Pulang</li>
+                            <li>Check-out Aktual</li>
+                            <li>Pulang Cepat (menit) - jika ada</li>
+                            <li>Overtime (jam) - jika ada</li>
+                            <li>Total Jam Kerja</li>
+                            <li>Status (Hadir/Terlambat/Alpa/Izin/Cuti/Sakit/Libur)</li>
+                        </ul>
+                    </li>
+                    <li>Sistem memberikan color coding untuk status:
+                        <ul class="sub-list">
+                            <li>Hijau: Hadir tepat waktu</li>
+                            <li>Kuning: Terlambat &lt; 30 menit</li>
+                            <li>Oranye: Terlambat 30-60 menit</li>
+                            <li>Merah: Terlambat &gt; 60 menit atau Alpa</li>
+                            <li>Biru: Izin/Cuti/Sakit (approved)</li>
+                            <li>Abu-abu: Hari Libur/Off</li>
+                        </ul>
+                    </li>
+                    <li>Di atas tabel, sistem menampilkan summary panel:
+                        <ul class="sub-list">
+                            <li>Total Hari Kerja: [jumlah]</li>
+                            <li>Total Kehadiran: [jumlah] ([persentase]%)</li>
+                            <li>Total Terlambat: [jumlah] orang</li>
+                            <li>Total Alpa: [jumlah] orang</li>
+                            <li>Rata-rata Keterlambatan: [menit]</li>
+                            <li>Total Overtime: [jam]</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat klik pada salah satu row untuk melihat detail lengkap</li>
+                    <li>Sistem menampilkan popup detail dengan:
+                        <ul class="sub-list">
+                            <li>Info karyawan lengkap (foto, jabatan, contact)</li>
+                            <li>Timeline check-in/out dengan foto (jika mesin punya fitur foto)</li>
+                            <li>Perhitungan detail keterlambatan/overtime</li>
+                            <li>Catatan/keterangan (jika ada input manual)</li>
+                            <li>History approval (jika ada izin/adjustment)</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat sorting by kolom (misal: sort by terlambat terbanyak)</li>
+                    <li>HRD dapat search/filter cepat di tabel</li>
+                    <li>HRD dapat ganti periode atau filter lain untuk melihat data berbeda</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Tampilan Summary per Karyawan</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah 6, jika HRD pilih tampilan "Summary per Karyawan"</li>
+                    <li>Sistem menampilkan format summary dengan kolom:
+                        <ul>
+                            <li>NIK</li>
+                            <li>Nama Karyawan</li>
+                            <li>Departemen</li>
+                            <li>Total Hari Kerja</li>
+                            <li>Hadir (hari)</li>
+                            <li>Terlambat (hari)</li>
+                            <li>Alpa (hari)</li>
+                            <li>Izin (hari)</li>
+                            <li>Cuti (hari)</li>
+                            <li>Sakit (hari)</li>
+                            <li>Total Keterlambatan (menit)</li>
+                            <li>Total Overtime (jam)</li>
+                            <li>Persentase Kehadiran (%)</li>
+                        </ul>
+                    </li>
+                    <li>Format ini berguna untuk evaluasi bulanan atau payroll</li>
+                </ol>
+                <br>
+                <strong>A2: Filter by Keterlambatan</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>HRD dapat filter "Hanya Terlambat" untuk fokus pada karyawan yang terlambat</li>
+                    <li>Sistem hanya tampilkan records dengan keterlambatan &gt; 0 menit</li>
+                    <li>HRD dapat sorting dari terlambat terbanyak</li>
+                    <li>Berguna untuk tindak lanjut SP atau counseling</li>
+                </ol>
+                <br>
+                <strong>A3: View Data per Departemen (Drill-down)</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Sistem dapat menampilkan view "Group by Department"</li>
+                    <li>Setiap departemen ditampilkan dengan summary agregat</li>
+                    <li>HRD dapat expand/collapse untuk lihat detail per karyawan</li>
+                    <li>Tampilan hierarchical: Departemen > Karyawan > Detail harian</li>
+                    <li>Berguna untuk perbandingan performa kehadiran antar departemen</li>
+                </ol>
+                <br>
+                <strong>A4: Chart dan Visualisasi</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Sistem menyediakan toggle "View Chart"</li>
+                    <li>Sistem generate grafik:
+                        <ul>
+                            <li>Bar chart: Kehadiran vs Terlambat vs Alpa per hari</li>
+                            <li>Pie chart: Distribusi status kehadiran</li>
+                            <li>Line chart: Trend keterlambatan sepanjang periode</li>
+                        </ul>
+                    </li>
+                    <li>Chart interaktif (hover untuk lihat detail)</li>
+                    <li>HRD dapat export chart sebagai image</li>
+                </ol>
+                <br>
+                <strong>A5: Quick Filter Presets</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Sistem menyediakan quick filter buttons:
+                        <ul>
+                            <li>"Hari Ini" - auto filter ke tanggal hari ini</li>
+                            <li>"Minggu Ini" - auto filter ke 7 hari terakhir</li>
+                            <li>"Bulan Ini" - auto filter ke bulan berjalan</li>
+                            <li>"Bulan Lalu" - auto filter ke bulan sebelumnya</li>
+                            <li>"Problem Cases" - hanya yang alpa/terlambat &gt; 60 menit</li>
+                        </ul>
+                    </li>
+                    <li>HRD cukup klik button tanpa perlu input manual</li>
+                    <li>Meningkatkan efisiensi untuk report rutin</li>
+                </ol>
+                <br>
+                <strong>A6: Compare Periode</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>HRD dapat aktifkan "Compare Mode"</li>
+                    <li>Sistem menampilkan 2 periode side-by-side (misal: Januari vs Februari)</li>
+                    <li>Summary menampilkan delta/perubahan antara periode</li>
+                    <li>Berguna untuk melihat trend improvement atau deterioration</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 3 -->
+    <h2>Deskripsi Use Case Report - Lihat Rekap Data Missing</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCR3</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Lihat Rekap Data Missing</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan HRD untuk melihat laporan lengkap tentang data absensi yang tidak lengkap atau missing (tidak ada check-in, tidak ada check-out, atau tidak ada data sama sekali pada hari kerja) dalam periode tertentu untuk keperluan follow-up dan verifikasi.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. Database Sistem Absensi<br>
+                b. HRIS (untuk data jadwal kerja)<br>
+                c. Sistem Kalender
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat melihat rekap lengkap data absensi yang tidak lengkap atau missing, dengan kategorisasi jenis missing (no check-in, no check-out, no data), status verifikasi, dan informasi lain yang diperlukan untuk follow-up kepada karyawan atau supervisor.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem</li>
+                    <li>Data absensi sudah di-pull dan diproses</li>
+                    <li>Data jadwal kerja karyawan tersedia</li>
+                    <li>Sistem sudah melakukan identifikasi data missing</li>
+                    <li>HRD memiliki hak akses untuk melihat report</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>HRD berhasil melihat rekap data missing dengan lengkap</li>
+                    <li>Data dikategorisasi berdasarkan jenis missing dan status verifikasi</li>
+                    <li>Summary statistik data missing tersedia</li>
+                    <li>HRD dapat langsung navigasi ke verifikasi jika perlu</li>
+                    <li>Log aktivitas view report tercatat</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD login ke sistem</li>
+                    <li>HRD membuka menu "Report > Rekap Data Missing"</li>
+                    <li>Sistem menampilkan halaman report dengan panel filter:
+                        <ul class="sub-list">
+                            <li>Periode (dari tanggal - sampai tanggal)</li>
+                            <li>Departemen/Divisi</li>
+                            <li>Karyawan (search)</li>
+                            <li>Jenis Missing (dropdown):
+                                - All
+                                - No Check-in Only
+                                - No Check-out Only
+                                - No Data (Both Missing)
+                            </li>
+                            <li>Status Verifikasi (dropdown):
+                                - All
+                                - Belum Verified
+                                - Sudah Verified
+                                - In Progress
+                            </li>
+                            <li>Priority (All, High, Medium, Low)</li>
+                        </ul>
+                    </li>
+                    <li>HRD mengisi filter periode (misalnya: 1-15 Januari 2026)</li>
+                    <li>HRD dapat pilih filter jenis missing (misal: hanya "No Check-out")</li>
+                    <li>HRD klik "Tampilkan Report"</li>
+                    <li>Sistem melakukan analisa dan identifikasi data missing berdasarkan:
+                        <ul class="sub-list">
+                            <li>Compare data absensi dengan jadwal kerja</li>
+                            <li>Exclude hari libur dan cuti yang sudah approved</li>
+                            <li>Kategorisasi jenis missing</li>
+                            <li>Check status verifikasi dari history</li>
+                        </ul>
+                    </li>
+                    <li>Sistem menampilkan tabel rekap data missing dengan kolom:
+                        <ul class="sub-list">
+                            <li>Tanggal</li>
+                            <li>NIK</li>
+                            <li>Nama Karyawan</li>
+                            <li>Departemen</li>
+                            <li>Jadwal Shift (jam kerja seharusnya)</li>
+                            <li>Check-in (ada: tampilkan waktu | kosong: "Missing")</li>
+                            <li>Check-out (ada: tampilkan waktu | kosong: "Missing")</li>
+                            <li>Jenis Missing (badge: No In/No Out/No Data)</li>
+                            <li>Lama Missing (berapa hari sejak kejadian)</li>
+                            <li>Status Verifikasi (badge: Pending/Verified/In Progress)</li>
+                            <li>Priority (High/Medium/Low - auto atau manual)</li>
+                            <li>Action (Quick Verify button)</li>
+                        </ul>
+                    </li>
+                    <li>Sistem memberikan color coding:
+                        <ul class="sub-list">
+                            <li>Merah: Missing &gt; 3 hari dan belum verified (High Priority)</li>
+                            <li>Oranye: Missing 1-3 hari dan belum verified (Medium Priority)</li>
+                            <li>Kuning: Missing hari ini (Low Priority)</li>
+                            <li>Hijau: Sudah verified</li>
+                        </ul>
+                    </li>
+                    <li>Di atas tabel, sistem menampilkan dashboard summary:
+                        <ul class="sub-list">
+                            <li>Total Data Missing: [jumlah] records</li>
+                            <li>Karyawan Terdampak: [jumlah] orang</li>
+                            <li>No Check-in: [jumlah]</li>
+                            <li>No Check-out: [jumlah]</li>
+                            <li>No Data: [jumlah]</li>
+                            <li>Belum Verified: [jumlah] ([persentase]%)</li>
+                            <li>Sudah Verified: [jumlah] ([persentase]%)</li>
+                        </ul>
+                    </li>
+                    <li>Sistem menampilkan mini chart: distribusi missing per departemen (bar chart)</li>
+                    <li>HRD dapat sorting tabel by tanggal, departemen, atau priority</li>
+                    <li>HRD dapat klik salah satu row untuk melihat detail</li>
+                    <li>Sistem menampilkan popup detail dengan:
+                        <ul class="sub-list">
+                            <li>Info lengkap karyawan</li>
+                            <li>Jadwal kerja detail untuk tanggal tersebut</li>
+                            <li>History absensi karyawan (7 hari terakhir untuk context)</li>
+                            <li>Status verifikasi (jika sudah verified, tampilkan by siapa dan alasan)</li>
+                            <li>Tombol "Verify Now" untuk langsung verifikasi</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat close popup dan review record lain</li>
+                    <li>HRD dapat klik "Quick Verify" pada salah satu row untuk verifikasi cepat</li>
+                    <li>Atau HRD dapat select multiple records dan klik "Bulk Verify"</li>
+                    <li>HRD dapat export report untuk share ke supervisor/manager</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Filter High Priority Only</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>HRD dapat filter hanya data missing dengan priority "High"</li>
+                    <li>Sistem tampilkan data yang:
+                        <ul>
+                            <li>Missing &gt; 3 hari DAN belum verified</li>
+                            <li>Atau karyawan dengan akumulasi missing &gt; 5x dalam sebulan</li>
+                        </ul>
+                    </li>
+                    <li>Berguna untuk fokus pada yang urgent terlebih dahulu</li>
+                </ol>
+                <br>
+                <strong>A2: Group by Karyawan (Problem Employee List)</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Sistem dapat toggle view "Group by Employee"</li>
+                    <li>Tampilkan list karyawan dengan jumlah missing terbanyak di periode tersebut</li>
+                    <li>Format:
+                        <ul>
+                            <li>Header: Nama Karyawan - Total Missing: [jumlah]</li>
+                            <li>Sub-rows: Detail setiap missing (tanggal, jenis, status)</li>
+                        </ul>
+                    </li>
+                    <li>Berguna untuk identifikasi karyawan yang perlu counseling atau SP</li>
+                </ol>
+                <br>
+                <strong>A3: Departemen Comparison View</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>HRD dapat pilih view "Comparison by Department"</li>
+                    <li>Sistem generate tabel perbandingan:
+                        <ul>
+                            <li>Kolom: Nama Departemen</li>
+                            <li>Total Karyawan</li>
+                            <li>Total Missing</li>
+                            <li>Persentase Missing (%)</li>
+                            <li>Rata-rata Missing per Karyawan</li>
+                            <li>Trend (naik/turun vs bulan lalu)</li>
+                        </ul>
+                    </li>
+                    <li>Berguna untuk evaluasi performa departemen</li>
+                    <li>Dapat identify departemen yang perlu intervensi</li>
+                </ol>
+                <br>
+                <strong>A4: Auto-generate Follow-up List</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Sistem menyediakan button "Generate Follow-up List"</li>
+                    <li>Sistem auto-generate dokumen Excel berisi:
+                        <ul>
+                            <li>List karyawan dengan data missing</li>
+                            <li>Contact person (nomor HP/email)</li>
+                            <li>Nama supervisor</li>
+                            <li>Checklist kolom untuk follow-up</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat print atau share file ini untuk koordinasi</li>
+                </ol>
+                <br>
+                <strong>A5: Timeline View</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Sistem dapat tampilkan "Timeline View"</li>
+                    <li>Format: Kalender dengan highlighting pada tanggal yang ada missing</li>
+                    <li>Hover tanggal untuk lihat summary missing di hari itu</li>
+                    <li>Click tanggal untuk drill-down ke detail</li>
+                    <li>Visual representation memudahkan identifikasi pattern (misal: banyak missing di hari Senin/Jumat)</li>
+                </ol>
+                <br>
+                <strong>A6: Set Reminder for Unverified Data</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Untuk data missing yang belum verified &gt; 7 hari</li>
+                    <li>Sistem auto kirim reminder ke HRD via email atau notifikasi dashboard</li>
+                    <li>Reminder berisi summary dan link langsung ke halaman verifikasi</li>
+                    <li>HRD dapat snooze reminder atau mark as in-progress</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 4 -->
+    <h2>Deskripsi Use Case Report - Lihat Rekap Surat Peringatan</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCR4</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Lihat Rekap Surat Peringatan</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan HRD untuk melihat laporan lengkap tentang semua surat peringatan (SP) yang pernah dikirimkan kepada karyawan, termasuk detail SP, status, dan statistics untuk keperluan monitoring, evaluasi, dan audit trail kedisiplinan karyawan.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. Database Sistem Absensi<br>
+                b. Document Management System<br>
+                c. HRIS (untuk data karyawan)
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat melihat rekap lengkap history surat peringatan yang telah diterbitkan, dengan filter berdasarkan periode, departemen, tingkat SP, dan status. Report ini penting untuk monitoring kedisiplinan karyawan dan sebagai dokumentasi legal.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem</li>
+                    <li>Data surat peringatan tersimpan di database</li>
+                    <li>Dokumen PDF SP tersimpan di document storage</li>
+                    <li>HRD memiliki hak akses untuk melihat report SP</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>HRD berhasil melihat rekap surat peringatan</li>
+                    <li>Data ditampilkan dengan lengkap termasuk dokumen attachment</li>
+                    <li>Summary statistics SP tersedia</li>
+                    <li>HRD dapat download dokumen SP yang pernah dikirim</li>
+                    <li>Log aktivitas view report tercatat</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD login ke sistem</li>
+                    <li>HRD membuka menu "Report > Rekap Surat Peringatan"</li>
+                    <li>Sistem menampilkan halaman report dengan panel filter:
+                        <ul class="sub-list">
+                            <li>Periode (dari tanggal - sampai tanggal)</li>
+                            <li>Departemen/Divisi</li>
+                            <li>Karyawan (search by NIK/Nama)</li>
+                            <li>Tingkat SP (All, SP 1, SP 2, SP 3)</li>
+                            <li>Jenis Pelanggaran (All, Keterlambatan, Alpa, Izin Tidak Resmi, dll)</li>
+                            <li>Status (All, Sent, Draft, Cancelled)</li>
+                            <li>Metode Pengiriman (All, Email, Print, Keduanya)</li>
+                        </ul>
+                    </li>
+                    <li>HRD mengisi filter periode (misalnya: Januari - Desember 2025)</li>
+                    <li>HRD dapat pilih filter lain atau langsung klik "Tampilkan Report"</li>
+                    <li>Sistem query database dan retrieve data SP sesuai filter</li>
+                    <li>Sistem menampilkan tabel rekap SP dengan kolom:
+                        <ul class="sub-list">
+                            <li>No Surat</li>
+                            <li>Tanggal Surat</li>
+                            <li>Tanggal Dikirim</li>
+                            <li>NIK</li>
+                            <li>Nama Karyawan</li>
+                            <li>Departemen</li>
+                            <li>Jabatan</li>
+                            <li>Tingkat SP (badge: SP 1/SP 2/SP 3)</li>
+                            <li>Jenis Pelanggaran</li>
+                            <li>Periode Pelanggaran (dari tanggal - sampai tanggal)</li>
+                            <li>Dikirim oleh (nama HRD yang mengirim)</li>
+                            <li>Metode (Email/Print/Both)</li>
+                            <li>Status (badge: Sent/Draft/Cancelled)</li>
+                            <li>Action (View, Download PDF, Resend)</li>
+                        </ul>
+                    </li>
+                    <li>Sistem memberikan color coding untuk tingkat SP:
+                        <ul class="sub-list">
+                            <li>Kuning: SP 1 (peringatan pertama)</li>
+                            <li>Oranye: SP 2 (peringatan kedua)</li>
+                            <li>Merah: SP 3 (peringatan terakhir sebelum PHK)</li>
+                        </ul>
+                    </li>
+                    <li>Di atas tabel, sistem menampilkan dashboard summary:
+                        <ul class="sub-list">
+                            <li>Total SP Dikirim: [jumlah] surat</li>
+                            <li>SP 1: [jumlah] ([persentase]%)</li>
+                            <li>SP 2: [jumlah] ([persentase]%)</li>
+                            <li>SP 3: [jumlah] ([persentase]%)</li>
+                            <li>Karyawan Terdampak: [jumlah] orang unik</li>
+                            <li>Jenis Pelanggaran Terbanyak: [nama pelanggaran]</li>
+                            <li>Departemen Terbanyak SP: [nama departemen]</li>
+                        </ul>
+                    </li>
+                    <li>Sistem menampilkan mini chart:
+                        <ul class="sub-list">
+                            <li>Bar chart: Jumlah SP per bulan (trend)</li>
+                            <li>Pie chart: Distribusi jenis pelanggaran</li>
+                            <li>Bar chart: Distribusi SP per departemen</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat sorting tabel by tanggal, tingkat SP, atau departemen</li>
+                    <li>HRD dapat klik salah satu row untuk melihat detail SP</li>
+                    <li>Sistem menampilkan popup detail dengan:
+                        <ul class="sub-list">
+                            <li>Header: Nomor dan Tanggal Surat</li>
+                            <li>Info Karyawan (foto, NIK, nama, jabatan, departemen)</li>
+                            <li>Tingkat SP dan Jenis Pelanggaran</li>
+                            <li>Detail Pelanggaran (daftar tanggal, jenis, durasi)</li>
+                            <li>Preview dokumen PDF SP</li>
+                            <li>History Pengiriman:
+                                - Tanggal kirim
+                                - Metode (email/print)
+                                - Status email (delivered/bounced/opened)
+                                - Dikirim ke: [email karyawan]
+                                - CC: [email atasan]
+                            </li>
+                            <li>History SP Sebelumnya (jika ada)</li>
+                            <li>Catatan HRD</li>
+                            <li>Created by & Modified by (audit trail)</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat download PDF dari popup detail</li>
+                    <li>HRD dapat klik "Resend" jika perlu kirim ulang email</li>
+                    <li>HRD dapat close popup dan review SP lain</li>
+                    <li>HRD dapat export seluruh report ke Excel untuk analisa lebih lanjut</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Filter by Karyawan (Individual SP History)</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>HRD dapat search karyawan tertentu di filter</li>
+                    <li>Sistem tampilkan semua history SP karyawan tersebut</li>
+                    <li>Tampilan chronological dari SP pertama sampai terakhir</li>
+                    <li>Berguna untuk review individual sebelum memberikan SP berikutnya</li>
+                    <li>Atau untuk persiapan dokumen jika akan ada PHK</li>
+                </ol>
+                <br>
+                <strong>A2: View Top Offenders</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Sistem menyediakan tab "Top Offenders"</li>
+                    <li>Tampilkan ranking karyawan dengan SP terbanyak</li>
+                    <li>Format tabel:
+                        <ul>
+                            <li>Rank</li>
+                            <li>NIK & Nama</li>
+                            <li>Departemen</li>
+                            <li>Total SP Diterima</li>
+                            <li>Latest SP (tingkat & tanggal)</li>
+                            <li>Risk Level (High jika sudah SP 3)</li>
+                        </ul>
+                    </li>
+                    <li>Berguna untuk identify karyawan yang perlu perhatian khusus</li>
+                </ol>
+                <br>
+                <strong>A3: Departemen Analysis View</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Sistem dapat toggle view "Analysis by Department"</li>
+                    <li>Tampilan agregat per departemen:
+                        <ul>
+                            <li>Nama Departemen</li>
+                            <li>Total Karyawan</li>
+                            <li>Total SP</li>
+                            <li>SP per Karyawan (rata-rata)</li>
+                            <li>Persentase SP vs total karyawan</li>
+                            <li>Trend (naik/turun vs periode sebelumnya)</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat identify departemen dengan masalah kedisiplinan</li>
+                    <li>Data dapat digunakan untuk evaluasi supervisor/manager</li>
+                </ol>
+                <br>
+                <strong>A4: Violation Type Analysis</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Sistem menyediakan tab "Analysis by Violation Type"</li>
+                    <li>Grouping by jenis pelanggaran:
+                        <ul>
+                            <li>Keterlambatan: [jumlah] SP</li>
+                            <li>Alpa: [jumlah] SP</li>
+                            <li>Izin Tidak Resmi: [jumlah] SP</li>
+                            <li>dst</li>
+                        </ul>
+                    </li>
+                    <li>Setiap jenis dapat di-expand untuk lihat detail SP</li>
+                    <li>Berguna untuk identify pola pelanggaran yang paling umum</li>
+                    <li>Dapat digunakan untuk membuat program perbaikan targeted</li>
+                </ol>
+                <br>
+                <strong>A5: Time-based Trend Analysis</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Sistem generate line chart: Trend SP sepanjang tahun</li>
+                    <li>X-axis: Bulan, Y-axis: Jumlah SP</li>
+                    <li>Dapat compare multiple tahun (overlay)</li>
+                    <li>Identify seasonal pattern (misal: SP meningkat di bulan tertentu)</li>
+                    <li>Berguna untuk prediksi dan perencanaan HRD</li>
+                </ol>
+                <br>
+                <strong>A6: Escalation Tracking</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Sistem dapat filter karyawan yang ada escalation path: SP 1 → SP 2 → SP 3</li>
+                    <li>Tampilkan timeline escalation untuk setiap karyawan</li>
+                    <li>Highlight karyawan yang sudah di SP 3 (high risk untuk PHK)</li>
+                    <li>Sistem dapat generate warning list untuk management review</li>
+                    <li>Berguna untuk compliance dan legal documentation</li>
+                </ol>
+                <br>
+                <strong>A7: Bulk Download SP Documents</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>HRD dapat select multiple SP dari list</li>
+                    <li>Klik "Bulk Download PDF"</li>
+                    <li>Sistem generate ZIP file berisi semua PDF SP yang dipilih</li>
+                    <li>Filename: SP_[Periode]_[Department].zip</li>
+                    <li>Berguna untuk archive atau submit ke management</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 5 -->
+    <h2>Deskripsi Use Case Report - Atur Layout Filter</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCR5</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Atur Layout Filter</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan HRD untuk mengkustomisasi tampilan dan layout filter pada halaman report sesuai preferensi dan kebutuhan, serta menyimpan preset filter yang sering digunakan untuk meningkatkan efisiensi kerja.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. Database Sistem Absensi (untuk simpan preferensi)<br>
+                b. User Preference Service
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat mengatur layout panel filter pada setiap report (posisi, visibility, default values), membuat dan menyimpan filter preset untuk quick access, dan mengelola preferensi tampilan report agar sesuai dengan workflow mereka.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem</li>
+                    <li>HRD sedang berada di salah satu halaman report</li>
+                    <li>Sistem menyediakan fitur customization filter</li>
+                    <li>HRD memiliki hak akses untuk save preferensi</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>Layout filter tersimpan sesuai preferensi HRD</li>
+                    <li>Filter preset tersimpan dan dapat digunakan kembali</li>
+                    <li>Preferensi tampilan auto-load setiap kali HRD akses report</li>
+                    <li>Setting dapat di-reset ke default jika diperlukan</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD sudah berada di salah satu halaman report (misal: Report Rekap Finger)</li>
+                    <li>HRD klik icon "⚙️ Atur Filter" atau "Customize Layout" di panel filter</li>
+                    <li>Sistem menampilkan popup "Filter Layout Settings" dengan tabs:
+                        <ul class="sub-list">
+                            <li>Tab "Layout" - untuk atur posisi dan visibility</li>
+                            <li>Tab "Presets" - untuk manage saved filters</li>
+                            <li>Tab "Defaults" - untuk atur default values</li>
+                        </ul>
+                    </li>
+                    <li><strong>Scenario A: Atur Layout</strong></li>
+                    <li>HRD di tab "Layout"</li>
+                    <li>Sistem menampilkan list semua filter fields yang tersedia:
+                        <ul class="sub-list">
+                            <li>Checkbox untuk show/hide field</li>
+                            <li>Drag handle untuk reorder</li>
+                            <li>Preview panel di sebelah untuk lihat hasil</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat:
+                        <ul class="sub-list">
+                            <li>Check/uncheck untuk show/hide filter tertentu</li>
+                            <li>Drag & drop untuk ubah urutan filter</li>
+                            <li>Pilih layout orientation (Horizontal/Vertical/Grid)</li>
+                            <li>Atur collapse/expand behavior (auto-collapse setelah filter)</li>
+                        </ul>
+                    </li>
+                    <li>HRD melihat preview perubahan real-time</li>
+                    <li>HRD klik "Apply Layout"</li>
+                    <li>Sistem save preferensi layout ke user profile</li>
+                    <li>Sistem apply perubahan langsung ke panel filter saat ini</li>
+                    <li><strong>Scenario B: Simpan Filter Preset</strong></li>
+                    <li>HRD sudah mengisi beberapa filter di panel filter (misal: Periode = Bulan ini, Departemen = IT, Status = Hadir)</li>
+                    <li>HRD klik button "💾 Simpan Preset" atau "Save Filter"</li>
+                    <li>Sistem menampilkan dialog "Save Filter Preset"</li>
+                    <li>Form berisi:
+                        <ul class="sub-list">
+                            <li>Nama Preset (required): [input text]</li>
+                            <li>Deskripsi (optional): [textarea]</li>
+                            <li>Make Default (checkbox): Apply preset ini setiap buka page</li>
+                            <li>Share with Team (checkbox): Preset dapat dipakai user HRD lain</li>
+                        </ul>
+                    </li>
+                    <li>HRD mengisi nama preset (misal: "Rekap IT Minggu Ini")</li>
+                    <li>HRD dapat centang "Make Default" jika ingin preset ini auto-load</li>
+                    <li>HRD klik "Save Preset"</li>
+                    <li>Sistem save preset dengan semua filter values saat ini</li>
+                    <li>Sistem menampilkan notifikasi "Preset berhasil disimpan"</li>
+                    <li>Preset muncul di dropdown "Quick Filters" untuk next usage</li>
+                    <li><strong>Scenario C: Load Filter Preset</strong></li>
+                    <li>Next time HRD buka report page</li>
+                    <li>HRD klik dropdown "Quick Filters" atau "📂 Load Preset"</li>
+                    <li>Sistem menampilkan list saved presets:
+                        <ul class="sub-list">
+                            <li>My Presets (yang dibuat user sendiri)</li>
+                            <li>Shared Presets (dari team)</li>
+                            <li>System Presets (default system: Hari Ini, Minggu Ini, Bulan Ini, dll)</li>
+                        </ul>
+                    </li>
+                    <li>HRD memilih preset "Rekap IT Minggu Ini"</li>
+                    <li>Sistem auto-fill semua filter sesuai preset</li>
+                    <li>HRD tinggal klik "Tampilkan Report" tanpa perlu input manual</li>
+                    <li><strong>Scenario D: Manage Presets</strong></li>
+                    <li>HRD klik "Kelola Preset" atau icon edit di dropdown presets</li>
+                    <li>Sistem menampilkan popup "Manage Filter Presets"</li>
+                    <li>Tampilkan tabel list presets dengan kolom:
+                        <ul class="sub-list">
+                            <li>Nama Preset</li>
+                            <li>Deskripsi</li>
+                            <li>Created Date</li>
+                            <li>Last Used</li>
+                            <li>Default (badge jika preset adalah default)</li>
+                            <li>Shared (badge jika shared ke team)</li>
+                            <li>Action (Edit, Delete, Duplicate)</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat:
+                        <ul class="sub-list">
+                            <li>Edit preset (ubah nama, values, atau setting)</li>
+                            <li>Delete preset yang tidak dipakai lagi</li>
+                            <li>Duplicate preset untuk buat variasi baru</li>
+                            <li>Set/unset sebagai default</li>
+                        </ul>
+                    </li>
+                    <li>HRD save perubahan dan close popup</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Reset Layout to Default</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Jika HRD tidak suka dengan custom layout yang sudah dibuat</li>
+                    <li>HRD dapat klik "Reset to Default" di tab Layout</li>
+                    <li>Sistem menampilkan konfirmasi</li>
+                    <li>Sistem restore layout ke setting default sistem</li>
+                    <li>Custom presets tetap tersimpan (tidak hilang)</li>
+                </ol>
+                <br>
+                <strong>A2: Import/Export Presets</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Untuk sharing presets antar user atau backup</li>
+                    <li>HRD dapat klik "Export Presets" di manage popup</li>
+                    <li>Sistem generate JSON file berisi semua presets</li>
+                    <li>User lain dapat klik "Import Presets" dan upload file tersebut</li>
+                    <li>Sistem load dan save presets ke profile user tersebut</li>
+                </ol>
+                <br>
+                <strong>A3: Preset Conflict (Nama Duplikat)</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di langkah save preset, jika nama yang diinput sudah ada</li>
+                    <li>Sistem menampilkan warning "Preset dengan nama ini sudah ada"</li>
+                    <li>HRD dapat pilih:
+                        <ul>
+                            <li>"Overwrite" - replace preset lama</li>
+                            <li>"Rename" - ganti nama preset baru</li>
+                            <li>"Cancel" - batal save</li>
+                        </ul>
+                    </li>
+                </ol>
+                <br>
+                <strong>A4: Shared Preset Permissions</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Jika HRD centang "Share with Team"</li>
+                    <li>Sistem cek role HRD (hanya role tertentu boleh share)</li>
+                    <li>Jika allowed, preset visible untuk semua user di team/departemen</li>
+                    <li>User lain dapat load preset tapi tidak bisa edit/delete (read-only)</li>
+                    <li>Hanya creator yang bisa edit/delete shared preset</li>
+                </ol>
+                <br>
+                <strong>A5: Auto-load Default Preset</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Jika HRD punya preset yang di-set sebagai default</li>
+                    <li>Setiap kali HRD buka halaman report tersebut</li>
+                    <li>Sistem auto-load dan apply preset default</li>
+                    <li>HRD langsung lihat data tanpa perlu set filter manual</li>
+                    <li>HRD masih bisa modify filter jika perlu data berbeda</li>
+                </ol>
+                <br>
+                <strong>A6: Column Visibility & Order Customization</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Selain filter, HRD juga dapat customize kolom tabel report</li>
+                    <li>Klik icon "Atur Kolom" atau "⚙️" di header tabel</li>
+                    <li>Popup menampilkan list semua kolom dengan checkbox</li>
+                    <li>HRD dapat:
+                        <ul>
+                            <li>Hide/show kolom tertentu</li>
+                            <li>Reorder kolom dengan drag & drop</li>
+                            <li>Set lebar kolom (auto/fixed)</li>
+                        </ul>
+                    </li>
+                    <li>Setting tersimpan per user dan auto-apply</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- DESKRIPSI USE CASE 6 -->
+    <h2>Deskripsi Use Case Report - Ekspor Data Excel/PDF/Print</h2>
+    <table>
+        <tr>
+            <th style="width: 25%;">ID Use Case</th>
+            <td><strong>UCR6</strong></td>
+        </tr>
+        <tr>
+            <th>Nama Use Case</th>
+            <td>Ekspor Data Excel/PDF/Print</td>
+        </tr>
+        <tr>
+            <th>Tujuan</th>
+            <td>Memungkinkan HRD untuk mengekspor data report absensi ke berbagai format (Excel, PDF, CSV) atau mencetak langsung untuk keperluan dokumentasi, sharing, analisa offline, atau presentasi ke management.</td>
+        </tr>
+        <tr>
+            <th>Aktor Primer</th>
+            <td>HRD</td>
+        </tr>
+        <tr>
+            <th>Aktor Sekunder</th>
+            <td>
+                a. Database Sistem Absensi<br>
+                b. Export Service (Excel/PDF Generator)<br>
+                c. Print Service
+            </td>
+        </tr>
+        <tr>
+            <th>Deskripsi Singkat</th>
+            <td>Use case ini menjelaskan bagaimana HRD dapat mengekspor data report yang sedang ditampilkan ke format Excel, PDF, atau CSV, dengan opsi customization (pilih kolom, apply styling, add header/footer), serta melakukan print langsung ke printer untuk keperluan hard copy.</td>
+        </tr>
+        <tr>
+            <th>Precondition</th>
+            <td>
+                <ol>
+                    <li>HRD telah login ke sistem</li>
+                    <li>HRD sedang berada di halaman report dengan data yang sudah ditampilkan</li>
+                    <li>Export service tersedia dan berfungsi</li>
+                    <li>HRD memiliki hak akses untuk export data</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Postcondition</th>
+            <td>
+                <ol>
+                    <li>File hasil export (Excel/PDF/CSV) berhasil di-generate</li>
+                    <li>File dapat di-download atau auto-download ke device HRD</li>
+                    <li>Untuk print, dokumen terkirim ke printer atau preview print muncul</li>
+                    <li>Log aktivitas export tercatat (siapa, kapan, report apa, format apa)</li>
+                    <li>File tersimpan di server untuk archive (optional)</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Utama</th>
+            <td>
+                <ol>
+                    <li>HRD sudah menampilkan report dengan filter yang diinginkan (misal: Rekap Finger bulan Januari 2026)</li>
+                    <li>HRD klik button "📥 Export" atau "Ekspor Data" di toolbar</li>
+                    <li>Sistem menampilkan dropdown menu dengan pilihan:
+                        <ul class="sub-list">
+                            <li>🟢 Export to Excel (.xlsx)</li>
+                            <li>🔴 Export to PDF (.pdf)</li>
+                            <li>📋 Export to CSV (.csv)</li>
+                            <li>🖨️ Print</li>
+                            <li>⚙️ Export with Options (advanced)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Scenario A: Quick Export to Excel</strong></li>
+                    <li>HRD klik "Export to Excel"</li>
+                    <li>Sistem menampilkan loading indicator "Generating Excel file..."</li>
+                    <li>Sistem melakukan:
+                        <ul class="sub-list">
+                            <li>Ambil semua data yang sedang ditampilkan (sesuai filter)</li>
+                            <li>Generate file Excel dengan format:
+                                - Sheet 1: Data tabel utama
+                                - Sheet 2: Summary/Statistics (jika ada)
+                                - Header dengan logo perusahaan dan judul report
+                                - Auto-width columns
+                                - Freeze top row (header kolom)
+                                - Basic formatting (border, alternating row colors)
+                            </li>
+                        </ul>
+                    </li>
+                    <li>Sistem generate filename: [NamaReport]_[Periode]_[Timestamp].xlsx<br>
+                        Contoh: RekapFinger_Jan2026_20260125_143055.xlsx</li>
+                    <li>Sistem trigger auto-download file ke browser</li>
+                    <li>Sistem menampilkan notifikasi "File Excel berhasil di-download"</li>
+                    <li>HRD dapat buka file Excel untuk analisa offline</li>
+                    <li><strong>Scenario B: Export to PDF</strong></li>
+                    <li>HRD klik "Export to PDF"</li>
+                    <li>Sistem menampilkan loading "Generating PDF file..."</li>
+                    <li>Sistem generate PDF dengan format:
+                        <ul class="sub-list">
+                            <li>Header setiap page: Logo perusahaan, nama report, periode</li>
+                            <li>Table dengan styling yang clean dan professional</li>
+                            <li>Auto page-break jika data banyak</li>
+                            <li>Footer setiap page: Page number, tanggal generate, generated by [nama HRD]</li>
+                            <li>Landscape orientation (lebih luas untuk tabel)</li>
+                        </ul>
+                    </li>
+                    <li>Sistem generate filename: [NamaReport]_[Periode]_[Timestamp].pdf</li>
+                    <li>Sistem trigger download file PDF</li>
+                    <li>Sistem menampilkan notifikasi "File PDF berhasil di-download"</li>
+                    <li>HRD dapat buka PDF untuk share atau print</li>
+                    <li><strong>Scenario C: Export with Advanced Options</strong></li>
+                    <li>HRD klik "Export with Options"</li>
+                    <li>Sistem menampilkan popup "Export Settings" dengan form:
+                        <ul class="sub-list">
+                            <li>Format (radio button): Excel / PDF / CSV</li>
+                            <li>Pilih Kolom (checkboxes): List semua kolom, HRD bisa pilih mana yang di-export</li>
+                            <li>Include Summary (checkbox): Tambahkan sheet/page summary</li>
+                            <li>Include Charts (checkbox): Tambahkan visualisasi chart (hanya Excel/PDF)</li>
+                            <li>Page Orientation (untuk PDF): Portrait / Landscape</li>
+                            <li>Add Watermark (checkbox + input text): Optional watermark "CONFIDENTIAL" dll</li>
+                            <li>Email After Export (checkbox): Auto kirim file ke email HRD setelah generate</li>
+                        </ul>
+                    </li>
+                    <li>HRD pilih format (misal: Excel)</li>
+                    <li>HRD uncheck kolom yang tidak perlu di-export</li>
+                    <li>HRD centang "Include Summary" dan "Include Charts"</li>
+                    <li>HRD klik "Generate & Download"</li>
+                    <li>Sistem generate file sesuai customization</li>
+                    <li>Sistem download file dan kirim email jika option dipilih</li>
+                    <li><strong>Scenario D: Print Direct</strong></li>
+                    <li>HRD klik "🖨️ Print"</li>
+                    <li>Sistem generate print-friendly version dari report</li>
+                    <li>Browser menampilkan print preview dialog</li>
+                    <li>HRD dapat:
+                        <ul class="sub-list">
+                            <li>Pilih printer</li>
+                            <li>Atur page setup (margin, orientation)</li>
+                            <li>Pilih range halaman jika data banyak</li>
+                        </ul>
+                    </li>
+                    <li>HRD klik "Print" di dialog</li>
+                    <li>Dokumen terkirim ke printer atau saved as PDF (tergantung pilihan)</li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <th>Skenario Alternatif</th>
+            <td>
+                <strong>A1: Export Data Terlalu Besar</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Jika data yang akan di-export sangat banyak (misal: &gt;50,000 rows)</li>
+                    <li>Sistem menampilkan warning "Data terlalu besar untuk instant export"</li>
+                    <li>Sistem tawarkan opsi:
+                        <ul>
+                            <li>"Export in Background" - proses di background, kirim email saat selesai</li>
+                            <li>"Split into Multiple Files" - split jadi beberapa file (per departemen atau per periode)</li>
+                            <li>"Reduce Data Range" - adjust filter untuk mengurangi data</li>
+                        </ul>
+                    </li>
+                    <li>HRD pilih salah satu opsi</li>
+                    <li>Sistem proses dan notifikasi saat selesai</li>
+                </ol>
+                <br>
+                <strong>A2: Export Failed</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Jika terjadi error saat generate file (server error, timeout, dll)</li>
+                    <li>Sistem menampilkan error message dengan detail</li>
+                    <li>Sistem log error untuk troubleshooting</li>
+                    <li>HRD dapat:
+                        <ul>
+                            <li>"Retry" - coba export lagi</li>
+                            <li>"Contact Support" - jika masalah berlanjut</li>
+                            <li>"Export to CSV" - format lebih sederhana, kemungkinan berhasil lebih tinggi</li>
+                        </ul>
+                    </li>
+                </ol>
+                <br>
+                <strong>A3: Schedule Export (Recurring Report)</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Di export options, ada checkbox "Schedule Recurring Export"</li>
+                    <li>HRD dapat set:
+                        <ul>
+                            <li>Frequency: Daily, Weekly, Monthly</li>
+                            <li>Time: Jam berapa export dijalankan</li>
+                            <li>Recipients: Email address tujuan</li>
+                            <li>Auto-apply filter preset (misal: bulan berjalan)</li>
+                        </ul>
+                    </li>
+                    <li>Sistem save schedule dan run auto sesuai setting</li>
+                    <li>Berguna untuk report rutin bulanan ke management</li>
+                </ol>
+                <br>
+                <strong>A4: Export Only Visible Rows vs All Data</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Jika tabel menggunakan pagination dan hanya sebagian data yang visible</li>
+                    <li>Di export menu, ada option:
+                        <ul>
+                            <li>"Export Current Page Only" - hanya data yang terlihat di page saat ini</li>
+                            <li>"Export All Pages" - semua data sesuai filter (bisa ribuan rows)</li>
+                        </ul>
+                    </li>
+                    <li>HRD pilih sesuai kebutuhan</li>
+                    <li>Sistem export sesuai pilihan</li>
+                </ol>
+                <br>
+                <strong>A5: Format Excel dengan Pivot Table</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>Untuk advanced user, ada option "Export with Pivot Table"</li>
+                    <li>Sistem generate Excel dengan 2 sheets:
+                        <ul>
+                            <li>Sheet 1: Raw data</li>
+                            <li>Sheet 2: Pre-configured pivot table untuk analisa</li>
+                        </ul>
+                    </li>
+                    <li>HRD dapat langsung analisa data dengan pivot tanpa perlu setup manual</li>
+                </ol>
+                <br>
+                <strong>A6: Branding dan Watermark</strong><br>
+                <ol style="margin-left: 20px;">
+                    <li>For export PDF atau Excel yang akan di-share keluar</li>
+                    <li>HRD dapat add company branding:
+                        <ul>
+                            <li>Logo perusahaan di header</li>
+                            <li>Color scheme sesuai corporate identity</li>
+                            <li>Watermark "CONFIDENTIAL" atau "INTERNAL USE ONLY"</li>
+                            <li>Footer dengan disclaimer atau copyright notice</li>
+                        </ul>
+                    </li>
+                    <li>Sistem apply branding template yang sudah dikonfigurasi</li>
+                    <li>Output lebih professional dan official</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div style="margin-top: 60px; padding: 30px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #1976d2;">
+        <h3 style="color: #1976d2; margin-bottom: 15px;">📊 Catatan Umum Use Case Report</h3>
+        <p style="line-height: 1.8; color: #555;">
+            <strong>Karakteristik Report Module:</strong><br>
+            Use case report bersifat <strong>read-only/view-only</strong> dan fokus pada visualisasi data untuk analisa, monitoring, dan decision making. Tidak mengubah data di database, hanya menampilkan dalam berbagai format dan perspektif.
+            <br><br>
+            <strong>Best Practices untuk Report:</strong>
+            <ul style="margin-top: 10px;">
+                <li><strong>Performance Optimization:</strong> Implementasi caching untuk report yang sering diakses, pagination untuk data besar</li>
+                <li><strong>Filter Flexibility:</strong> Sediakan berbagai kombinasi filter agar user dapat slice-and-dice data sesuai kebutuhan</li>
+                <li><strong>Visual Clarity:</strong> Gunakan color coding, charts, dan summary stats untuk memudahkan interpretasi data</li>
+                <li><strong>Export Options:</strong> Multiple format export (Excel, PDF, CSV) untuk berbagai use case</li>
+                <li><strong>User Preference:</strong> Simpan preferensi filter dan layout untuk meningkatkan efisiensi</li>
+            </ul>
+            <br>
+            <strong>Integrasi dengan Module Lain:</strong>
+            <ul>
+                <li>Report "Data Missing" connect ke Transaksi "Verifikasi" untuk quick action</li>
+                <li>Report "Surat Peringatan" connect ke Transaksi "Kirim SP" untuk follow-up</li>
+                <li>Semua report bisa di-export untuk offline analysis atau presentation</li>
+            </ul>
+            <br>
+            <strong>Tips untuk HRD:</strong>
+            <ul>
+                <li>Gunakan filter preset untuk report rutin agar tidak perlu setup berulang</li>
+                <li>Manfaatkan schedule export untuk automatic report bulanan ke management</li>
+                <li>Bandingkan data antar periode untuk track improvement atau identify issues</li>
+                <li>Export dan archive report penting untuk audit trail dan compliance</li>
+            </ul>
+        </p>
+    </div>
+
+    <div style="text-align: center; margin-top: 50px;">
+        <a href="usecase-index.html" style="display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 25px; font-weight: bold;">
+            🏠 Kembali ke Index
+        </a>
+    </div>
+
+</body>
+</html>
