@@ -22,18 +22,18 @@
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Jumlah Karyawan</p>
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Data Missing</p>
                                     <h5 class="font-weight-bolder mb-0">
-                                        {{ $total_karyawan ?? 400 }}
+                                        {{ $data_missing ?? 15 }}
                                     </h5>
                                     <p class="mb-0 text-sm">
-                                        <span class="text-success font-weight-bolder">Aktif</span>
+                                        <span class="text-danger font-weight-bolder">Perlu Dikonfirmasi</span>
                                     </p>
                                 </div>
                             </div>
                             <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                                    <i class="ni ni-single-02 text-lg opacity-10" aria-hidden="true"></i>
+                                <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
+                                    <i class="ni ni-bell-55 text-lg opacity-10" aria-hidden="true"></i>
                                 </div>
                             </div>
                         </div>
@@ -157,7 +157,31 @@
                             </div>
                             <div class="col-4 text-end">
                                 <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                                    <i class="ni ni-sun-fog-29 text-lg opacity-10" aria-hidden="true"></i>
+                                    <i class="fas fa-sun text-lg opacity-10" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-body p-3">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="numbers">
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Shift Siang</p>
+                                    <h5 class="font-weight-bolder mb-0">
+                                        {{ $shift_siang ?? 100 }}
+                                    </h5>
+                                    <p class="mb-0 text-sm">
+                                        <span class="text-dark font-weight-bolder">25%</span> karyawan
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                                    <i class="fas fa-cloud-sun text-lg opacity-10" aria-hidden="true"></i>
                                 </div>
                             </div>
                         </div>
@@ -181,31 +205,7 @@
                             </div>
                             <div class="col-4 text-end">
                                 <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                                    <i class="ni ni-planet text-lg opacity-10" aria-hidden="true"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6">
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Non Shift</p>
-                                    <h5 class="font-weight-bolder mb-0">
-                                        {{ $non_shift ?? 100 }}
-                                    </h5>
-                                    <p class="mb-0 text-sm">
-                                        <span class="text-dark font-weight-bolder">25%</span> karyawan
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                                    <i class="ni ni-briefcase-24 text-lg opacity-10" aria-hidden="true"></i>
+                                    <i class="fas fa-moon text-lg opacity-10" aria-hidden="true"></i>
                                 </div>
                             </div>
                         </div>
@@ -339,39 +339,15 @@
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Production</h6>
+                                                <h6 class="mb-0 text-sm">Engineering</h6>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold">250</span>
+                                        <span class="text-sm font-weight-bold">120</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold text-success">235</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold text-warning">10</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold text-danger">5</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold">94%</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Quality Control</h6>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold">80</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold text-success">75</span>
+                                        <span class="text-sm font-weight-bold text-success">115</span>
                                     </td>
                                     <td class="align-middle text-center">
                                         <span class="text-sm font-weight-bold text-warning">3</span>
@@ -380,55 +356,127 @@
                                         <span class="text-sm font-weight-bold text-danger">2</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold">93.75%</span>
+                                        <span class="text-sm font-weight-bold">95.8%</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Warehouse</h6>
+                                                <h6 class="mb-0 text-sm">Finance</h6>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold">40</span>
+                                        <span class="text-sm font-weight-bold">25</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold text-success">38</span>
+                                        <span class="text-sm font-weight-bold text-success">24</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold text-warning">2</span>
+                                        <span class="text-sm font-weight-bold text-warning">1</span>
                                     </td>
                                     <td class="align-middle text-center">
                                         <span class="text-sm font-weight-bold text-danger">0</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold">95%</span>
+                                        <span class="text-sm font-weight-bold">96%</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Office</h6>
+                                                <h6 class="mb-0 text-sm">HRD</h6>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold">30</span>
+                                        <span class="text-sm font-weight-bold">18</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold text-success">27</span>
+                                        <span class="text-sm font-weight-bold text-success">18</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold text-warning">2</span>
+                                        <span class="text-sm font-weight-bold text-warning">0</span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold text-danger">0</span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold">100%</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Jishuken</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold">35</span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold text-success">33</span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold text-warning">1</span>
                                     </td>
                                     <td class="align-middle text-center">
                                         <span class="text-sm font-weight-bold text-danger">1</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-sm font-weight-bold">90%</span>
+                                        <span class="text-sm font-weight-bold">94.3%</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Management</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold">12</span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold text-success">12</span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold text-warning">0</span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold text-danger">0</span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold">100%</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">MIS</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold">22</span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold text-success">21</span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold text-warning">1</span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold text-danger">0</span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-sm font-weight-bold">95.5%</span>
                                     </td>
                                 </tr>
                             </tbody>
