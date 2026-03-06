@@ -9,6 +9,10 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Open Sans', sans-serif; background: #f8f9fa; }
@@ -59,10 +63,10 @@
         /* DATA TABLE */
         .data-card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow-x: auto; }
         .data-card h6 { font-size: 15px; font-weight: 700; color: #344767; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; border-collapse: collapse; table-layout: auto; }
         thead { background: #f8f9fa; }
-        th { padding: 12px 16px; text-align: left; font-size: 11px; text-transform: uppercase; font-weight: 700; color: #67748e; border-bottom: 2px solid #e9ecef; white-space: nowrap; }
-        td { padding: 12px 16px; font-size: 13px; color: #344767; border-bottom: 1px solid #f1f3f5; white-space: nowrap; }
+        th { padding: 12px 16px; text-align: left; font-size: 13px; font-weight: 600; color: #67748e; border-bottom: 1px solid #e9ecef; white-space: nowrap; vertical-align: middle; }
+        td { padding: 12px 16px; font-size: 13px; color: #344767; border-bottom: 1px solid #e9ecef; white-space: nowrap; text-align: left; vertical-align: middle; }
         tbody tr:hover { background: #f8f9fa; }
         td small { display: block; font-size: 11px; color: #67748e; margin-top: 2px; }
         
@@ -93,6 +97,20 @@
         
         /* FOOTER */
         .footer { padding: 20px 32px; text-align: center; color: #67748e; font-size: 13px; border-top: 1px solid #e9ecef; }
+        
+        /* SUMMARY TABLE */
+        .summary-table { width: 100%; border-collapse: collapse; }
+        .summary-table th { text-align: left; padding: 12px 16px; font-size: 13px; font-weight: 600; color: #67748e; vertical-align: middle; border-bottom: 1px solid #e9ecef; }
+        .summary-table td { text-align: left; vertical-align: middle; padding: 12px 16px; font-size: 13px; color: #344767; border-bottom: 1px solid #e9ecef; }
+        .summary-table tbody tr:hover { background: #f8f9fa; }
+        .summary-table td.text-left { text-align: left; }
+        .thead-light { background-color: #00b7bd4f !important; }
+        .btn-view { background: #028284; color: white; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-view:hover { background: #025f60; transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        /* VIEW STATES */
+        .view-section { display: none; }
+        .view-section.active { display: block; }
     </style>
 </head>
 
@@ -211,23 +229,23 @@
             <div class="page-content">
                 <div class="page-header">
                     <h6>Pull Data Fingerprint dari Mesin</h6>
-                    <p>Data Absensi Fingerprint dari Semua Device - Pilih dan Konfirmasi untuk Proses ke Sistem</p>
+                    <p>Data Absensi Fingerprint dari Semua Device - Pilih Filter Bulan untuk Melihat Ringkasan Harian</p>
                 </div>
                 
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    <div>
-                        <strong>Informasi:</strong> Data di bawah adalah hasil pull terbaru dari semua mesin fingerprint. Centang data yang ingin diproses, lalu klik tombol "Konfirmasi Data Terpilih".
-                    </div>
-                </div>
-                
-                <!-- FILTER SECTION -->
-                <div class="filter-card">
-                    <h6>Report Absensi Fingerprint</h6>
+                <!-- FILTER SECTION - SUMMARY VIEW -->
+                <div class="filter-card" id="summaryFilter">
+                    <h6>Filter Ringkasan Harian</h6>
                     <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Tanggal</label>
+                            <select id="filterTanggal">
+                                <option value="">-- Semua Tanggal --</option>
+                            </select>
+                        </div>
                         <div class="filter-group">
                             <label>Bulan</label>
                             <select id="filterBulan">
+                                <option value="">-- Semua Bulan --</option>
                                 <option value="2026-01">Januari 2026</option>
                                 <option value="2026-02" selected>Februari 2026</option>
                                 <option value="2026-03">Maret 2026</option>
@@ -237,203 +255,116 @@
                             </select>
                         </div>
                         <div class="filter-group">
-                            <label>Departemen</label>
-                            <select id="filterDepartemen">
-                                <option value="">-- Semua Departemen --</option>
-                                <option value="produksi">Produksi</option>
-                                <option value="warehouse">Warehouse</option>
-                                <option value="qc">Quality Control</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>Karyawan</label>
-                            <select id="filterKaryawan">
-                                <option value="">-- Semua Karyawan --</option>
-                                <option value="001">001 - Ahmad Budiman</option>
-                                <option value="002">002 - Siti Nurhaliza</option>
-                                <option value="003">003 - Budi Santoso</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
                             <label>&nbsp;</label>
-                            <button class="btn btn-primary" onclick="applyFilter()">
+                            <button class="btn btn-primary" onclick="applySummaryFilter()">
                                 <i class="fas fa-search"></i> Tampilkan
                             </button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- TABLE ACTIONS -->
-                <div class="table-actions">
-                    <div class="table-actions-left">
-                        <button class="btn btn-success">
-                            <i class="fas fa-check-circle"></i> Konfirmasi Data Terpilih
-                        </button>
-                        <button class="btn btn-secondary">
-                            <i class="fas fa-sync"></i> Refresh Data
-                        </button>
-                        <span class="selection-info">
-                            <strong>0</strong> data terpilih dari <strong>8</strong> total data
-                        </span>
+                <!-- FILTER SECTION - DETAIL VIEW -->
+                <div class="filter-card" id="detailFilter" style="display: none;">
+                    <h6>Filter Data Detail</h6>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Departemen</label>
+                            <select id="filterDepartemenDetail">
+                                <option value="">-- Semua Departemen --</option>
+                                <option value="Produksi">Produksi</option>
+                                <option value="Warehouse">Warehouse</option>
+                                <option value="QC">Quality Control</option>
+                                <option value="Admin">Admin</option>
+                                <option value="IT">IT</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Karyawan</label>
+                            <select id="filterKaryawanDetail">
+                                <option value="">-- Semua Karyawan --</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" onclick="applyDetailFilter()">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- DATA TABLE -->
-                <div class="data-card">
-                    <h6><i class="fas fa-table"></i> Data Pull Fingerprint - <span id="tablePeriod">Februari 2026</span></h6>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width: 40px;">
-                                    <input type="checkbox" id="selectAll">
-                                </th>
-                                <th>Tanggal</th>
-                                <th>Shift</th>
-                                <th>NIK</th>
-                                <th>Nama</th>
-                                <th>Masuk<br><small>Scan 1</small></th>
-                                <th>Terminal</th>
-                                <th>Keluar<br><small>Scan 1</small></th>
-                                <th>Terminal</th>
-                                <th>Istirahat 1<br><small>Masuk</small></th>
-                                <th>Istirahat 1<br><small>Keluar</small></th>
-                                <th>Istirahat 2<br><small>Masuk</small></th>
-                                <th>Istirahat 2<br><small>Keluar</small></th>
-                                <th>Durasi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><input type="checkbox" class="row-checkbox"></td>
-                                <td>03/02/2026</td>
-                                <td>S1c<br><small>Shift 1c</small></td>
-                                <td><strong>001</strong></td>
-                                <td>Ahmad Budiman</td>
-                                <td>07:30</td>
-                                <td>07:26</td>
-                                <td>15:30</td>
-                                <td>16:03</td>
-                                <td>11:00</td>
-                                <td>11:22</td>
-                                <td></td>
-                                <td></td>
-                                <td>08:15</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="row-checkbox"></td>
-                                <td>04/02/2026</td>
-                                <td>S2c<br><small>Shift 2b</small></td>
-                                <td><strong>002</strong></td>
-                                <td>Siti Nurhaliza</td>
-                                <td>15:30</td>
-                                <td>15:19</td>
-                                <td>23:30</td>
-                                <td>23:30</td>
-                                <td>17:51</td>
-                                <td>18:13</td>
-                                <td>21:22</td>
-                                <td>21:35</td>
-                                <td>07:38</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="row-checkbox"></td>
-                                <td>05/02/2026</td>
-                                <td>S1c<br><small>Shift 1c</small></td>
-                                <td><strong>003</strong></td>
-                                <td>Budi Santoso</td>
-                                <td>07:30</td>
-                                <td>07:24</td>
-                                <td>15:30</td>
-                                <td>15:32</td>
-                                <td>11:04</td>
-                                <td>11:38</td>
-                                <td></td>
-                                <td></td>
-                                <td>07:46</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="row-checkbox"></td>
-                                <td>06/02/2026</td>
-                                <td>S3c<br><small>Shift 3b</small></td>
-                                <td><strong>004</strong></td>
-                                <td>Dewi Kusuma</td>
-                                <td>23:30</td>
-                                <td>23:23</td>
-                                <td>07:30</td>
-                                <td>07:35</td>
-                                <td>02:33</td>
-                                <td>02:59</td>
-                                <td></td>
-                                <td></td>
-                                <td>07:46</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="row-checkbox"></td>
-                                <td>07/02/2026</td>
-                                <td>S2c<br><small>Shift 2b</small></td>
-                                <td><strong>005</strong></td>
-                                <td>Eko Prasetyo</td>
-                                <td>15:30</td>
-                                <td>15:25</td>
-                                <td>23:30</td>
-                                <td>23:32</td>
-                                <td>17:36</td>
-                                <td>18:07</td>
-                                <td>21:31</td>
-                                <td>21:42</td>
-                                <td>07:36</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="row-checkbox"></td>
-                                <td>10/02/2026</td>
-                                <td>S1c<br><small>Shift 1c</small></td>
-                                <td><strong>006</strong></td>
-                                <td>Fitri Handayani</td>
-                                <td>07:30</td>
-                                <td>07:27</td>
-                                <td>15:30</td>
-                                <td>15:31</td>
-                                <td>11:24</td>
-                                <td>11:56</td>
-                                <td></td>
-                                <td></td>
-                                <td>07:39</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="row-checkbox"></td>
-                                <td>11/02/2026</td>
-                                <td>S1c<br><small>Shift 1c</small></td>
-                                <td><strong>007</strong></td>
-                                <td>Gunawan Wibowo</td>
-                                <td>07:30</td>
-                                <td>06:46</td>
-                                <td>15:30</td>
-                                <td>15:31</td>
-                                <td>11:00</td>
-                                <td>11:31</td>
-                                <td></td>
-                                <td></td>
-                                <td>08:14</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="row-checkbox"></td>
-                                <td>12/02/2026</td>
-                                <td>S2c<br><small>Shift 2b</small></td>
-                                <td><strong>008</strong></td>
-                                <td>Hani Rahmawati</td>
-                                <td>15:30</td>
-                                <td>15:26</td>
-                                <td>23:30</td>
-                                <td>23:34</td>
-                                <td>18:32</td>
-                                <td>19:06</td>
-                                <td>21:34</td>
-                                <td>21:48</td>
-                                <td>07:32</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- DAILY SUMMARY VIEW -->
+                <div id="dailySummaryView" class="view-section">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Informasi:</strong> Pilih tanggal untuk melihat detail data fingerprint per hari. Klik tombol "Selengkapnya" pada tanggal yang ingin dilihat.
+                        </div>
+                    </div>
+                    
+                    <div class="data-card">
+                        <h6><i class="fas fa-calendar-alt"></i> Ringkasan Data Pull Fingerprint - <span id="summaryPeriod">Februari 2026</span></h6>
+                        <table class="summary-table" id="summaryTable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th style="width: 50px;">No</th>
+                                    <th style="width: 80px;">Action</th>
+                                    <th style="width: 150px;">Tanggal</th>
+                                    <th style="width: 120px;">Hari</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Daily summary rows will be inserted here by DataTables -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- DETAIL VIEW -->
+                <div id="detailView" class="view-section">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Informasi:</strong> Data di bawah adalah detail absensi fingerprint untuk tanggal <strong id="selectedDate">-</strong>. Anda dapat export data ke Excel/PDF menggunakan tombol di bawah tabel.
+                        </div>
+                    </div>
+                    
+                    <!-- TABLE ACTIONS -->
+                    <div class="table-actions">
+                        <div class="table-actions-left">
+                            <button class="btn btn-secondary" onclick="backToSummary()">
+                                <i class="fas fa-arrow-left"></i> Kembali ke Ringkasan
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- DATA TABLE -->
+                    <div class="data-card">
+                        <h6><i class="fas fa-table"></i> Data Pull Fingerprint - <span id="detailDate">-</span></h6>
+                        <table id="detailTable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Tanggal</th>
+                                    <th>Shift</th>
+                                    <th>NIK</th>
+                                    <th>Nama</th>
+                                    <th>Masuk<br><small>Scan</small></th>
+                                    <th>Terlambat</th>
+                                    <th>Keluar<br><small>Scan</small></th>
+                                    <th>Pulang<br><small>Cepat</small></th>
+                                    <th>Istirahat 1<br><small>Scan 1</small></th>
+                                    <th>Istirahat 1<br><small>Scan 2</small></th>
+                                    <th>Istirahat 2<br><small>Scan 1</small></th>
+                                    <th>Istirahat 2<br><small>Scan 2</small></th>
+                                    <th>Durasi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be inserted here by DataTables -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             
@@ -444,72 +375,105 @@
         </div>
     </div>
     
+    <!-- jQuery (sudah ada di atas) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    
     <script>
-        // Select All Functionality
-        const selectAllCheckbox = document.getElementById('selectAll');
-        const rowCheckboxes = document.querySelectorAll('.row-checkbox');
-        const selectionInfo = document.querySelector('.selection-info');
-        const confirmButton = document.querySelector('.btn-success');
+        // Sample data structure
+        const pullFingerData = {
+            '2026-02-03': [
+                { nik: '14588', nama: 'Ahmad Budiman', departemen: 'Produksi', shift: 'S1c', shift_name: 'Shift 1c', jam_masuk: '07:26', terlambat: '00:00', jam_keluar: '15:00', pulang_cepat: '00:30', istirahat1_scan1: '11:00', istirahat1_scan2: '11:22', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '08:15' },
+                { nik: '74114', nama: 'Siti Nurhaliza', departemen: 'Produksi', shift: 'S2c', shift_name: 'Shift 2b', jam_masuk: '15:19', terlambat: '00:11', jam_keluar: '23:30', pulang_cepat: '00:00', istirahat1_scan1: '17:51', istirahat1_scan2: '18:13', istirahat2_scan1: '21:22', istirahat2_scan2: '21:35', durasi: '07:38' },
+                { nik: '00415', nama: 'Budi Santoso', departemen: 'Produksi', shift: 'S1c', shift_name: 'Shift 1c', jam_masuk: '07:35', terlambat: '00:05', jam_keluar: '15:32', pulang_cepat: '00:00', istirahat1_scan1: '11:04', istirahat1_scan2: '11:38', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '07:46' },
+                { nik: '78332', nama: 'Dewi Kusuma', departemen: 'Produksi', shift: 'S3c', shift_name: 'Shift 3b', jam_masuk: '07:26', terlambat: '00:00', jam_keluar: '07:35', pulang_cepat: '00:00', istirahat1_scan1: '02:33', istirahat1_scan2: '02:59', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '07:46' },
+                { nik: '14555', nama: 'Eko Prasetyo', departemen: 'Produksi', shift: 'S2c', shift_name: 'Shift 2b', jam_masuk: '07:26', terlambat: '00:00', jam_keluar: '23:32', pulang_cepat: '00:00', istirahat1_scan1: '17:36', istirahat1_scan2: '18:07', istirahat2_scan1: '21:31', istirahat2_scan2: '21:42', durasi: '07:36' }
+            ],
+            '2026-02-04': [
+                { nik: '95663', nama: 'Fitri Handayani', departemen: 'Produksi', shift: 'S1c', shift_name: 'Shift 1c', jam_masuk: '07:26', terlambat: '00:00', jam_keluar: '15:31', pulang_cepat: '00:00', istirahat1_scan1: '11:24', istirahat1_scan2: '11:56', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '07:39' },
+                { nik: '14755', nama: 'Gunawan Wibowo', departemen: 'Produksi', shift: 'S1c', shift_name: 'Shift 1c', jam_masuk: '07:26', terlambat: '00:00', jam_keluar: '15:31', pulang_cepat: '00:00', istirahat1_scan1: '11:00', istirahat1_scan2: '11:31', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '08:14' },
+                { nik: '41220', nama: 'Hani Rahmawati', departemen: 'QC', shift: 'S2c', shift_name: 'Shift 2b', jam_masuk: '07:26', terlambat: '00:00', jam_keluar: '23:34', pulang_cepat: '00:00', istirahat1_scan1: '18:32', istirahat1_scan2: '19:06', istirahat2_scan1: '21:34', istirahat2_scan2: '21:48', durasi: '07:32' }
+            ],
+            '2026-02-05': [
+                { nik: '14588', nama: 'Ahmad Budiman', departemen: 'Produksi', shift: 'S1c', shift_name: 'Shift 1c', jam_masuk: '07:35', terlambat: '00:05', jam_keluar: '15:30', pulang_cepat: '00:00', istirahat1_scan1: '11:00', istirahat1_scan2: '11:22', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '08:00' },
+                { nik: '74114', nama: 'Siti Nurhaliza', departemen: 'Produksi', shift: 'S1c', shift_name: 'Shift 1c', jam_masuk: '07:22', terlambat: '00:00', jam_keluar: '15:38', pulang_cepat: '00:00', istirahat1_scan1: '11:05', istirahat1_scan2: '11:32', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '07:56' },
+                { nik: '00415', nama: 'Budi Santoso', departemen: 'Produksi', shift: 'S1c', shift_name: 'Shift 1c', jam_masuk: '08:00', terlambat: '00:30', jam_keluar: '16:05', pulang_cepat: '00:00', istirahat1_scan1: '12:00', istirahat1_scan2: '12:30', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '07:35' }
+            ],
+            '2026-02-06': [
+                { nik: '78332', nama: 'Dewi Kusuma', departemen: 'Produksi', shift: 'S3c', shift_name: 'Shift 3b', jam_masuk: '23:23', terlambat: '00:00', jam_keluar: '07:35', pulang_cepat: '00:00', istirahat1_scan1: '02:33', istirahat1_scan2: '02:59', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '07:46' },
+                { nik: '14755', nama: 'Gunawan Wibowo', departemen: 'Produksi', shift: 'S3c', shift_name: 'Shift 3b', jam_masuk: '23:20', terlambat: '00:00', jam_keluar: '07:30', pulang_cepat: '00:00', istirahat1_scan1: '02:30', istirahat1_scan2: '03:00', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '07:40' },
+                { nik: '14555', nama: 'Eko Prasetyo', departemen: 'Produksi', shift: 'S3c', shift_name: 'Shift 3b', jam_masuk: '23:25', terlambat: '00:00', jam_keluar: '07:40', pulang_cepat: '00:00', istirahat1_scan1: '02:35', istirahat1_scan2: '03:05', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '07:50' }
+            ],
+            '2026-02-10': [
+                { nik: '95663', nama: 'Fitri Handayani', departemen: 'Produksi', shift: 'S1c', shift_name: 'Shift 1c', jam_masuk: '07:27', terlambat: '00:00', jam_keluar: '15:31', pulang_cepat: '00:00', istirahat1_scan1: '11:24', istirahat1_scan2: '11:56', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '07:39' },
+                { nik: '14588', nama: 'Ahmad Budiman', departemen: 'Produksi', shift: 'S1c', shift_name: 'Shift 1c', jam_masuk: '07:25', terlambat: '00:00', jam_keluar: '15:35', pulang_cepat: '00:00', istirahat1_scan1: '11:00', istirahat1_scan2: '11:30', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '07:40' },
+                { nik: '74114', nama: 'Siti Nurhaliza', departemen: 'Produksi', shift: 'S1c', shift_name: 'Shift 1c', jam_masuk: '07:58', terlambat: '00:28', jam_keluar: '16:02', pulang_cepat: '00:00', istirahat1_scan1: '12:05', istirahat1_scan2: '12:32', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '07:37' }
+            ],
+            '2026-02-11': [
+                { nik: '14755', nama: 'Gunawan Wibowo', departemen: 'Produksi', shift: 'S1c', shift_name: 'Shift 1c', jam_masuk: '06:46', terlambat: '00:00', jam_keluar: '15:31', pulang_cepat: '00:00', istirahat1_scan1: '11:00', istirahat1_scan2: '11:31', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '08:14' },
+                { nik: '00415', nama: 'Budi Santoso', departemen: 'Produksi', shift: 'S1c', shift_name: 'Shift 1c', jam_masuk: '07:20', terlambat: '00:00', jam_keluar: '15:25', pulang_cepat: '00:00', istirahat1_scan1: '11:10', istirahat1_scan2: '11:40', istirahat2_scan1: '', istirahat2_scan2: '', durasi: '07:35' }
+            ],
+            '2026-02-12': [
+                { nik: '41220', nama: 'Hani Rahmawati', departemen: 'QC', shift: 'S2c', shift_name: 'Shift 2b', jam_masuk: '15:26', terlambat: '00:00', jam_keluar: '23:34', pulang_cepat: '00:00', istirahat1_scan1: '18:32', istirahat1_scan2: '19:06', istirahat2_scan1: '21:34', istirahat2_scan2: '21:48', durasi: '07:32' },
+                { nik: '14555', nama: 'Eko Prasetyo', departemen: 'Produksi', shift: 'S2c', shift_name: 'Shift 2b', jam_masuk: '15:22', terlambat: '00:00', jam_keluar: '23:28', pulang_cepat: '00:02', istirahat1_scan1: '18:25', istirahat1_scan2: '18:55', istirahat2_scan1: '21:25', istirahat2_scan2: '21:40', durasi: '07:41' },
+                { nik: '78332', nama: 'Dewi Kusuma', departemen: 'Produksi', shift: 'S2c', shift_name: 'Shift 2b', jam_masuk: '15:30', terlambat: '00:00', jam_keluar: '23:40', pulang_cepat: '00:00', istirahat1_scan1: '18:30', istirahat1_scan2: '19:00', istirahat2_scan1: '21:30', istirahat2_scan2: '21:45', durasi: '07:55' }
+            ]
+        };
         
-        function updateSelectionCount() {
-            const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
-            const totalCount = rowCheckboxes.length;
-            selectionInfo.innerHTML = `<strong>${checkedCount}</strong> data terpilih dari <strong>${totalCount}</strong> total data`;
+        let allDetailData = []; // Store all detail data for filtering
+        
+        const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        let currentView = 'summary';
+        let selectedDateData = null;
+        let summaryTable = null; // Summary DataTable
+        let detailTable = null; // Detail DataTable
+        let currentDateStr = '';
+        let currentDateFormatted = '';
+        let currentDayName = '';
+        
+        // Populate date filter
+        function populateDateFilter() {
+            const select = document.getElementById('filterTanggal');
+            select.innerHTML = '<option value="">-- Semua Tanggal --</option>';
             
-            // Enable/disable confirm button
-            confirmButton.disabled = checkedCount === 0;
-            confirmButton.style.opacity = checkedCount === 0 ? '0.6' : '1';
-            confirmButton.style.cursor = checkedCount === 0 ? 'not-allowed' : 'pointer';
+            const dates = Object.keys(pullFingerData).sort();
+            dates.forEach(dateStr => {
+                const date = new Date(dateStr);
+                const dayName = dayNames[date.getDay()];
+                const dateFormatted = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+                const option = document.createElement('option');
+                option.value = dateStr;
+                option.textContent = `${dateFormatted} (${dayName})`;
+                select.appendChild(option);
+            });
         }
         
-        selectAllCheckbox.addEventListener('change', function() {
-            rowCheckboxes.forEach(checkbox => {
-                checkbox.checked = selectAllCheckbox.checked;
+        // Populate employee filter for detail view
+        function populateEmployeeFilter(data) {
+            const select = document.getElementById('filterKaryawanDetail');
+            select.innerHTML = '<option value="">-- Semua Karyawan --</option>';
+            
+            const uniqueEmployees = [...new Set(data.map(d => d.nik + ' - ' + d.nama))];
+            uniqueEmployees.sort().forEach(emp => {
+                const option = document.createElement('option');
+                option.value = emp.split(' - ')[0];
+                option.textContent = emp;
+                select.appendChild(option);
             });
-            updateSelectionCount();
-        });
+        }
         
-        rowCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const allChecked = Array.from(rowCheckboxes).every(cb => cb.checked);
-                selectAllCheckbox.checked = allChecked;
-                updateSelectionCount();
-            });
-        });
-        
-        // Confirm Button Action
-        confirmButton.addEventListener('click', function() {
-            const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
-            if (checkedCount > 0) {
-                if (confirm(`Konfirmasi ${checkedCount} data fingerprint?\n\nData akan diproses ke sistem dan tersimpan di history.`)) {
-                    alert(`✓ Berhasil memproses ${checkedCount} data fingerprint!\n\nData telah disimpan ke history dan siap untuk report.`);
-                    // Reset checkboxes
-                    rowCheckboxes.forEach(checkbox => checkbox.checked = false);
-                    selectAllCheckbox.checked = false;
-                    updateSelectionCount();
-                }
-            }
-        });
-        
-        // Refresh Button Action
-        document.querySelector('.btn-secondary').addEventListener('click', function() {
-            if (confirm('Refresh data dari semua mesin fingerprint?\n\nProses ini akan mengambil data terbaru dari devices.')) {
-                // Simulate loading
-                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-                this.disabled = true;
-                setTimeout(() => {
-                    alert('✓ Data berhasil di-refresh!\n\n8 data baru ditemukan.');
-                    this.innerHTML = '<i class="fas fa-sync"></i> Refresh Data';
-                    this.disabled = false;
-                }, 2000);
-            }
-        });
-        
-        // Filter Function
-        function applyFilter() {
+        // Filter Function - Summary
+        function applySummaryFilter() {
+            const tanggal = document.getElementById('filterTanggal').value;
             const bulan = document.getElementById('filterBulan').value;
-            const departemen = document.getElementById('filterDepartemen').value;
-            const karyawan = document.getElementById('filterKaryawan').value;
             
             const bulanNames = {
                 '2026-01': 'Januari 2026',
@@ -520,17 +484,264 @@
                 '2026-06': 'Juni 2026'
             };
             
-            document.getElementById('tablePeriod').textContent = bulanNames[bulan];
+            let periodText = 'Semua Data';
+            if (bulan) {
+                periodText = bulanNames[bulan];
+            } else if (tanggal) {
+                const date = new Date(tanggal);
+                const dayName = dayNames[date.getDay()];
+                periodText = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()} (${dayName})`;
+            }
             
-            let filterText = 'Filter: ' + bulanNames[bulan];
-            if (departemen) filterText += ', Dept: ' + departemen;
-            if (karyawan) filterText += ', NIK: ' + karyawan;
+            document.getElementById('summaryPeriod').textContent = periodText;
             
-            alert('✓ Filter diterapkan!\n\n' + filterText + '\n\nData telah diperbarui.');
+            // Generate daily summary
+            generateDailySummary(tanggal, bulan);
+            
+            // Show summary view
+            showView('summary');
         }
         
-        // Initialize
-        updateSelectionCount();
+        // Filter Function - Detail
+        function applyDetailFilter() {
+            const departemen = document.getElementById('filterDepartemenDetail').value;
+            const karyawan = document.getElementById('filterKaryawanDetail').value;
+            
+            let filteredData = [...allDetailData];
+            
+            if (departemen) {
+                filteredData = filteredData.filter(d => d.departemen === departemen);
+            }
+            if (karyawan) {
+                filteredData = filteredData.filter(d => d.nik === karyawan);
+            }
+            
+            renderDetailTable(filteredData);
+        }
+        
+        // Generate Daily Summary with DataTable
+        function generateDailySummary(filterTanggal = '', filterBulan = '') {
+            if (summaryTable) {
+                summaryTable.destroy();
+            }
+            
+            const tbody = document.querySelector('#summaryTable tbody');
+            tbody.innerHTML = '';
+            
+            let dates = Object.keys(pullFingerData).sort();
+            
+            // Apply filters
+            if (filterTanggal) {
+                dates = dates.filter(d => d === filterTanggal);
+            } else if (filterBulan) {
+                dates = dates.filter(d => d.startsWith(filterBulan));
+            }
+            
+            dates.forEach((dateStr, index) => {
+                const data = pullFingerData[dateStr];
+                const date = new Date(dateStr);
+                const dayName = dayNames[date.getDay()];
+                const dateFormatted = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>
+                        <button class="btn-view" onclick="showDetail('${dateStr}', '${dateFormatted}', '${dayName}')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </td>
+                    <td>${dateFormatted}</td>
+                    <td>${dayName}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Initialize DataTable on summary (without search box)
+            summaryTable = $('#summaryTable').DataTable({
+                "language": {
+                    "lengthMenu": "Tampilkan _MENU_ baris",
+                    "zeroRecords": "Maaf - Data tidak ada",
+                    "info": "Data _START_ - _END_ dari _TOTAL_",
+                    "infoEmpty": "Tidak ada data",
+                    "infoFiltered": "(pencarian dari _MAX_ data)"
+                },
+                "searching": false, // Disable search box
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel me-1 text-lg text-success"></i><span class="font-weight-bold"> Excel',
+                        autoFilter: true,
+                        sheetName: 'Ringkasan Harian',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf me-1 text-lg text-danger"></i><span class="font-weight-bold"> PDF',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print me-1 text-lg text-info"></i><span class="font-weight-bold"> Print',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }
+                ]
+            });
+            
+            // Style buttons like MSJ framework
+            $('.dt-button').addClass('btn btn-secondary');
+            $('.dt-button').removeClass('dt-button');
+        }
+        
+        // Show Detail View with Plain Table
+        function showDetail(dateStr, dateFormatted, dayName) {
+            selectedDateData = pullFingerData[dateStr];
+            allDetailData = [...selectedDateData]; // Store for filtering
+            
+            // Store current date info
+            currentDateStr = dateStr;
+            currentDateFormatted = dateFormatted;
+            currentDayName = dayName;
+            
+            // Update headers
+            document.getElementById('selectedDate').textContent = `${dateFormatted} (${dayName})`;
+            document.getElementById('detailDate').textContent = `${dateFormatted} (${dayName})`;
+            
+            // Reset filters
+            document.getElementById('filterDepartemenDetail').value = '';
+            document.getElementById('filterKaryawanDetail').value = '';
+            
+            // Populate employee dropdown
+            populateEmployeeFilter(selectedDateData);
+            
+            // Render table
+            renderDetailTable(selectedDateData);
+            
+            // Show detail view
+            showView('detail');
+        }
+        
+        // Render detail table
+        function renderDetailTable(data) {
+            // Destroy existing DataTable if exists
+            if (detailTable) {
+                detailTable.destroy();
+            }
+            
+            const tbody = document.querySelector('#detailTable tbody');
+            tbody.innerHTML = '';
+            
+            data.forEach((record, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${currentDateFormatted}<br><small>${currentDayName}</small></td>
+                    <td>${record.shift}<br><small>${record.shift_name}</small></td>
+                    <td><strong>${record.nik}</strong></td>
+                    <td>${record.nama}<br><small class="text-muted">${record.departemen}</small></td>
+                    <td>${record.jam_masuk}</td>
+                    <td>${record.terlambat || '00:00'}</td>
+                    <td>${record.jam_keluar}</td>
+                    <td>${record.pulang_cepat || '00:00'}</td>
+                    <td>${record.istirahat1_scan1 || '-'}</td>
+                    <td>${record.istirahat1_scan2 || '-'}</td>
+                    <td>${record.istirahat2_scan1 || '-'}</td>
+                    <td>${record.istirahat2_scan2 || '-'}</td>
+                    <td>${record.durasi}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Initialize DataTable on detail table
+            detailTable = $('#detailTable').DataTable({
+                "language": {
+                    "lengthMenu": "Tampilkan _MENU_ baris",
+                    "zeroRecords": "Maaf - Data tidak ada",
+                    "info": "Data _START_ - _END_ dari _TOTAL_",
+                    "infoEmpty": "Tidak ada data",
+                    "infoFiltered": "(pencarian dari _MAX_ data)"
+                },
+                "searching": false,
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel me-1 text-lg text-success"></i><span class="font-weight-bold"> Excel',
+                        autoFilter: true,
+                        sheetName: 'Detail Pull Fingerprint',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf me-1 text-lg text-danger"></i><span class="font-weight-bold"> PDF',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print me-1 text-lg text-info"></i><span class="font-weight-bold"> Print',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }
+                ]
+            });
+            
+            // Style buttons like MSJ framework
+            $('.dt-button').addClass('btn btn-secondary');
+            $('.dt-button').removeClass('dt-button');
+        }
+        
+        // Back to Summary
+        function backToSummary() {
+            showView('summary');
+        }
+        
+        // View Management
+        function showView(viewName) {
+            currentView = viewName;
+            document.querySelectorAll('.view-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            if (viewName === 'summary') {
+                document.getElementById('dailySummaryView').classList.add('active');
+                document.getElementById('summaryFilter').style.display = 'block';
+                document.getElementById('detailFilter').style.display = 'none';
+            } else if (viewName === 'detail') {
+                document.getElementById('detailView').classList.add('active');
+                document.getElementById('summaryFilter').style.display = 'none';
+                document.getElementById('detailFilter').style.display = 'block';
+            }
+        }
+        
+        // No checkbox management needed for view-only mode
+        
+        // Initialize and show summary view on load
+        $(document).ready(function() {
+            // Populate date filter
+            populateDateFilter();
+            
+            // Generate initial data with DataTable on summary
+            generateDailySummary('', '2026-02');
+            showView('summary');
+        });
     </script>
 </body>
 

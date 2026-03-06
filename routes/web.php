@@ -18,6 +18,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TrstukController;
 use App\Http\Controllers\TrsspController;
+use App\Http\Controllers\TrspulController;
 
 // Test route for Tukar Jadwal Karyawan List (Autocomplete)
 Route::get('/test-trstuk-karyawan', function () {
@@ -87,6 +88,13 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/trstuk/ajax', [TrstukController::class, 'ajax'])->name('trstuk.ajax');
 	Route::post('/trstuk/store', [TrstukController::class, 'store'])->name('trstuk.store');
 	Route::post('/trstuk/approval', [TrstukController::class, 'approval'])->name('trstuk.approval');
+	
+	// Pull Finger - AJAX Routes (must be before catch-all)
+	Route::get('/trspul/ajax', [TrspulController::class, 'ajax'])->name('trspul.ajax');
+	Route::get('/trspul/summary', [TrspulController::class, 'summary'])->name('trspul.summary');
+	Route::get('/trspul/detail', [TrspulController::class, 'detail'])->name('trspul.detail');
+	Route::post('/trspul/konfirmasi', [TrspulController::class, 'konfirmasi'])->name('trspul.konfirmasi');
+	Route::post('/trspul/pulldevice', [TrspulController::class, 'pulldevice'])->name('trspul.pulldevice');
 	
 	// Kirim SP - AJAX Routes (must be before catch-all)
 	Route::get('/trssp/getkaryawan', [TrsspController::class, 'getkaryawan'])->name('trssp.getkaryawan');

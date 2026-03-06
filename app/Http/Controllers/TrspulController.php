@@ -404,4 +404,374 @@ class TrspulController extends Controller
             'message' => count($ids) . ' data berhasil dikonfirmasi'
         ]);
     }
+    
+    /**
+     * Get daily summary (grouped by date)
+     */
+    public function summary()
+    {
+        // Get filter parameters
+        $filterBulan = request()->input('bulan');
+        $filterDepartemen = request()->input('departemen');
+        $filterKaryawan = request()->input('karyawan');
+        
+        // Get all dummy data
+        $allDummyData = $this->getAllDummyData();
+        
+        // Apply filters
+        $filteredData = $allDummyData;
+        
+        if (!empty($filterBulan)) {
+            $filteredData = array_filter($filteredData, function($item) use ($filterBulan) {
+                return isset($item['bulan']) && $item['bulan'] === $filterBulan;
+            });
+        }
+        
+        if (!empty($filterDepartemen)) {
+            $filteredData = array_filter($filteredData, function($item) use ($filterDepartemen) {
+                return isset($item['departemen']) && $item['departemen'] === $filterDepartemen;
+            });
+        }
+        
+        if (!empty($filterKaryawan)) {
+            $filteredData = array_filter($filteredData, function($item) use ($filterKaryawan) {
+                return isset($item['nik']) && $item['nik'] === $filterKaryawan;
+            });
+        }
+        
+        // Group by date
+        $groupedByDate = [];
+        foreach ($filteredData as $record) {
+            $date = $record['tanggal_pull'];
+            
+            if (!isset($groupedByDate[$date])) {
+                $groupedByDate[$date] = [
+                    'tanggal' => $date,
+                    'tanggal_iso' => $this->convertToISO($date),
+                    'total_records' => 0,
+                    'shifts' => []
+                ];
+            }
+            
+            $groupedByDate[$date]['total_records']++;
+            
+            // Count shifts
+            $shift = $record['shift_code'];
+            if (!isset($groupedByDate[$date]['shifts'][$shift])) {
+                $groupedByDate[$date]['shifts'][$shift] = 0;
+            }
+            $groupedByDate[$date]['shifts'][$shift]++;
+        }
+        
+        // Convert to array and sort by date
+        $summary = array_values($groupedByDate);
+        usort($summary, function($a, $b) {
+            $dateA = str_replace('/', '-', $a['tanggal']);
+            $dateB = str_replace('/', '-', $b['tanggal']);
+            $partsA = explode('-', $dateA);
+            $partsB = explode('-', $dateB);
+            
+            // Convert dd-mm-yyyy to timestamp-comparable format
+            $timeA = $partsA[2] . $partsA[1] . $partsA[0];
+            $timeB = $partsB[2] . $partsB[1] . $partsB[0];
+            
+            return strcmp($timeA, $timeB);
+        });
+        
+        return response()->json([
+            'success' => true,
+            'data' => $summary,
+            'total_days' => count($summary),
+            'total_records' => count($filteredData),
+            'filters' => [
+                'bulan' => $filterBulan ?: 'Semua',
+                'departemen' => $filterDepartemen ?: 'Semua',
+                'karyawan' => $filterKaryawan ?: 'Semua'
+            ]
+        ]);
+    }
+    
+    /**
+     * Get detail data for a specific date
+     */
+    public function detail()
+    {
+        $tanggal = request()->input('tanggal'); // Format: dd/mm/yyyy
+        
+        if (empty($tanggal)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tanggal tidak boleh kosong'
+            ]);
+        }
+        
+        // Get all dummy data
+        $allDummyData = $this->getAllDummyData();
+        
+        // Filter by date
+        $detailData = array_filter($allDummyData, function($item) use ($tanggal) {
+            return $item['tanggal_pull'] === $tanggal;
+        });
+        
+        $detailData = array_values($detailData);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $detailData,
+            'total' => count($detailData),
+            'tanggal' => $tanggal
+        ]);
+    }
+    
+    /**
+     * Helper: Get all dummy data
+     */
+    private function getAllDummyData()
+    {
+        return [
+            [
+                'id_pull' => 1,
+                'tanggal_pull' => '03/02/2026',
+                'shift_code' => 'S1c',
+                'shift_name' => 'Shift 1c',
+                'nik' => '14588',
+                'nama' => 'Ahmad Budiman',
+                'departemen' => 'Produksi',
+                'bulan' => '2026-02',
+                'jam_masuk' => '07:30',
+                'scan_masuk' => '07:26',
+                'terlambat' => '00:00',
+                'jam_keluar' => '15:30',
+                'scan_keluar' => '15:00',
+                'pulang_cepat' => '00:30',
+                'istirahat1_scan1' => '11:00',
+                'istirahat1_scan2' => '11:22',
+                'istirahat2_scan1' => '',
+                'istirahat2_scan2' => '',
+                'durasi' => '08:15'
+            ],
+            [
+                'id_pull' => 2,
+                'tanggal_pull' => '03/02/2026',
+                'shift_code' => 'S2c',
+                'shift_name' => 'Shift 2b',
+                'nik' => '74114',
+                'nama' => 'Siti Nurhaliza',
+                'departemen' => 'Produksi',
+                'bulan' => '2026-02',
+                'jam_masuk' => '15:30',
+                'scan_masuk' => '15:19',
+                'terlambat' => '00:11',
+                'jam_keluar' => '23:30',
+                'scan_keluar' => '23:30',
+                'pulang_cepat' => '00:00',
+                'istirahat1_scan1' => '17:51',
+                'istirahat1_scan2' => '18:13',
+                'istirahat2_scan1' => '21:22',
+                'istirahat2_scan2' => '21:35',
+                'durasi' => '07:38'
+            ],
+            [
+                'id_pull' => 3,
+                'tanggal_pull' => '03/02/2026',
+                'shift_code' => 'S1c',
+                'shift_name' => 'Shift 1c',
+                'nik' => '00415',
+                'nama' => 'Budi Santoso',
+                'departemen' => 'Produksi',
+                'bulan' => '2026-02',
+                'jam_masuk' => '07:30',
+                'scan_masuk' => '07:35',
+                'terlambat' => '00:05',
+                'jam_keluar' => '15:30',
+                'scan_keluar' => '15:32',
+                'pulang_cepat' => '00:00',
+                'istirahat1_scan1' => '11:04',
+                'istirahat1_scan2' => '11:38',
+                'istirahat2_scan1' => '',
+                'istirahat2_scan2' => '',
+                'durasi' => '07:46'
+            ],
+            [
+                'id_pull' => 4,
+                'tanggal_pull' => '04/02/2026',
+                'shift_code' => 'S1c',
+                'shift_name' => 'Shift 1c',
+                'nik' => '95663',
+                'nama' => 'Fitri Handayani',
+                'departemen' => 'Produksi',
+                'bulan' => '2026-02',
+                'jam_masuk' => '07:30',
+                'scan_masuk' => '07:26',
+                'terlambat' => '00:00',
+                'jam_keluar' => '15:30',
+                'scan_keluar' => '15:31',
+                'pulang_cepat' => '00:00',
+                'istirahat1_scan1' => '11:24',
+                'istirahat1_scan2' => '11:56',
+                'istirahat2_scan1' => '',
+                'istirahat2_scan2' => '',
+                'durasi' => '07:39'
+            ],
+            [
+                'id_pull' => 5,
+                'tanggal_pull' => '05/02/2026',
+                'shift_code' => 'S1c',
+                'shift_name' => 'Shift 1c',
+                'nik' => '14588',
+                'nama' => 'Ahmad Budiman',
+                'departemen' => 'Produksi',
+                'bulan' => '2026-02',
+                'jam_masuk' => '07:30',
+                'scan_masuk' => '07:35',
+                'terlambat' => '00:05',
+                'jam_keluar' => '15:30',
+                'scan_keluar' => '15:30',
+                'pulang_cepat' => '00:00',
+                'istirahat1_scan1' => '11:00',
+                'istirahat1_scan2' => '11:22',
+                'istirahat2_scan1' => '',
+                'istirahat2_scan2' => '',
+                'durasi' => '08:00'
+            ],
+            [
+                'id_pull' => 6,
+                'tanggal_pull' => '06/02/2026',
+                'shift_code' => 'S3c',
+                'shift_name' => 'Shift 3b',
+                'nik' => '78332',
+                'nama' => 'Dewi Kusuma',
+                'departemen' => 'Produksi',
+                'bulan' => '2026-02',
+                'jam_masuk' => '23:30',
+                'scan_masuk' => '23:23',
+                'terlambat' => '00:00',
+                'jam_keluar' => '07:30',
+                'scan_keluar' => '07:35',
+                'pulang_cepat' => '00:00',
+                'istirahat1_scan1' => '02:33',
+                'istirahat1_scan2' => '02:59',
+                'istirahat2_scan1' => '',
+                'istirahat2_scan2' => '',
+                'durasi' => '07:46'
+            ],
+            [
+                'id_pull' => 7,
+                'tanggal_pull' => '06/02/2026',
+                'shift_code' => 'S3c',
+                'shift_name' => 'Shift 3b',
+                'nik' => '14755',
+                'nama' => 'Gunawan Wibowo',
+                'departemen' => 'Produksi',
+                'bulan' => '2026-02',
+                'jam_masuk' => '23:30',
+                'scan_masuk' => '23:20',
+                'terlambat' => '00:00',
+                'jam_keluar' => '07:30',
+                'scan_keluar' => '07:30',
+                'pulang_cepat' => '00:00',
+                'istirahat1_scan1' => '02:30',
+                'istirahat1_scan2' => '03:00',
+                'istirahat2_scan1' => '',
+                'istirahat2_scan2' => '',
+                'durasi' => '07:40'
+            ],
+            [
+                'id_pull' => 8,
+                'tanggal_pull' => '10/02/2026',
+                'shift_code' => 'S1c',
+                'shift_name' => 'Shift 1c',
+                'nik' => '95663',
+                'nama' => 'Fitri Handayani',
+                'departemen' => 'Produksi',
+                'bulan' => '2026-02',
+                'jam_masuk' => '07:30',
+                'scan_masuk' => '07:27',
+                'terlambat' => '00:00',
+                'jam_keluar' => '15:30',
+                'scan_keluar' => '15:31',
+                'pulang_cepat' => '00:00',
+                'istirahat1_scan1' => '11:24',
+                'istirahat1_scan2' => '11:56',
+                'istirahat2_scan1' => '',
+                'istirahat2_scan2' => '',
+                'durasi' => '07:39'
+            ],
+            [
+                'id_pull' => 9,
+                'tanggal_pull' => '10/02/2026',
+                'shift_code' => 'S1c',
+                'shift_name' => 'Shift 1c',
+                'nik' => '14588',
+                'nama' => 'Ahmad Budiman',
+                'departemen' => 'Produksi',
+                'bulan' => '2026-02',
+                'jam_masuk' => '07:30',
+                'scan_masuk' => '07:25',
+                'terlambat' => '00:00',
+                'jam_keluar' => '15:30',
+                'scan_keluar' => '15:35',
+                'pulang_cepat' => '00:00',
+                'istirahat1_scan1' => '11:00',
+                'istirahat1_scan2' => '11:30',
+                'istirahat2_scan1' => '',
+                'istirahat2_scan2' => '',
+                'durasi' => '07:40'
+            ],
+            [
+                'id_pull' => 10,
+                'tanggal_pull' => '11/02/2026',
+                'shift_code' => 'S1c',
+                'shift_name' => 'Shift 1c',
+                'nik' => '14755',
+                'nama' => 'Gunawan Wibowo',
+                'departemen' => 'Produksi',
+                'bulan' => '2026-02',
+                'jam_masuk' => '07:30',
+                'scan_masuk' => '06:46',
+                'terlambat' => '00:00',
+                'jam_keluar' => '15:30',
+                'scan_keluar' => '15:31',
+                'pulang_cepat' => '00:00',
+                'istirahat1_scan1' => '11:00',
+                'istirahat1_scan2' => '11:31',
+                'istirahat2_scan1' => '',
+                'istirahat2_scan2' => '',
+                'durasi' => '08:14'
+            ],
+            [
+                'id_pull' => 11,
+                'tanggal_pull' => '12/02/2026',
+                'shift_code' => 'S2c',
+                'shift_name' => 'Shift 2b',
+                'nik' => '41220',
+                'nama' => 'Hani Rahmawati',
+                'departemen' => 'QC',
+                'bulan' => '2026-02',
+                'jam_masuk' => '15:30',
+                'scan_masuk' => '15:26',
+                'terlambat' => '00:00',
+                'jam_keluar' => '23:30',
+                'scan_keluar' => '23:34',
+                'pulang_cepat' => '00:00',
+                'istirahat1_scan1' => '18:32',
+                'istirahat1_scan2' => '19:06',
+                'istirahat2_scan1' => '21:34',
+                'istirahat2_scan2' => '21:48',
+                'durasi' => '07:32'
+            ]
+        ];
+    }
+    
+    /**
+     * Helper: Convert dd/mm/yyyy to ISO format
+     */
+    private function convertToISO($dateStr)
+    {
+        $parts = explode('/', $dateStr);
+        if (count($parts) === 3) {
+            return $parts[2] . '-' . $parts[1] . '-' . $parts[0];
+        }
+        return $dateStr;
+    }
 }
