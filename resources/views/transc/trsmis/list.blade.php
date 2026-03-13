@@ -23,7 +23,7 @@
                         <div class="col-md-3">
                             <label for="karyawan" class="form-label text-sm font-weight-bold">Karyawan</label>
                             <input type="text" class="form-control" id="karyawan" name="karyawan" 
-                                   placeholder="Masukkan NIK karyawan (opsional)">
+                                   placeholder="Masukkan NIK/Nama Karyawan">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label text-sm font-weight-bold">&nbsp;</label>
@@ -36,27 +36,27 @@
             </div>
 
             {{-- ACTION BAR --}}
-            <div class="px-3 pb-2 d-flex justify-content-between align-items-center flex-wrap gap-2" id="actionBar">
-                <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="px-3 pb-2 d-flex flex-column align-items-start gap-2" id="actionBar">
+                <div id="dataMissingExportButtons" class="d-flex gap-2 flex-wrap justify-content-start"></div>
+                <div class="d-flex align-items-center gap-2 flex-wrap" id="primaryActionButtons">
                     <span class="text-sm me-2">
                         <strong class="text-primary" id="selectedCount">0</strong> data terpilih
                     </span>
-                    <button class="btn btn-sm btn-primary" onclick="toggleSelectAll()">
+                    <button class="btn btn-primary action-btn-uniform" onclick="toggleSelectAll()">
                         <i class="fas fa-check-square me-1"></i>Pilih Semua
                     </button>
-                    <button class="btn btn-sm btn-success" onclick="konfirmasiSelected()">
+                    <button class="btn btn-success action-btn-uniform" onclick="konfirmasiSelected()">
                         <i class="fas fa-check-circle me-1"></i>Konfirmasi Data Terpilih
                     </button>
-                    <button class="btn btn-sm btn-secondary" onclick="getDataMissing()">
+                    <button class="btn btn-secondary action-btn-uniform" onclick="getDataMissing()">
                         <i class="fas fa-sync me-1"></i>Refresh
                     </button>
                 </div>
-                <div id="dataMissingExportButtons" class="d-flex gap-2 flex-wrap"></div>
             </div>
 
             {{-- DATA TABLE --}}
-            <div id="dataTableCard">
-                <div class="table-responsive">
+            <div id="dataTableCard" class="pb-3 px-3">
+                <div class="table-responsive table-wrap-centered">
                     <table class="table table-hover align-items-center mb-0" id="dataMissingTable">
                         <thead class="thead-light" style="background-color: #00b7bd4f;">
                             <tr>
@@ -143,6 +143,25 @@
     {{-- JAVASCRIPT --}}
     @push('js')
     <style>
+        .table-wrap-centered,
+        #dataMissingTable_wrapper {
+            max-width: 100%;
+            margin: 0;
+        }
+        #actionBar .action-btn-uniform,
+        #dataMissingExportButtons .btn {
+            font-size: 0.875rem;
+            padding: 0.5rem 0.9rem;
+            line-height: 1.2;
+        }
+        #dataMissingExportButtons,
+        #primaryActionButtons {
+            margin-left: 0;
+            padding-left: 0;
+        }
+        #actionBar #primaryActionButtons {
+            margin-bottom: 2px;
+        }
     </style>
     <script>
         let dataMissingTable = null;
