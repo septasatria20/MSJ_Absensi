@@ -16,9 +16,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <label for="tanggal" class="form-label text-sm font-weight-bold">Tanggal</label>
-                            <select class="form-select" id="tanggal" name="tanggal">
-                                <option value="">-- Semua Tanggal --</option>
-                            </select>
+                            <input type="date" class="form-control" id="tanggal" name="tanggal">
                         </div>
                         <div class="col-md-4">
                             <label for="bulan" class="form-label text-sm font-weight-bold">Bulan</label>
@@ -67,9 +65,7 @@
                         </div>
                         <div class="col-md-4">
                             <label for="karyawanDetail" class="form-label text-sm font-weight-bold">Karyawan</label>
-                            <select class="form-select" id="karyawanDetail" name="karyawan">
-                                <option value="">-- Semua Karyawan --</option>
-                            </select>
+                            <input type="text" class="form-control" id="karyawanDetail" name="karyawan" placeholder="Cari NIK / Nama karyawan">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label text-sm font-weight-bold">&nbsp;</label>
@@ -100,8 +96,8 @@
                     <table class="table table-hover align-items-center mb-0" id="summaryTable">
                         <thead class="thead-light" style="background-color: #00b7bd4f;">
                             <tr>
-                                <th class="text-secondary text-sm font-weight-bold opacity-7" style="width: 50px;">No</th>
-                                <th class="text-secondary text-sm font-weight-bold opacity-7" style="width: 80px;">Action</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 col-no">No</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 col-action">Action</th>
                                 <th class="text-secondary text-sm font-weight-bold opacity-7" style="width: 150px;">Tanggal</th>
                                 <th class="text-secondary text-sm font-weight-bold opacity-7" style="width: 120px;">Hari</th>
                             </tr>
@@ -122,32 +118,24 @@
                 Anda dapat export data ke Excel/PDF menggunakan tombol di bawah tabel.
             </div>
 
-            {{-- TABLE ACTIONS --}}
-            <div class="card shadow-sm mb-3">
-                <div class="card-body p-3">
-                    <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
-                        <div class="d-flex gap-2 align-items-center flex-wrap">
-                            <button class="btn btn-secondary btn-sm" onclick="backToSummary()">
-                                <i class="fas fa-arrow-left me-1"></i> Kembali ke Ringkasan
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             {{-- DATA TABLE --}}
             <div class="card shadow-sm">
                 <div class="card-header pb-0">
-                    <h6 class="text-dark font-weight-bold">
-                        <i class=""></i>Data Pull Fingerprint - <span id="detailDateDisplay">-</span>
-                    </h6>
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <h6 class="text-dark font-weight-bold mb-0">
+                            <i class=""></i>Data Pull Fingerprint - <span id="detailDateDisplay">-</span>
+                        </h6>
+                        <button class="btn btn-secondary btn-sm" onclick="backToSummary()">
+                            <i class="fas fa-arrow-left me-1"></i> Kembali ke Ringkasan
+                        </button>
+                    </div>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
+                <div class="card-body p-3">
+                    <div class="table-responsive table-wrap-centered">
                         <table class="table table-hover align-items-center mb-0" id="detailTable">
                             <thead class="thead-light" style="background-color: #00b7bd4f;">
                                 <tr>
-                                    <th class="text-center text-secondary text-sm font-weight-bold opacity-7" style="width: 40px;">No</th>
+                                    <th class="text-center text-secondary text-sm font-weight-bold opacity-7 col-no-detail">No</th>
                                     <th class="text-center text-secondary text-sm font-weight-bold opacity-7">Tanggal</th>
                                     <th class="text-center text-secondary text-sm font-weight-bold opacity-7">Shift</th>
                                     <th class="text-center text-secondary text-sm font-weight-bold opacity-7">NIK</th>
@@ -225,12 +213,28 @@
             text-align: left;
             vertical-align: middle;
             border: 1px solid #e9ecef;
-            padding: 12px;
+            padding: 10px;
         }
         #summaryTable th {
             font-size: 13px;
             font-weight: 600;
             color: #67748e;
+        }
+        #summaryTable th.col-no,
+        #summaryTable td.col-no,
+        #summaryTable th.col-action,
+        #summaryTable td.col-action {
+            padding-left: 8px;
+            padding-right: 8px;
+            white-space: nowrap;
+        }
+        #summaryTable th.col-no,
+        #summaryTable td.col-no {
+            width: 36px;
+        }
+        #summaryTable th.col-action,
+        #summaryTable td.col-action {
+            width: 72px;
         }
         #detailTable th,
         #detailTable td {
@@ -244,6 +248,30 @@
             font-size: 13px;
             font-weight: 600;
             color: #67748e;
+        }
+        #detailTable th.col-no-detail,
+        #detailTable td.col-no-detail {
+            width: 36px;
+            white-space: nowrap;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+        .table-wrap-centered {
+            max-width: 99%;
+            margin: 0 auto;
+        }
+        #detailTable_wrapper,
+        #summaryTable_wrapper {
+            max-width: 99%;
+            margin: 0 auto;
+        }
+        #detailTable_wrapper .dt-buttons,
+        #summaryTable_wrapper .dt-buttons {
+            margin-bottom: 10px;
+        }
+        #detailTable_wrapper .dataTables_info,
+        #summaryTable_wrapper .dataTables_info {
+            padding-left: 6px;
         }
     </style>
     <script>
@@ -260,21 +288,6 @@
         let currentDayName = '';
         let dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
-        // Dummy data karyawan untuk autocomplete (nanti akan dari AJAX)
-        const karyawanData = [
-            { nik: '001', nama: 'Ahmad Budiman' },
-            { nik: '002', nama: 'Siti Nurhaliza' },
-            { nik: '003', nama: 'Budi Santoso' },
-            { nik: '004', nama: 'Dewi Kusuma' },
-            { nik: '005', nama: 'Eko Prasetyo' },
-            { nik: '006', nama: 'Fitri Handayani' },
-            { nik: '007', nama: 'Gunawan Wibowo' },
-            { nik: '008', nama: 'Hani Rahmawati' },
-            { nik: '009', nama: 'Indra Setia' },
-            { nik: '010', nama: 'Joko Widodo' },
-            { nik: '011', nama: 'Karina Salsabila' }
-        ];
-
         // Initialize on page load
         $(document).ready(function() {
             // Summary will use DataTables (initialized after data load)
@@ -284,24 +297,7 @@
             pullFingerDataSummary();
         });
 
-        // Note: Autocomplete functions removed - now using dropdown filters for departemen and karyawan in detail view
-
-        // Populate date filter dropdown
-        function populateDateFilter(dates) {
-            const select = document.getElementById('tanggal');
-            select.innerHTML = '<option value="">-- Semua Tanggal --</option>';
-            
-            if (dates && dates.length > 0) {
-                dates.forEach(item => {
-                    const date = new Date(item.tanggal_iso);
-                    const dayName = dayNames[date.getDay()];
-                    const option = document.createElement('option');
-                    option.value = item.tanggal_iso;
-                    option.textContent = `${item.tanggal} (${dayName})`;
-                    select.appendChild(option);
-                });
-            }
-        }
+        // Note: karyawan detail now filtered by manual text search (nik/nama)
 
         // Pull Finger Data (Show Daily Summary)
         function pullFingerDataSummary() {
@@ -347,9 +343,6 @@
                 success: function(response) {
                     console.log('Summary Response:', response);
                     if (response.success && response.data.length > 0) {
-                        // Populate date filter dropdown
-                        populateDateFilter(response.data);
-                        
                         // Render summary table
                         renderDailySummary(response.data);
                         
@@ -429,8 +422,8 @@
                 
                 const row = `
                     <tr>
-                        <td>${index + 1}</td>
-                        <td>
+                        <td class="col-no">${index + 1}</td>
+                        <td class="col-action">
                             <button class="btn btn-sm btn-primary" onclick="showDetailView('${day.tanggal}', '${dayName}')">
                                 <i class="fas fa-eye me-1"></i> View
                             </button>
@@ -546,9 +539,6 @@
                     if (response.success && response.data.length > 0) {
                         allDetailData = response.data; // Store for filtering
                         
-                        // Populate employee dropdown
-                        populateEmployeeFilter(response.data);
-                        
                         renderDetailTable(response.data);
                         currentView = 'detail';
                     } else {
@@ -578,24 +568,10 @@
             });
         }
         
-        // Populate employee filter for detail view
-        function populateEmployeeFilter(data) {
-            const select = document.getElementById('karyawanDetail');
-            select.innerHTML = '<option value="">-- Semua Karyawan --</option>';
-            
-            const uniqueEmployees = [...new Set(data.map(d => d.nik + ' - ' + d.nama))];
-            uniqueEmployees.sort().forEach(emp => {
-                const option = document.createElement('option');
-                option.value = emp.split(' - ')[0];
-                option.textContent = emp;
-                select.appendChild(option);
-            });
-        }
-        
         // Filter Detail Data
         function applyDetailFilter() {
             const departemen = document.getElementById('departemenDetail').value;
-            const karyawan = document.getElementById('karyawanDetail').value;
+            const karyawan = document.getElementById('karyawanDetail').value.trim().toLowerCase();
             
             let filteredData = [...allDetailData];
             
@@ -603,7 +579,11 @@
                 filteredData = filteredData.filter(d => d.departemen === departemen);
             }
             if (karyawan) {
-                filteredData = filteredData.filter(d => d.nik === karyawan);
+                filteredData = filteredData.filter(d => {
+                    const nik = (d.nik || '').toString().toLowerCase();
+                    const nama = (d.nama || '').toLowerCase();
+                    return nik.includes(karyawan) || nama.includes(karyawan);
+                });
             }
             
             renderDetailTable(filteredData);
@@ -623,7 +603,7 @@
             data.forEach((row, index) => {
                 const tr = `
                     <tr>
-                        <td class="text-center">${index + 1}</td>
+                        <td class="text-center col-no-detail">${index + 1}</td>
                         <td class="text-center">${currentDateFormatted}<br><small class="text-muted">${currentDayName}</small></td>
                         <td class="text-center">${row.shift_code}<br><small class="text-secondary">${row.shift_name}</small></td>
                         <td class="text-center">${row.nik}</td>
