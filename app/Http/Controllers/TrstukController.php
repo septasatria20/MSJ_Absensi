@@ -17,9 +17,8 @@ class TrstukController extends Controller
     {
         $page = (int) request()->input('page', 1);
         $perPage = (int) request()->input('per_page', 10);
-        $searchPengaju = request()->input('search_pengaju', '');
-        $searchDitukar = request()->input('search_ditukar', '');
-        $status = request()->input('status', '');
+        $tanggal = request()->input('tanggal', '');
+        $searchKaryawan = request()->input('search_karyawan', '');
         $returnAll = (bool) request()->input('all', false);
 
         // Dummy data - nanti akan diganti dengan query database
@@ -170,23 +169,18 @@ class TrstukController extends Controller
             ],
         ];
 
-        if ($searchPengaju) {
-            $allData = array_filter($allData, function($item) use ($searchPengaju) {
-                return stripos($item['nama_pengaju'], $searchPengaju) !== false ||
-                       stripos($item['nik_pengaju'], $searchPengaju) !== false;
+        if ($tanggal) {
+            $allData = array_filter($allData, function($item) use ($tanggal) {
+                return $item['tanggal_tukar'] === $tanggal;
             });
         }
 
-        if ($searchDitukar) {
-            $allData = array_filter($allData, function($item) use ($searchDitukar) {
-                return stripos($item['nama_ditukar'], $searchDitukar) !== false ||
-                       stripos($item['nik_ditukar'], $searchDitukar) !== false;
-            });
-        }
-
-        if ($status) {
-            $allData = array_filter($allData, function($item) use ($status) {
-                return strtolower($item['status']) === strtolower($status);
+        if ($searchKaryawan) {
+            $allData = array_filter($allData, function($item) use ($searchKaryawan) {
+                return stripos($item['nama_pengaju'], $searchKaryawan) !== false ||
+                       stripos($item['nik_pengaju'], $searchKaryawan) !== false ||
+                       stripos($item['nama_ditukar'], $searchKaryawan) !== false ||
+                       stripos($item['nik_ditukar'], $searchKaryawan) !== false;
             });
         }
 

@@ -3,9 +3,9 @@
 @section('content')
     @include('layouts.navbars.auth.topnav')
     
-    <div class="container-fluid py-2">
+    <div class="container-fluid pt-0 pb-2">
         {{-- TABS NAVIGATION --}}
-        <ul class="nav nav-tabs mb-2" id="tukarJadwalTabs" role="tablist">
+        <ul class="nav nav-tabs mb-0" id="tukarJadwalTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" 
                         type="button" role="tab">
@@ -25,76 +25,65 @@
             
             {{-- HISTORY TAB --}}
             <div class="tab-pane fade show active" id="history" role="tabpanel">
-                <div class="card shadow-sm mb-3">
+                <div class="card shadow-sm mb-2">
                     <div class="card-body p-3">
-                        <div class="mb-2">
+                        <div class="mb-1">
                             <h6 class="mb-0 text-dark font-weight-bold">History Tukar Jadwal</h6>
                         </div>
-                        <div class="row g-3 align-items-end">
-                            <div class="col-md-3">
-                                <label for="historyPengajuFilter" class="form-label text-sm font-weight-bold">Karyawan Pengaju</label>
-                                <input type="text" class="form-control" id="historyPengajuFilter" placeholder="Cari pengaju...">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="historyDitukarFilter" class="form-label text-sm font-weight-bold">Karyawan Ditukar</label>
-                                <input type="text" class="form-control" id="historyDitukarFilter" placeholder="Cari karyawan ditukar...">
-                            </div>
-                            <div class="col-md-2">
-                                <label for="historyStatusFilter" class="form-label text-sm font-weight-bold">Status</label>
-                                <select class="form-select" id="historyStatusFilter">
-                                    <option value="">-- Semua Status --</option>
-                                    <option value="approved">Approved</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
+                        <div class="row g-3 align-items-end mt-0">
+                            <div class="col-md-4">
+                                <label for="historyTanggalFilter" class="form-label text-sm font-weight-bold">Tanggal</label>
+                                <input type="date" class="form-control" id="historyTanggalFilter">
                             </div>
                             <div class="col-md-4">
-                                <div class="d-flex gap-2 flex-wrap">
-                                    <button class="btn btn-primary" type="button" onclick="showFormTab()">
-                                        <i class="fas fa-plus me-1"></i>Tambah
-                                    </button>
-                                    <button class="btn btn-primary" type="button" onclick="applyHistoryFilter()">
-                                        <i class="fas fa-search me-1"></i>Terapkan
-                                    </button>
-                                    <button class="btn btn-secondary" type="button" onclick="resetHistoryFilter()">
-                                        <i class="fas fa-rotate-left me-1"></i>Reset
-                                    </button>
-                                </div>
+                                <label for="historyKaryawanFilter" class="form-label text-sm font-weight-bold">Nama Karyawan</label>
+                                <input type="text" class="form-control" id="historyKaryawanFilter" placeholder="Cari NIK / nama karyawan...">
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button class="btn btn-primary w-100 d-block btn-filter-align" type="button" onclick="applyHistoryFilter()">
+                                    <i class="fas fa-search me-1"></i>Terapkan
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="card shadow-sm">
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-items-center mb-0" id="historyTable">
-                                <thead class="thead-light" style="background-color: #00b7bd4f;">
-                                    <tr>
-                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">No</th>
-                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Tanggal Pengajuan</th>
-                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Karyawan Pengaju</th>
-                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Departemen</th>
-                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Shift Asal</th>
-                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Karyawan Ditukar</th>
-                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Departemen</th>
-                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Shift Tujuan</th>
-                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Tanggal Tukar</th>
-                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Status</th>
-                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="historyTableBody">
-                                    <tr>
-                                        <td colspan="11" class="text-center py-5">
-                                            <div class="spinner-border text-primary" role="status">
-                                                <span class="visually-hidden">Loading...</span>
-                                            </div>
-                                            <p class="text-sm text-secondary mt-3">Memuat history...</p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="card-body p-3">
+                        <div class="history-content-wrap">
+                            <div class="d-flex justify-content-start mb-2 history-top-actions">
+                                <button class="btn btn-primary" type="button" onclick="showFormTab()">
+                                    <i class="fas fa-plus me-1"></i>Tambah
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-items-center mb-0" id="historyTable">
+                                    <thead class="thead-light" style="background-color: #00b7bd4f;">
+                                        <tr>
+                                            <th class="text-secondary text-sm font-weight-bold opacity-7 text-start col-no">No</th>
+                                            <th class="text-secondary text-sm font-weight-bold opacity-7 text-start col-action">Action</th>
+                                            <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Tanggal Pengajuan</th>
+                                            <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Karyawan Pengaju</th>
+                                            <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Departemen</th>
+                                            <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Shift Asal</th>
+                                            <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Karyawan Ditukar</th>
+                                            <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Departemen</th>
+                                            <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Shift Tujuan</th>
+                                            <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Tanggal Tukar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="historyTableBody">
+                                        <tr>
+                                            <td colspan="10" class="text-center py-5">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                <p class="text-sm text-secondary mt-3">Memuat history...</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -309,6 +298,40 @@
             color: #5e72e4;
             font-weight: 600;
         }
+        #tukarJadwalTabContent {
+            margin-top: 0;
+        }
+        #history {
+            margin-top: -4;
+        }
+        .history-content-wrap {
+            max-width: 99%;
+            margin: 0 auto;
+        }
+        #historyTable_wrapper {
+            max-width: 100%;
+            margin: 0;
+        }
+        #historyTable_wrapper .dt-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+            margin-top: 0;
+            padding-left: 0;
+            justify-content: flex-start;
+        }
+        #historyTable_wrapper .dataTables_info {
+            padding-left: 6px;
+        }
+        .history-top-actions {
+            margin-left: 0;
+            padding-left: 0;
+        }
+        .table-wrap-centered {
+            max-width: 99%;
+            margin: 0 auto;
+        }
         #historyTable th,
         #historyTable td {
             text-align: left;
@@ -317,18 +340,31 @@
             padding: 7px;
             white-space: nowrap;
         }
+        #historyTable th.col-no,
+        #historyTable td.col-no,
+        #historyTable th.col-action,
+        #historyTable td.col-action {
+            padding-left: 8px;
+            padding-right: 8px;
+            white-space: nowrap;
+        }
+        #historyTable th.col-no,
+        #historyTable td.col-no {
+            width: 36px;
+        }
+        #historyTable th.col-action,
+        #historyTable td.col-action {
+            width: 80px;
+        }
         #historyTable td small {
             display: block;
             font-size: 11px;
             color: #67748e;
             margin-top: 2px;
         }
-        .dt-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 16px;
-            padding: 16px 16px 0;
+        .btn-filter-align {
+            height: 40px;
+            margin-bottom: 1px;
         }
         .dataTables_wrapper .dataTables_filter,
         .dataTables_wrapper .dataTables_length {
@@ -444,9 +480,8 @@
                 method: 'GET',
                 data: {
                     all: 1,
-                    search_pengaju: document.getElementById('historyPengajuFilter').value.trim(),
-                    search_ditukar: document.getElementById('historyDitukarFilter').value.trim(),
-                    status: document.getElementById('historyStatusFilter').value
+                    tanggal: document.getElementById('historyTanggalFilter').value,
+                    search_karyawan: document.getElementById('historyKaryawanFilter').value.trim()
                 },
                 success: function(response) {
                     if (response.success) {
@@ -456,7 +491,7 @@
                 error: function() {
                     document.getElementById('historyTableBody').innerHTML = `
                         <tr>
-                            <td colspan="11" class="text-center py-5 text-danger">
+                            <td colspan="10" class="text-center py-5 text-danger">
                                 <i class="fas fa-exclamation-triangle fa-2x mb-3 d-block"></i>
                                 <p>Error loading data</p>
                             </td>
@@ -474,7 +509,7 @@
             if (data.length === 0) {
                 document.getElementById('historyTableBody').innerHTML = `
                     <tr>
-                        <td colspan="11" class="text-center py-5">
+                        <td colspan="10" class="text-center py-5">
                             <i class="fas fa-inbox fa-3x text-secondary mb-3 d-block"></i>
                             <p class="text-sm text-secondary">Tidak ada history tukar jadwal</p>
                         </td>
@@ -485,10 +520,14 @@
 
             let html = '';
             data.forEach((row, index) => {
-                const statusLabel = row.status.charAt(0).toUpperCase() + row.status.slice(1);
                 html += `
                     <tr>
-                        <td>${index + 1}</td>
+                        <td class="col-no">${index + 1}</td>
+                        <td class="col-action">
+                            <button class="btn btn-sm btn-primary" onclick='showDetail(${JSON.stringify(row)})'>
+                                <i class="fas fa-eye me-1"></i>View
+                            </button>
+                        </td>
                         <td>${formatDate(row.tanggal_pengajuan)}</td>
                         <td><strong>${row.nik_pengaju}</strong><br><small>${row.nama_pengaju}</small></td>
                         <td>${row.departemen_pengaju}</td>
@@ -497,12 +536,6 @@
                         <td>${row.departemen_ditukar}</td>
                         <td>${row.shift_tujuan_desc}</td>
                         <td>${formatDate(row.tanggal_tukar)}</td>
-                        <td>${statusLabel}</td>
-                        <td>
-                            <button class="btn btn-sm btn-info" onclick='showDetail(${JSON.stringify(row)})'>
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
                     </tr>
                 `;
             });
@@ -518,7 +551,7 @@
                 },
                 searching: false,
                 responsive: true,
-                order: [[1, 'desc']],
+                order: [[2, 'desc']],
                 dom: 'Brtip',
                 buttons: [
                     {
@@ -547,13 +580,6 @@
         }
 
         function applyHistoryFilter() {
-            loadHistory();
-        }
-
-        function resetHistoryFilter() {
-            document.getElementById('historyPengajuFilter').value = '';
-            document.getElementById('historyDitukarFilter').value = '';
-            document.getElementById('historyStatusFilter').value = '';
             loadHistory();
         }
 
