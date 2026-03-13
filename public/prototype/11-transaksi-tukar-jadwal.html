@@ -8,6 +8,8 @@
     
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -61,13 +63,27 @@
         .btn-secondary { background: #67748e; color: white; }
         
         /* TABLE */
-        .table-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .table-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow-x: auto; }
         .table-card h6 { font-size: 15px; font-weight: 700; color: #344767; margin-bottom: 16px; }
         table { width: 100%; border-collapse: collapse; }
         thead { background: #f8f9fa; }
-        th { padding: 12px 16px; text-align: left; font-size: 11px; text-transform: uppercase; font-weight: 700; color: #67748e; border-bottom: 2px solid #e9ecef; }
-        td { padding: 12px 16px; font-size: 14px; color: #344767; border-bottom: 1px solid #f1f3f5; }
+        th { padding: 12px 16px; text-align: left; font-size: 13px; font-weight: 600; color: #67748e; border-bottom: 1px solid #e9ecef; white-space: nowrap; vertical-align: middle; text-transform: none; }
+        td { padding: 12px 16px; font-size: 13px; color: #344767; border-bottom: 1px solid #e9ecef; white-space: nowrap; vertical-align: middle; }
         tbody tr:hover { background: #f8f9fa; }
+        td small { display: block; font-size: 11px; color: #67748e; margin-top: 2px; }
+        .thead-light { background-color: #00b7bd4f !important; }
+        .table-toolbar { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+        .table-filter-grid { display: grid; grid-template-columns: repeat(3, minmax(160px, 1fr)) auto auto; gap: 12px; align-items: end; flex: 1; }
+        .toolbar-group { display: flex; flex-direction: column; gap: 8px; }
+        .toolbar-group label { font-size: 13px; font-weight: 600; color: #344767; }
+        .toolbar-group input,
+        .toolbar-group select { padding: 10px 12px; border: 1px solid #d2d6da; border-radius: 8px; font-size: 14px; color: #344767; background: white; }
+        .dt-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .dt-button.btn { box-shadow: none; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover { border: 1px solid #028284 !important; background: linear-gradient(135deg, #028284, #025f60) !important; color: white !important; }
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_length { display: none; }
         
         .badge { display: inline-block; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; }
         .badge-warning { background: #ffecd1; color: #fb6340; }
@@ -281,9 +297,38 @@
                 
                 <!-- HISTORY TUKAR JADWAL -->
                 <div class="table-card">
-                    <h6><i class="fas fa-history"></i> History Tukar Jadwal</h6>
-                    <table>
-                        <thead>
+                    <div class="table-toolbar">
+                        <div>
+                            <h6><i class="fas fa-history"></i> History Tukar Jadwal</h6>
+                        </div>
+                        <div class="table-filter-grid">
+                            <div class="toolbar-group">
+                                <label>Karyawan Pengaju</label>
+                                <input type="text" id="historyPengajuFilter" placeholder="Cari pengaju">
+                            </div>
+                            <div class="toolbar-group">
+                                <label>Karyawan Ditukar</label>
+                                <input type="text" id="historyDitukarFilter" placeholder="Cari karyawan tujuan">
+                            </div>
+                            <div class="toolbar-group">
+                                <label>Status</label>
+                                <select id="historyStatusFilter">
+                                    <option value="">-- Semua Status --</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Rejected">Rejected</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" type="button" onclick="applyHistoryFilter()">
+                                <i class="fas fa-search"></i> Terapkan
+                            </button>
+                            <button class="btn btn-secondary" type="button" onclick="resetHistoryFilter()">
+                                <i class="fas fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    <table id="historyTable">
+                        <thead class="thead-light">
                             <tr>
                                 <th>No</th>
                                 <th>Tanggal Pengajuan</th>
@@ -361,6 +406,77 @@
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script>
+        let historyTable = null;
+
+        function styleMsjButtons() {
+            $('.dt-button').addClass('btn btn-secondary');
+            $('.dt-button').removeClass('dt-button');
+        }
+
+        function applyHistoryFilter() {
+            historyTable.column(2).search(document.getElementById('historyPengajuFilter').value.trim());
+            historyTable.column(4).search(document.getElementById('historyDitukarFilter').value.trim());
+            historyTable.column(7).search(document.getElementById('historyStatusFilter').value);
+            historyTable.draw();
+        }
+
+        function resetHistoryFilter() {
+            document.getElementById('historyPengajuFilter').value = '';
+            document.getElementById('historyDitukarFilter').value = '';
+            document.getElementById('historyStatusFilter').value = '';
+            historyTable.columns().search('');
+            historyTable.draw();
+        }
+
+        $(document).ready(function() {
+            historyTable = $('#historyTable').DataTable({
+                language: {
+                    lengthMenu: 'Tampilkan _MENU_ baris',
+                    zeroRecords: 'Maaf - Data tidak ada',
+                    info: 'Data _START_ - _END_ dari _TOTAL_',
+                    infoEmpty: 'Tidak ada data',
+                    infoFiltered: '(pencarian dari _MAX_ data)'
+                },
+                searching: false,
+                responsive: true,
+                order: [[1, 'desc']],
+                dom: 'Brtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel me-1 text-lg text-success"></i><span class="font-weight-bold"> Excel',
+                        autoFilter: true,
+                        sheetName: 'History Tukar Jadwal',
+                        exportOptions: { columns: ':visible' }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf me-1 text-lg text-danger"></i><span class="font-weight-bold"> PDF',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        exportOptions: { columns: ':visible' }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print me-1 text-lg text-info"></i><span class="font-weight-bold"> Print',
+                        exportOptions: { columns: ':visible' }
+                    }
+                ]
+            });
+
+            styleMsjButtons();
+        });
+    </script>
 </body>
 
 </html>

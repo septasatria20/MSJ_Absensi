@@ -458,9 +458,9 @@
                     "infoEmpty": "Tidak ada data",
                     "infoFiltered": "(pencarian dari _MAX_ data)"
                 },
-                "searching": false, // Disable search box
+                "searching": false,
                 responsive: true,
-                dom: 'Bfrtip',
+                dom: 'Brtip',
                 buttons: [
                     {
                         extend: 'excelHtml5',
@@ -491,8 +491,8 @@
             });
             
             // Style buttons like MSJ framework
-            $('.dt-button').addClass('btn btn-secondary');
-            $('.dt-button').removeClass('dt-button');
+            $('#summaryTable_wrapper .dt-button').addClass('btn btn-secondary');
+            $('#summaryTable_wrapper .dt-button').removeClass('dt-button');
         }
 
         // Show Detail View for Selected Date with Plain Table
@@ -660,7 +660,7 @@
                 },
                 "searching": false,
                 responsive: true,
-                dom: 'Bfrtip',
+                dom: 'Brtip',
                 buttons: [
                     {
                         extend: 'excelHtml5',
@@ -691,8 +691,8 @@
             });
             
             // Style buttons like MSJ framework
-            $('.dt-button').addClass('btn btn-sm');
-            $('.dt-button').removeClass('dt-button');
+            $('#detailTable_wrapper .dt-button').addClass('btn btn-secondary');
+            $('#detailTable_wrapper .dt-button').removeClass('dt-button');
         }
 
         // Back to Summary

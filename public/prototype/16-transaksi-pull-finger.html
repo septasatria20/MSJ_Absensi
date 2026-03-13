@@ -107,6 +107,12 @@
         .thead-light { background-color: #00b7bd4f !important; }
         .btn-view { background: #028284; color: white; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
         .btn-view:hover { background: #025f60; transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .dt-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .dt-button.btn { box-shadow: none; }
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_length { display: none; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover { border: 1px solid #028284 !important; background: linear-gradient(135deg, #028284, #025f60) !important; color: white !important; }
         
         /* VIEW STATES */
         .view-section { display: none; }
@@ -438,6 +444,11 @@
         let currentDateStr = '';
         let currentDateFormatted = '';
         let currentDayName = '';
+
+        function styleMsjButtons() {
+            $('.dt-button').addClass('btn btn-secondary');
+            $('.dt-button').removeClass('dt-button');
+        }
         
         // Populate date filter
         function populateDateFilter() {
@@ -568,7 +579,7 @@
                 },
                 "searching": false, // Disable search box
                 responsive: true,
-                dom: 'Bfrtip',
+                dom: 'Brtip',
                 buttons: [
                     {
                         extend: 'excelHtml5',
@@ -599,8 +610,7 @@
             });
             
             // Style buttons like MSJ framework
-            $('.dt-button').addClass('btn btn-secondary');
-            $('.dt-button').removeClass('dt-button');
+            styleMsjButtons();
         }
         
         // Show Detail View with Plain Table
@@ -673,7 +683,7 @@
                 },
                 "searching": false,
                 responsive: true,
-                dom: 'Bfrtip',
+                dom: 'Brtip',
                 buttons: [
                     {
                         extend: 'excelHtml5',
@@ -704,8 +714,7 @@
             });
             
             // Style buttons like MSJ framework
-            $('.dt-button').addClass('btn btn-secondary');
-            $('.dt-button').removeClass('dt-button');
+            styleMsjButtons();
         }
         
         // Back to Summary

@@ -47,7 +47,7 @@
 
         {{-- ACTION BAR --}}
         <div class="card shadow-sm mb-3" id="actionBar" style="display: none;">
-            <div class="card-body p-3">
+            <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                     <span class="text-sm me-2">
                         <strong class="text-primary" id="selectedCount">0</strong> data terpilih
@@ -62,6 +62,7 @@
                         <i class="fas fa-sync me-1"></i>Refresh
                     </button>
                 </div>
+                <div id="dataMissingExportButtons" class="d-flex gap-2 flex-wrap"></div>
             </div>
         </div>
 
@@ -69,24 +70,24 @@
         <div class="card shadow-sm" id="dataTableCard" style="display: none;">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-items-center mb-0">
-                        <thead>
+                    <table class="table table-hover align-items-center mb-0" id="dataMissingTable">
+                        <thead class="thead-light" style="background-color: #00b7bd4f;">
                             <tr>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7" style="width: 40px;">
-                                    <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start" style="width: 40px;">
+                                    <input type="checkbox" id="selectAll" onchange="syncSelectAllRows(this.checked)">
                                 </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">NO</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">TANGGAL</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">NIK</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">NAMA KARYAWAN</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">SHIFT</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">JAM MASUK</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">TERLAMBAT</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">JAM KELUAR</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">PULANG CEPAT</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">STATUS</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">KETERANGAN</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ACTION</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">No</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Tanggal</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">NIK</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Nama Karyawan</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Shift</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Jam Masuk</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Terlambat</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Jam Keluar</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Pulang Cepat</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Status</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Keterangan</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Action</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -176,10 +177,9 @@
         }
     </style>
     <script>
-        // Global Variables
         let selectedKaryawan = null;
+        let dataMissingTable = null;
 
-        // Dummy data karyawan untuk autocomplete (nanti akan dari AJAX)
         const karyawanData = [
             { nik: '169987', nama: 'Ahmad Fauzi' },
             { nik: '235578', nama: 'Citra Dewi' },
@@ -191,28 +191,30 @@
             { nik: '345678', nama: 'Eko Prasetyo' }
         ];
 
-        // Initialize on page load
         $(document).ready(function() {
             setupKaryawanAutocomplete();
         });
 
-        // Setup Karyawan Autocomplete
+        function styleMsjButtons() {
+            $('#dataMissingExportButtons .dt-button').addClass('btn btn-secondary');
+            $('#dataMissingExportButtons .dt-button').removeClass('dt-button');
+        }
+
         function setupKaryawanAutocomplete() {
             const input = document.getElementById('karyawan');
             const dropdown = document.getElementById('karyawanDropdown');
 
             input.addEventListener('input', function() {
                 const query = this.value.toLowerCase().trim();
-                
+
                 if (query.length === 0) {
                     dropdown.style.display = 'none';
                     selectedKaryawan = null;
                     return;
                 }
 
-                // Filter karyawan by NIK or Nama
-                const filtered = karyawanData.filter(k => 
-                    k.nik.includes(query) || 
+                const filtered = karyawanData.filter(k =>
+                    k.nik.includes(query) ||
                     k.nama.toLowerCase().includes(query)
                 );
 
@@ -231,7 +233,6 @@
                 }
             });
 
-            // Close dropdown when clicking outside
             document.addEventListener('click', function(e) {
                 if (e.target !== input && !dropdown.contains(e.target)) {
                     dropdown.style.display = 'none';
@@ -239,22 +240,25 @@
             });
         }
 
-        // Select Karyawan from Autocomplete
         function selectKaryawan(nik, nama) {
             document.getElementById('karyawan').value = `${nik} - ${nama}`;
             document.getElementById('karyawanDropdown').style.display = 'none';
             selectedKaryawan = nik;
         }
 
-        // Get Data Missing (Filter & Display)
         function getDataMissing() {
             const tanggalMulai = document.getElementById('tanggal_mulai').value;
             const tanggalAkhir = document.getElementById('tanggal_akhir').value;
             const karyawan = selectedKaryawan;
 
-            // Show loading
+            if (dataMissingTable) {
+                dataMissingTable.destroy();
+                dataMissingTable = null;
+            }
+
             document.getElementById('dataTableCard').style.display = 'block';
             document.getElementById('actionBar').style.display = 'none';
+            document.getElementById('dataMissingExportButtons').innerHTML = '';
             document.getElementById('tableBody').innerHTML = `
                 <tr>
                     <td colspan="13" class="text-center py-5">
@@ -266,7 +270,6 @@
                 </tr>
             `;
 
-            // AJAX Request to get filtered data
             $.ajax({
                 url: '{{ url("/trsmis/ajax") }}',
                 method: 'GET',
@@ -276,7 +279,6 @@
                     karyawan: karyawan
                 },
                 success: function(response) {
-                    console.log('Response:', response);
                     if (response.success && response.data.length > 0) {
                         renderTable(response.data);
                         document.getElementById('actionBar').style.display = 'block';
@@ -293,7 +295,6 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('AJAX Error:', xhr, status, error);
                     document.getElementById('tableBody').innerHTML = `
                         <tr>
                             <td colspan="13" class="text-center py-5 text-danger">
@@ -312,50 +313,37 @@
             });
         }
 
-        // Render Table
         function renderTable(data) {
             let html = '';
             data.forEach((row, index) => {
-                // Status badge colors
                 const statusColors = {
-                    'danger': 'bg-gradient-danger',
-                    'warning': 'bg-gradient-warning',
-                    'secondary': 'bg-gradient-secondary',
-                    'success': 'bg-gradient-success',
-                    'info': 'bg-gradient-info'
+                    danger: 'bg-gradient-danger',
+                    warning: 'bg-gradient-warning',
+                    secondary: 'bg-gradient-secondary',
+                    success: 'bg-gradient-success',
+                    info: 'bg-gradient-info'
                 };
-                
+
                 const statusBadge = statusColors[row.status_badge] || 'bg-gradient-secondary';
-                const keteranganBadge = statusColors[row.keterangan_badge] || 'bg-gradient-secondary';
-                
+
                 html += `
                     <tr>
-                        <td class="text-center">
+                        <td>
                             <input type="checkbox" class="row-checkbox" value="${row.id}" onchange="updateSelectedCount()">
                         </td>
-                        <td class="text-center text-xs">${index + 1}</td>
-                        <td class="text-center text-xs">${formatDate(row.tanggal)}</td>
-                        <td class="text-center text-xs font-weight-bold">${row.nik}</td>
-                        <td class="text-xs ps-2">${row.nama}</td>
-                        <td class="text-center text-xs">${row.shift}</td>
-                        <td class="text-center text-xs">
-                            ${row.jam_masuk ? row.jam_masuk : '<span class="badge badge-sm bg-gradient-danger">Missing</span>'}
-                        </td>
-                        <td class="text-center text-xs">
-                            ${row.terlambat ? row.terlambat : '-'}
-                        </td>
-                        <td class="text-center text-xs">
-                            ${row.jam_keluar ? row.jam_keluar : '<span class="badge badge-sm bg-gradient-danger">Missing</span>'}
-                        </td>
-                        <td class="text-center text-xs">
-                            ${row.pulang_cepat ? row.pulang_cepat : '-'}
-                        </td>
-                        <td class="text-center">
-                            <span class="badge badge-sm ${statusBadge}">${row.status}</span>
-                        </td>
-                        <td class="text-center text-xs">${row.keterangan}</td>
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-warning" onclick="editKeterangan(${row.id}, '${row.nik}', '${row.nama}', '${row.tanggal}', '${row.keterangan}')">
+                        <td>${index + 1}</td>
+                        <td>${formatDate(row.tanggal)}</td>
+                        <td><strong>${row.nik}</strong></td>
+                        <td>${row.nama}</td>
+                        <td>${row.shift}</td>
+                        <td>${row.jam_masuk ? row.jam_masuk : '<span class="badge badge-sm bg-gradient-danger">Missing</span>'}</td>
+                        <td>${row.terlambat ? row.terlambat : '-'}</td>
+                        <td>${row.jam_keluar ? row.jam_keluar : '<span class="badge badge-sm bg-gradient-danger">Missing</span>'}</td>
+                        <td>${row.pulang_cepat ? row.pulang_cepat : '-'}</td>
+                        <td><span class="badge badge-sm ${statusBadge}">${row.status}</span></td>
+                        <td>${row.keterangan}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" onclick="editKeterangan(${row.id}, '${row.nik}', '${row.nama}', '${row.tanggal}', '${String(row.keterangan).replace(/'/g, "\\'")}')">
                                 <i class="fas fa-edit"></i> Edit Keterangan
                             </button>
                         </td>
@@ -363,10 +351,48 @@
                 `;
             });
             document.getElementById('tableBody').innerHTML = html;
+
+            dataMissingTable = $('#dataMissingTable').DataTable({
+                language: {
+                    lengthMenu: 'Tampilkan _MENU_ baris',
+                    zeroRecords: 'Maaf - Data tidak ada',
+                    info: 'Data _START_ - _END_ dari _TOTAL_',
+                    infoEmpty: 'Tidak ada data',
+                    infoFiltered: '(pencarian dari _MAX_ data)'
+                },
+                searching: false,
+                responsive: true,
+                order: [[2, 'desc']],
+                dom: 'Brtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel me-1 text-lg text-success"></i><span class="font-weight-bold"> Excel',
+                        autoFilter: true,
+                        sheetName: 'Data Missing',
+                        exportOptions: { columns: ':visible:not(:first-child):not(:last-child)' }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf me-1 text-lg text-danger"></i><span class="font-weight-bold"> PDF',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        exportOptions: { columns: ':visible:not(:first-child):not(:last-child)' }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print me-1 text-lg text-info"></i><span class="font-weight-bold"> Print',
+                        exportOptions: { columns: ':visible:not(:first-child):not(:last-child)' }
+                    }
+                ]
+            });
+
+            dataMissingTable.buttons().container().appendTo('#dataMissingExportButtons');
+            styleMsjButtons();
+            document.getElementById('selectAll').checked = false;
             updateSelectedCount();
         }
 
-        // Format date to DD/MM/YYYY
         function formatDate(dateStr) {
             if (!dateStr) return '-';
             const date = new Date(dateStr);
@@ -376,19 +402,25 @@
             return `${year}-${month}-${day}`;
         }
 
-        // Toggle Select All Checkboxes
-        function toggleSelectAll() {
-            const selectAll = document.getElementById('selectAll');
+        function syncSelectAllRows(isChecked) {
             const checkboxes = document.querySelectorAll('.row-checkbox');
-            checkboxes.forEach(cb => cb.checked = !selectAll.checked);
-            selectAll.checked = !selectAll.checked;
+            checkboxes.forEach(cb => {
+                cb.checked = isChecked;
+            });
             updateSelectedCount();
         }
 
-        // Update Selected Count
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            selectAll.checked = !selectAll.checked;
+            syncSelectAllRows(selectAll.checked);
+        }
+
         function updateSelectedCount() {
-            const checkboxes = document.querySelectorAll('.row-checkbox:checked');
-            document.getElementById('selectedCount').textContent = checkboxes.length;
+            const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+            const totalCount = document.querySelectorAll('.row-checkbox').length;
+            document.getElementById('selectedCount').textContent = checkedCount;
+            document.getElementById('selectAll').checked = totalCount > 0 && checkedCount === totalCount;
         }
 
         // Edit Keterangan

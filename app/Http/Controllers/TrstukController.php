@@ -15,9 +15,12 @@ class TrstukController extends Controller
     // Get History List (AJAX with Pagination)
     public function ajax($data = [])
     {
-        $page = request()->input('page', 1);
-        $perPage = 10;
-        $search = request()->input('search', '');
+        $page = (int) request()->input('page', 1);
+        $perPage = (int) request()->input('per_page', 10);
+        $searchPengaju = request()->input('search_pengaju', '');
+        $searchDitukar = request()->input('search_ditukar', '');
+        $status = request()->input('status', '');
+        $returnAll = (bool) request()->input('all', false);
 
         // Dummy data - nanti akan diganti dengan query database
         $allData = [
@@ -167,18 +170,43 @@ class TrstukController extends Controller
             ],
         ];
 
-        // Filter by search
-        if ($search) {
-            $allData = array_filter($allData, function($item) use ($search) {
-                return stripos($item['nama_pengaju'], $search) !== false ||
-                       stripos($item['nik_pengaju'], $search) !== false ||
-                       stripos($item['nama_ditukar'], $search) !== false ||
-                       stripos($item['nik_ditukar'], $search) !== false;
+        if ($searchPengaju) {
+            $allData = array_filter($allData, function($item) use ($searchPengaju) {
+                return stripos($item['nama_pengaju'], $searchPengaju) !== false ||
+                       stripos($item['nik_pengaju'], $searchPengaju) !== false;
             });
         }
 
+        if ($searchDitukar) {
+            $allData = array_filter($allData, function($item) use ($searchDitukar) {
+                return stripos($item['nama_ditukar'], $searchDitukar) !== false ||
+                       stripos($item['nik_ditukar'], $searchDitukar) !== false;
+            });
+        }
+
+        if ($status) {
+            $allData = array_filter($allData, function($item) use ($status) {
+                return strtolower($item['status']) === strtolower($status);
+            });
+        }
+
+        $allData = array_values($allData);
         $total = count($allData);
-        $lastPage = ceil($total / $perPage);
+
+        if ($returnAll) {
+            return response()->json([
+                'success' => true,
+                'data' => $allData,
+                'pagination' => [
+                    'current_page' => 1,
+                    'last_page' => 1,
+                    'per_page' => $total,
+                    'total' => $total
+                ]
+            ]);
+        }
+
+        $lastPage = $perPage > 0 ? (int) ceil($total / $perPage) : 1;
         $offset = ($page - 1) * $perPage;
         $paginatedData = array_slice($allData, $offset, $perPage);
 
@@ -186,7 +214,7 @@ class TrstukController extends Controller
             'success' => true,
             'data' => $paginatedData,
             'pagination' => [
-                'current_page' => (int)$page,
+                'current_page' => (int) $page,
                 'last_page' => $lastPage,
                 'per_page' => $perPage,
                 'total' => $total

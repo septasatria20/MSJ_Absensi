@@ -8,6 +8,8 @@
     
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
     
     <style>
         * {
@@ -221,6 +223,9 @@
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         
         /* DATA TABLE */
@@ -243,18 +248,22 @@
         th {
             padding: 12px 16px;
             text-align: left;
-            font-size: 11px;
-            text-transform: uppercase;
-            font-weight: 700;
+            font-size: 13px;
+            font-weight: 600;
             color: #67748e;
-            border-bottom: 2px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+            white-space: nowrap;
+            vertical-align: middle;
+            text-transform: none;
         }
         
         td {
             padding: 12px 16px;
-            font-size: 14px;
+            font-size: 13px;
             color: #344767;
-            border-bottom: 1px solid #f1f3f5;
+            border-bottom: 1px solid #e9ecef;
+            white-space: nowrap;
+            vertical-align: middle;
         }
         
         tbody tr:hover {
@@ -470,6 +479,13 @@
         .table-card {
             overflow-x: auto;
         }
+        .thead-light { background-color: #00b7bd4f !important; }
+        .dt-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .dt-button.btn { box-shadow: none; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover { border: 1px solid #028284 !important; background: linear-gradient(135deg, #028284, #025f60) !important; color: white !important; }
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_length { display: none; }
         
         /* FOOTER */
         .footer {
@@ -605,23 +621,26 @@
                     <div class="filter-row">
                         <div class="form-group">
                             <label>Tanggal Mulai</label>
-                            <input type="date" class="form-control" value="2026-02-01">
+                            <input type="date" class="form-control" id="filterTanggalMulai" value="2026-02-01">
                         </div>
                         <div class="form-group">
                             <label>Tanggal Akhir</label>
-                            <input type="date" class="form-control" value="2026-02-12">
+                            <input type="date" class="form-control" id="filterTanggalAkhir" value="2026-02-12">
                         </div>
                         <div class="form-group">
                             <label>Karyawan</label>
-                            <select class="form-control">
-                                <option>-- Semua Karyawan --</option>
-                                <option>Ahmad Fauzi</option>
-                                <option>Budi Santoso</option>
+                            <select class="form-control" id="filterKaryawanMissing">
+                                <option value="">-- Semua Karyawan --</option>
+                                <option value="Ahmad Fauzi">Ahmad Fauzi</option>
+                                <option value="Budi Santoso">Budi Santoso</option>
+                                <option value="Citra Dewi">Citra Dewi</option>
+                                <option value="Gita Maharani">Gita Maharani</option>
+                                <option value="Hari Purnomo">Hari Purnomo</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>&nbsp;</label>
-                            <button class="btn-primary">
+                            <button class="btn-primary" type="button" onclick="applyMissingFilter()">
                                 <i class="fas fa-search"></i> Cari Data
                             </button>
                         </div>
@@ -650,8 +669,8 @@
                 
                 <!-- DATA TABLE -->
                 <div class="table-card">
-                    <table>
-                        <thead>
+                    <table id="missingTable">
+                        <thead class="thead-light">
                             <tr>
                                 <th class="checkbox-cell">
                                     <input type="checkbox" id="selectAll" onclick="toggleSelectAll()">
@@ -830,6 +849,15 @@
         </div>
     </div>
     
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
     <!-- MODAL EDIT KETERANGAN -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-content">
@@ -875,17 +903,58 @@
     
     <script>
         let currentEditData = {};
+        let missingTable = null;
+        const missingFilterState = {
+            startDate: '',
+            endDate: '',
+            employee: ''
+        };
+
+        $.fn.dataTable.ext.search.push(function(settings, data) {
+            if (!settings.nTable || settings.nTable.id !== 'missingTable') {
+                return true;
+            }
+
+            const rowDate = data[2] || '';
+            const rowEmployee = data[4] || '';
+
+            if (missingFilterState.startDate && rowDate < missingFilterState.startDate) {
+                return false;
+            }
+
+            if (missingFilterState.endDate && rowDate > missingFilterState.endDate) {
+                return false;
+            }
+
+            if (missingFilterState.employee && rowEmployee !== missingFilterState.employee) {
+                return false;
+            }
+
+            return true;
+        });
+
+        function styleMsjButtons() {
+            $('.dt-button').addClass('btn btn-secondary');
+            $('.dt-button').removeClass('dt-button');
+        }
+
+        function applyMissingFilter() {
+            missingFilterState.startDate = document.getElementById('filterTanggalMulai').value;
+            missingFilterState.endDate = document.getElementById('filterTanggalAkhir').value;
+            missingFilterState.employee = document.getElementById('filterKaryawanMissing').value;
+            missingTable.draw();
+        }
         
         // CHECKBOX FUNCTIONS
         function toggleSelectAll() {
             const selectAll = document.getElementById('selectAll');
-            const checkboxes = document.querySelectorAll('.row-checkbox');
+            const checkboxes = document.querySelectorAll('#missingTable .row-checkbox');
             checkboxes.forEach(cb => cb.checked = selectAll.checked);
             updateSelectedCount();
         }
         
         function updateSelectAll() {
-            const checkboxes = document.querySelectorAll('.row-checkbox');
+            const checkboxes = document.querySelectorAll('#missingTable .row-checkbox');
             const selectAll = document.getElementById('selectAll');
             const allChecked = Array.from(checkboxes).every(cb => cb.checked);
             const noneChecked = Array.from(checkboxes).every(cb => !cb.checked);
@@ -896,13 +965,13 @@
         }
         
         function updateSelectedCount() {
-            const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+            const checkboxes = document.querySelectorAll('#missingTable .row-checkbox:checked');
             document.getElementById('selectedCount').textContent = checkboxes.length;
         }
         
         // KONFIRMASI MULTIPLE RECORDS
         function konfirmasiSelected() {
-            const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+            const checkboxes = document.querySelectorAll('#missingTable .row-checkbox:checked');
             if (checkboxes.length === 0) {
                 alert('⚠️ Mohon pilih minimal satu data untuk dikonfirmasi!');
                 return;
@@ -936,7 +1005,13 @@
                     const row = cb.closest('tr');
                     row.style.transition = 'opacity 0.3s';
                     row.style.opacity = '0';
-                    setTimeout(() => row.remove(), 300);
+                    setTimeout(() => {
+                        if (missingTable) {
+                            missingTable.row(row).remove().draw(false);
+                        } else {
+                            row.remove();
+                        }
+                    }, 300);
                 });
                 
                 setTimeout(() => {
@@ -995,7 +1070,7 @@
                 alert('✓ Keterangan berhasil diperbarui!\n\nData telah disimpan ke database.');
                 
                 // Update the keterangan badge in the table
-                const rows = document.querySelectorAll('tbody tr');
+                const rows = document.querySelectorAll('#missingTable tbody tr');
                 rows.forEach(row => {
                     const nikCell = row.querySelector('td:nth-child(4) strong');
                     if (nikCell && nikCell.textContent === currentEditData.nik) {
@@ -1019,6 +1094,46 @@
             }
         }
         
+        $(document).ready(function() {
+            missingTable = $('#missingTable').DataTable({
+                language: {
+                    lengthMenu: 'Tampilkan _MENU_ baris',
+                    zeroRecords: 'Maaf - Data tidak ada',
+                    info: 'Data _START_ - _END_ dari _TOTAL_',
+                    infoEmpty: 'Tidak ada data',
+                    infoFiltered: '(pencarian dari _MAX_ data)'
+                },
+                searching: false,
+                responsive: true,
+                order: [[2, 'desc']],
+                dom: 'Brtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel me-1 text-lg text-success"></i><span class="font-weight-bold"> Excel',
+                        autoFilter: true,
+                        sheetName: 'Data Missing',
+                        exportOptions: { columns: ':visible' }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf me-1 text-lg text-danger"></i><span class="font-weight-bold"> PDF',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        exportOptions: { columns: ':visible' }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print me-1 text-lg text-info"></i><span class="font-weight-bold"> Print',
+                        exportOptions: { columns: ':visible' }
+                    }
+                ]
+            });
+
+            styleMsjButtons();
+            updateSelectedCount();
+        });
+
         // Close modal when clicking outside
         document.getElementById('editModal').addEventListener('click', function(e) {
             if (e.target === this) {

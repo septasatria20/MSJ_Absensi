@@ -19,30 +19,30 @@
         {{-- FILTER SECTION --}}
         <div class="card shadow-sm mb-3">
             <div class="card-body p-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    {{-- Left: Export Buttons --}}
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-danger" onclick="exportPDF()">
-                            <i class="fas fa-file-pdf me-1"></i>PDF
-                        </button>
-                        <button class="btn btn-sm btn-secondary" onclick="printTable()">
-                            <i class="fas fa-print me-1"></i>Print
-                        </button>
-                        <button class="btn btn-sm btn-secondary" onclick="resetFilter()">
-                            <i class="fas fa-sync me-1"></i>Reset
-                        </button>
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3 position-relative">
+                        <label for="karyawan_filter" class="form-label text-sm font-weight-bold">Karyawan</label>
+                        <input type="text" class="form-control" id="karyawan_filter" placeholder="Cari karyawan..." autocomplete="off">
+                        <input type="hidden" id="nik_filter">
+                        <div id="karyawanDropdown" class="autocomplete-dropdown"></div>
                     </div>
-
-                    {{-- Right: Search Filter --}}
-                    <div style="width: 350px;">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="karyawan_filter" 
-                                   placeholder="Cari karyawan..." autocomplete="off">
-                            <input type="hidden" id="nik_filter">
-                            <span class="input-group-text bg-white">
-                                <i class="fas fa-search text-secondary"></i>
-                            </span>
-                            <div id="karyawanDropdown" class="autocomplete-dropdown"></div>
+                    <div class="col-md-2">
+                        <label for="tanggal_mulai" class="form-label text-sm font-weight-bold">Tanggal Mulai</label>
+                        <input type="date" class="form-control" id="tanggal_mulai">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="tanggal_akhir" class="form-label text-sm font-weight-bold">Tanggal Akhir</label>
+                        <input type="date" class="form-control" id="tanggal_akhir">
+                    </div>
+                    <div class="col-md-5">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-primary" type="button" onclick="applyFilter()">
+                                <i class="fas fa-search me-1"></i>Terapkan
+                            </button>
+                            <button class="btn btn-secondary" type="button" onclick="resetFilter()">
+                                <i class="fas fa-sync me-1"></i>Reset
+                            </button>
+                            <div id="spExportButtons" class="d-flex gap-2 flex-wrap"></div>
                         </div>
                     </div>
                 </div>
@@ -53,37 +53,28 @@
         <div class="card shadow-sm">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-items-center mb-0">
-                        <thead class="bg-gray-100">
+                    <table class="table table-hover align-items-center mb-0" id="spTable">
+                        <thead style="background-color: #00b7bd4f;">
                             <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3" style="width: 40px;">NO</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">NIK</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">NAMA KARYAWAN</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">MANGKIR</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">IZIN</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">CUTI</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">TELAT</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">ISTIRAHAT</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">OVERTIME</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">PULANG CEPAT</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">TUGAS</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">SURAT PERINGATAN</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="width: 280px;">ACTION</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start" style="width: 40px;">No</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">NIK</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Nama Karyawan</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Mangkir</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Izin</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Cuti</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Telat</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Istirahat</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Overtime</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Pulang Cepat</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Tugas</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Surat Peringatan</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start" style="width: 280px;">Action</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
                             {{-- Data will be loaded via AJAX --}}
                         </tbody>
                     </table>
-                </div>
-
-                {{-- PAGINATION --}}
-                <div class="card-footer pb-3">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-center mb-0" id="pagination">
-                            {{-- Pagination will be rendered here --}}
-                        </ul>
-                    </nav>
                 </div>
             </div>
         </div>
@@ -175,55 +166,54 @@
     </style>
 
     <script>
-        let currentPage = 1;
+        let spTable = null;
         let karyawanList = [];
         let currentFilters = {
-            nik: ''
+            nik: '',
+            tanggal_mulai: '',
+            tanggal_akhir: ''
         };
 
-        // Initialize
         $(document).ready(function() {
-            loadData(1);
+            loadData();
             loadKaryawanList();
             setupAutocomplete();
         });
 
-        // Load Karyawan List for Autocomplete
+        function styleMsjButtons() {
+            $('#spExportButtons .dt-button').addClass('btn btn-secondary');
+            $('#spExportButtons .dt-button').removeClass('dt-button');
+        }
+
         function loadKaryawanList() {
-            console.log('Loading karyawan list...');
             $.ajax({
                 url: '{{ url("/trssp/getkaryawan") }}',
                 method: 'GET',
                 data: { query: '' },
                 success: function(response) {
-                    console.log('Karyawan response:', response);
                     if (response.success) {
                         karyawanList = response.data;
-                        console.log('✓ Loaded ' + karyawanList.length + ' karyawan');
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error('✗ AJAX Error loading karyawan:', error);
                 }
             });
         }
 
-        // Setup Autocomplete
         function setupAutocomplete() {
             const input = document.getElementById('karyawan_filter');
             const dropdown = document.getElementById('karyawanDropdown');
 
             input.addEventListener('input', function() {
                 const query = this.value.toLowerCase().trim();
-                
+
                 if (query.length === 0) {
                     dropdown.style.display = 'none';
                     document.getElementById('nik_filter').value = '';
+                    currentFilters.nik = '';
                     return;
                 }
 
-                const filtered = karyawanList.filter(k => 
-                    k.nik.includes(query) || 
+                const filtered = karyawanList.filter(k =>
+                    k.nik.includes(query) ||
                     k.nama.toLowerCase().includes(query)
                 );
 
@@ -236,15 +226,12 @@
                             <strong>${k.nik}</strong> - ${k.nama}
                             <br><small>${k.departemen}</small>
                         `;
-                        
                         item.addEventListener('click', function() {
                             document.getElementById('nik_filter').value = k.nik;
                             document.getElementById('karyawan_filter').value = `${k.nik} - ${k.nama}`;
-                            dropdown.style.display = 'none';
                             currentFilters.nik = k.nik;
-                            loadData(1);
+                            dropdown.style.display = 'none';
                         });
-                        
                         dropdown.appendChild(item);
                     });
                     dropdown.style.display = 'block';
@@ -254,7 +241,6 @@
                 }
             });
 
-            // Close dropdown when clicking outside
             document.addEventListener('click', function(e) {
                 if (e.target !== input && !dropdown.contains(e.target)) {
                     dropdown.style.display = 'none';
@@ -262,33 +248,57 @@
             });
         }
 
-        // Reset Filter
+        function applyFilter() {
+            currentFilters = {
+                nik: document.getElementById('nik_filter').value,
+                tanggal_mulai: document.getElementById('tanggal_mulai').value,
+                tanggal_akhir: document.getElementById('tanggal_akhir').value
+            };
+            loadData();
+        }
+
         function resetFilter() {
             document.getElementById('karyawan_filter').value = '';
             document.getElementById('nik_filter').value = '';
-            currentFilters = { nik: '' };
-            loadData(1);
+            document.getElementById('tanggal_mulai').value = '';
+            document.getElementById('tanggal_akhir').value = '';
+            currentFilters = { nik: '', tanggal_mulai: '', tanggal_akhir: '' };
+            loadData();
         }
 
-        // Load Data
-        function loadData(page = 1) {
-            currentPage = page;
-            
+        function loadData() {
+            if (spTable) {
+                spTable.destroy();
+                spTable = null;
+            }
+
+            $('#spExportButtons').html('');
+            $('#tableBody').html(`
+                <tr>
+                    <td colspan="13" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="text-sm text-secondary mt-3">Memuat data SP...</p>
+                    </td>
+                </tr>
+            `);
+
             $.ajax({
                 url: '{{ url("/trssp/ajax") }}',
                 method: 'GET',
                 data: {
-                    page: page,
-                    nik: currentFilters.nik
+                    all: 1,
+                    nik: currentFilters.nik,
+                    tanggal_mulai: currentFilters.tanggal_mulai,
+                    tanggal_akhir: currentFilters.tanggal_akhir
                 },
                 success: function(response) {
                     if (response.success) {
                         renderTable(response.data);
-                        renderPagination(response.pagination);
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Error loading data:', error);
+                error: function() {
                     $('#tableBody').html(`
                         <tr>
                             <td colspan="13" class="text-center py-5 text-danger">
@@ -301,10 +311,9 @@
             });
         }
 
-        // Render Table
         function renderTable(data) {
             let html = '';
-            
+
             if (data.length === 0) {
                 html = `
                     <tr>
@@ -314,130 +323,95 @@
                         </td>
                     </tr>
                 `;
-            } else {
-                data.forEach((item, index) => {
-                    const no = (currentPage - 1) * 10 + index + 1;
-                    
-                    // Status icons
-                    const waIcon = item.wa_sent ? '<i class="fas fa-check-circle text-success"></i>' : '';
-                    const emailIcon = item.email_sent ? '<i class="fas fa-check-circle text-success"></i>' : '';
-                    
-                    html += `
-                        <tr>
-                            <td class="ps-3">${no}</td>
-                            <td><strong>${item.nik}</strong></td>
-                            <td>
-                                <div>${item.nama}</div>
-                                <small class="text-secondary">${item.departemen}</small>
-                            </td>
-                            <td class="text-center">
-                                <span class="badge badge-sm bg-danger">${item.mangkir}</span>
-                            </td>
-                            <td class="text-center">${item.izin}</td>
-                            <td class="text-center">${item.cuti}</td>
-                            <td class="text-center">${item.telat}</td>
-                            <td class="text-center">${item.istirahat}</td>
-                            <td class="text-center">${item.overtime}</td>
-                            <td class="text-center">${item.pulang_cepat}</td>
-                            <td class="text-center">${item.tugas}</td>
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center">
-                                    <select class="form-select form-select-sm" onchange="updateSP(${item.id}, this.value)" style="width: 100px;">
-                                        <option value="SP 1" ${item.sp_level === 'SP 1' ? 'selected' : ''}>SP 1</option>
-                                        <option value="SP 2" ${item.sp_level === 'SP 2' ? 'selected' : ''}>SP 2</option>
-                                        <option value="SP 3" ${item.sp_level === 'SP 3' ? 'selected' : ''}>SP 3</option>
-                                    </select>
-                                </div>
-                            </td>
-                            <td class="text-center">
-                                <div class="d-flex gap-2 justify-content-center">
-                                    <button class="btn btn-sm btn-info btn-action" onclick="cetakSP(${item.id})" title="Cetak SP">
-                                        <i class="fas fa-print"></i> Cetak SP
-                                    </button>
-                                    <button class="btn btn-sm btn-success btn-action" onclick="openHubungiModal(${item.id}, '${item.nik}', '${item.nama}')" title="Hubungi ${waIcon ? '✓ WhatsApp' : ''} ${emailIcon ? '✓ Email' : ''}">
-                                        <i class="fas fa-paper-plane"></i> Hubungi
-                                    </button>
-                                    <button class="btn btn-sm btn-warning btn-action" onclick="markSelesai(${item.id})" title="Selesai">
-                                        <i class="fas fa-check"></i> Selesai
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
-            
-            $('#tableBody').html(html);
-        }
-
-        // Render Pagination
-        function renderPagination(pagination) {
-            let html = '';
-            const current = pagination.current_page;
-            const last = pagination.last_page;
-
-            if (last <= 1) {
-                $('#pagination').html('');
+                $('#tableBody').html(html);
                 return;
             }
 
-            // Previous button
-            html += `
-                <li class="page-item ${current === 1 ? 'disabled' : ''}">
-                    <a class="page-link" href="javascript:void(0)" onclick="${current > 1 ? 'loadData(' + (current - 1) + ')' : ''}">
-                        <i class="fas fa-angle-left"></i> Previous
-                    </a>
-                </li>
-            `;
-
-            // Always show first page
-            html += `
-                <li class="page-item ${current === 1 ? 'active' : ''}">
-                    <a class="page-link" href="javascript:void(0)" onclick="loadData(1)">1</a>
-                </li>
-            `;
-
-            // Show ellipsis if needed
-            if (current > 3) {
-                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
-            }
-
-            // Show pages around current
-            for (let i = Math.max(2, current - 1); i <= Math.min(last - 1, current + 1); i++) {
+            data.forEach((item, index) => {
+                const safeNama = String(item.nama).replace(/'/g, "\\'");
                 html += `
-                    <li class="page-item ${current === i ? 'active' : ''}">
-                        <a class="page-link" href="javascript:void(0)" onclick="loadData(${i})">${i}</a>
-                    </li>
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${item.nik}</strong></td>
+                        <td>
+                            <div>${item.nama}</div>
+                            <small class="text-secondary">${item.departemen}</small>
+                        </td>
+                        <td><span class="badge badge-sm bg-danger">${item.mangkir}</span></td>
+                        <td>${item.izin}</td>
+                        <td>${item.cuti}</td>
+                        <td>${item.telat}</td>
+                        <td>${item.istirahat}</td>
+                        <td>${item.overtime}</td>
+                        <td>${item.pulang_cepat}</td>
+                        <td>${item.tugas}</td>
+                        <td>
+                            <div class="d-flex justify-content-center">
+                                <select class="form-select form-select-sm" onchange="updateSP(${item.id}, this.value)" style="width: 100px;">
+                                    <option value="SP 1" ${item.sp_level === 'SP 1' ? 'selected' : ''}>SP 1</option>
+                                    <option value="SP 2" ${item.sp_level === 'SP 2' ? 'selected' : ''}>SP 2</option>
+                                    <option value="SP 3" ${item.sp_level === 'SP 3' ? 'selected' : ''}>SP 3</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                                <button class="btn btn-sm btn-info btn-action" onclick="cetakSP(${item.id})" title="Cetak SP">
+                                    <i class="fas fa-print"></i> Cetak SP
+                                </button>
+                                <button class="btn btn-sm btn-success btn-action" onclick="openHubungiModal(${item.id}, '${item.nik}', '${safeNama}')" title="Hubungi">
+                                    <i class="fas fa-paper-plane"></i> Hubungi
+                                </button>
+                                <button class="btn btn-sm btn-warning btn-action" onclick="markSelesai(${item.id})" title="Selesai">
+                                    <i class="fas fa-check"></i> Selesai
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
                 `;
-            }
+            });
 
-            // Show ellipsis if needed
-            if (current < last - 2) {
-                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
-            }
+            $('#tableBody').html(html);
 
-            // Always show last page if more than 1 page
-            if (last > 1) {
-                html += `
-                    <li class="page-item ${current === last ? 'active' : ''}">
-                        <a class="page-link" href="javascript:void(0)" onclick="loadData(${last})">${last}</a>
-                    </li>
-                `;
-            }
+            spTable = $('#spTable').DataTable({
+                language: {
+                    lengthMenu: 'Tampilkan _MENU_ baris',
+                    zeroRecords: 'Maaf - Data tidak ada',
+                    info: 'Data _START_ - _END_ dari _TOTAL_',
+                    infoEmpty: 'Tidak ada data',
+                    infoFiltered: '(pencarian dari _MAX_ data)'
+                },
+                searching: false,
+                responsive: true,
+                order: [[1, 'asc']],
+                dom: 'Brtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel me-1 text-lg text-success"></i><span class="font-weight-bold"> Excel',
+                        autoFilter: true,
+                        sheetName: 'Kirim SP',
+                        exportOptions: { columns: ':visible:not(:last-child)' }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf me-1 text-lg text-danger"></i><span class="font-weight-bold"> PDF',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        exportOptions: { columns: ':visible:not(:last-child)' }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print me-1 text-lg text-info"></i><span class="font-weight-bold"> Print',
+                        exportOptions: { columns: ':visible:not(:last-child)' }
+                    }
+                ]
+            });
 
-            // Next button
-            html += `
-                <li class="page-item ${current === last ? 'disabled' : ''}">
-                    <a class="page-link" href="javascript:void(0)" onclick="${current < last ? 'loadData(' + (current + 1) + ')' : ''}">
-                        Next <i class="fas fa-angle-right"></i>
-                    </a>
-                </li>
-            `;
-
-            $('#pagination').html(html);
+            spTable.buttons().container().appendTo('#spExportButtons');
+            styleMsjButtons();
         }
 
-        // Cetak SP
         function cetakSP(id) {
             $.ajax({
                 url: '{{ url("/trssp/cetaksp") }}',
@@ -448,33 +422,40 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        alert(response.message);
-                        // Open PDF in new tab
-                        // window.open(response.pdf_url, '_blank');
-                        loadData(currentPage);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message,
+                            confirmButtonColor: '#028284'
+                        }).then(() => {
+                            loadData();
+                        });
                     }
                 },
                 error: function() {
-                    alert('Gagal mencetak SP. Silakan coba lagi.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal mencetak SP. Silakan coba lagi.',
+                        confirmButtonColor: '#028284'
+                    });
                 }
             });
         }
 
-        // Open Hubungi Modal
         function openHubungiModal(id, nik, nama) {
             document.getElementById('hubungi_sp_id').value = id;
             document.getElementById('hubungi_nik').value = nik;
             document.getElementById('hubungi_nama').value = nama;
             document.getElementById('hubungi_display_name').textContent = `${nik} - ${nama}`;
-            
+
             const modal = new bootstrap.Modal(document.getElementById('hubungiModal'));
             modal.show();
         }
 
-        // Send via WhatsApp
         function sendViaWhatsApp() {
             const id = document.getElementById('hubungi_sp_id').value;
-            
+
             $.ajax({
                 url: '{{ url("/trssp/hubungi") }}',
                 method: 'POST',
@@ -485,21 +466,31 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        alert(response.message);
-                        bootstrap.Modal.getInstance(document.getElementById('hubungiModal')).hide();
-                        loadData(currentPage);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message,
+                            confirmButtonColor: '#028284'
+                        }).then(() => {
+                            bootstrap.Modal.getInstance(document.getElementById('hubungiModal')).hide();
+                            loadData();
+                        });
                     }
                 },
                 error: function() {
-                    alert('Gagal mengirim via WhatsApp. Silakan coba lagi.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal mengirim via WhatsApp. Silakan coba lagi.',
+                        confirmButtonColor: '#028284'
+                    });
                 }
             });
         }
 
-        // Send via Email
         function sendViaEmail() {
             const id = document.getElementById('hubungi_sp_id').value;
-            
+
             $.ajax({
                 url: '{{ url("/trssp/hubungi") }}',
                 method: 'POST',
@@ -510,18 +501,28 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        alert(response.message);
-                        bootstrap.Modal.getInstance(document.getElementById('hubungiModal')).hide();
-                        loadData(currentPage);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message,
+                            confirmButtonColor: '#028284'
+                        }).then(() => {
+                            bootstrap.Modal.getInstance(document.getElementById('hubungiModal')).hide();
+                            loadData();
+                        });
                     }
                 },
                 error: function() {
-                    alert('Gagal mengirim via Email. Silakan coba lagi.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal mengirim via Email. Silakan coba lagi.',
+                        confirmButtonColor: '#028284'
+                    });
                 }
             });
         }
 
-        // Update SP Level
         function updateSP(id, spLevel) {
             $.ajax({
                 url: '{{ url("/trssp/updatesp") }}',
@@ -533,50 +534,72 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        alert('SP Level berhasil diupdate');
-                        loadData(currentPage);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'SP Level berhasil diupdate',
+                            timer: 1200,
+                            showConfirmButton: false
+                        });
+                        loadData();
                     }
                 },
                 error: function() {
-                    alert('Gagal mengupdate SP Level. Silakan coba lagi.');
-                    loadData(currentPage);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal mengupdate SP Level. Silakan coba lagi.',
+                        confirmButtonColor: '#028284'
+                    });
+                    loadData();
                 }
             });
         }
 
-        // Mark SP as Completed
         function markSelesai(id) {
-            if (!confirm('Tandai SP ini sebagai selesai? Data akan dipindahkan ke laporan.')) {
-                return;
-            }
-
-            $.ajax({
-                url: '{{ url("/trssp/selesai") }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    id: id
-                },
-                success: function(response) {
-                    if (response.success) {
-                        alert(response.message);
-                        loadData(currentPage);
-                    }
-                },
-                error: function() {
-                    alert('Gagal menandai sebagai selesai. Silakan coba lagi.');
+            Swal.fire({
+                title: 'Tandai selesai?',
+                text: 'Data akan dipindahkan ke laporan.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#028284',
+                cancelButtonColor: '#8392ab',
+                confirmButtonText: 'Ya, selesaikan',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (!result.isConfirmed) {
+                    return;
                 }
+
+                $.ajax({
+                    url: '{{ url("/trssp/selesai") }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        id: id
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: response.message,
+                                confirmButtonColor: '#028284'
+                            }).then(() => {
+                                loadData();
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Gagal menandai sebagai selesai. Silakan coba lagi.',
+                            confirmButtonColor: '#028284'
+                        });
+                    }
+                });
             });
-        }
-
-        // Export PDF
-        function exportPDF() {
-            alert('Export PDF akan diimplementasikan');
-        }
-
-        // Print Table
-        function printTable() {
-            window.print();
         }
     </script>
 @endsection

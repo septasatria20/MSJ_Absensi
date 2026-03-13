@@ -37,56 +37,65 @@
             
             {{-- HISTORY TAB --}}
             <div class="tab-pane fade show active" id="history" role="tabpanel">
-                {{-- FILTER & ACTIONS --}}
                 <div class="card shadow-sm mb-3">
                     <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-sm btn-primary" onclick="showFormTab()">
-                                    <i class="fas fa-plus me-1"></i>Tambah
-                                </button>
-                                <button class="btn btn-sm btn-success" onclick="exportExcel()">
-                                    <i class="fas fa-file-excel me-1"></i>Excel
-                                </button>
-                                <button class="btn btn-sm btn-danger" onclick="exportPDF()">
-                                    <i class="fas fa-file-pdf me-1"></i>PDF
-                                </button>
-                                <button class="btn btn-sm btn-secondary" onclick="printTable()">
-                                    <i class="fas fa-print me-1"></i>Print
-                                </button>
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-3">
+                                <label for="historyPengajuFilter" class="form-label text-sm font-weight-bold">Karyawan Pengaju</label>
+                                <input type="text" class="form-control" id="historyPengajuFilter" placeholder="Cari pengaju...">
                             </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <label class="text-sm mb-0">Cari :</label>
-                                <input type="text" class="form-control form-control-sm" id="searchInput" 
-                                       placeholder="Cari karyawan..." style="width: 250px;" 
-                                       onkeyup="searchHistory()">
+                            <div class="col-md-3">
+                                <label for="historyDitukarFilter" class="form-label text-sm font-weight-bold">Karyawan Ditukar</label>
+                                <input type="text" class="form-control" id="historyDitukarFilter" placeholder="Cari karyawan ditukar...">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="historyStatusFilter" class="form-label text-sm font-weight-bold">Status</label>
+                                <select class="form-select" id="historyStatusFilter">
+                                    <option value="">-- Semua Status --</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button class="btn btn-primary" type="button" onclick="showFormTab()">
+                                        <i class="fas fa-plus me-1"></i>Tambah
+                                    </button>
+                                    <button class="btn btn-primary" type="button" onclick="applyHistoryFilter()">
+                                        <i class="fas fa-search me-1"></i>Terapkan
+                                    </button>
+                                    <button class="btn btn-secondary" type="button" onclick="resetHistoryFilter()">
+                                        <i class="fas fa-rotate-left me-1"></i>Reset
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- HISTORY TABLE --}}
                 <div class="card shadow-sm">
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-hover align-items-center mb-0">
-                                <thead>
+                            <table class="table table-hover align-items-center mb-0" id="historyTable">
+                                <thead class="thead-light" style="background-color: #00b7bd4f;">
                                     <tr>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">NO</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">TANGGAL PENGAJUAN</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">KARYAWAN PENGAJU</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">DEPARTEMEN</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">SHIFT ASAL</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">KARYAWAN DITUKAR</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">DEPARTEMEN</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">SHIFT TUJUAN</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">TANGGAL TUKAR</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ACTION</th>
+                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">No</th>
+                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Tanggal Pengajuan</th>
+                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Karyawan Pengaju</th>
+                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Departemen</th>
+                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Shift Asal</th>
+                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Karyawan Ditukar</th>
+                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Departemen</th>
+                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Shift Tujuan</th>
+                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Tanggal Tukar</th>
+                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Status</th>
+                                        <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="historyTableBody">
                                     <tr>
-                                        <td colspan="10" class="text-center py-5">
+                                        <td colspan="11" class="text-center py-5">
                                             <div class="spinner-border text-primary" role="status">
                                                 <span class="visually-hidden">Loading...</span>
                                             </div>
@@ -95,15 +104,6 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-                    {{-- PAGINATION --}}
-                    <div class="card-footer d-flex justify-content-between align-items-center">
-                        <div class="text-sm text-secondary" id="paginationInfo">
-                            Menampilkan 0 dari 0 data
-                        </div>
-                        <div id="paginationControls">
-                            {{-- Pagination buttons will be inserted here --}}
                         </div>
                     </div>
                 </div>
@@ -314,50 +314,75 @@
             color: #5e72e4;
             font-weight: 600;
         }
+        #historyTable th,
+        #historyTable td {
+            text-align: left;
+            vertical-align: middle;
+            border: 1px solid #e9ecef;
+            padding: 12px;
+            white-space: nowrap;
+        }
+        #historyTable td small {
+            display: block;
+            font-size: 11px;
+            color: #67748e;
+            margin-top: 2px;
+        }
+        .dt-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 16px 16px 0;
+        }
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_length {
+            display: none;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+            border: 1px solid #028284 !important;
+            background: linear-gradient(135deg, #028284, #025f60) !important;
+            color: white !important;
+        }
     </style>
     <script>
-        let currentPage = 1;
-        let searchQuery = '';
+        let historyTable = null;
         let karyawanList = [];
 
-        // Initialize
         $(document).ready(function() {
-            loadHistory(1);
+            loadHistory();
             loadKaryawanList();
             setupAutocomplete();
-            
-            // Set default tanggal tukar to today
             document.getElementById('tanggal_tukar').valueAsDate = new Date();
         });
 
-        // Load Karyawan List
+        function styleMsjButtons() {
+            $('.dt-button').addClass('btn btn-secondary');
+            $('.dt-button').removeClass('dt-button');
+        }
+
         function loadKaryawanList() {
-            console.log('Loading karyawan list...');
             $.ajax({
                 url: '{{ url("/trstuk/getkaryawan") }}',
                 method: 'GET',
                 data: { query: '' },
                 success: function(response) {
-                    console.log('Karyawan response:', response);
                     if (response.success) {
                         karyawanList = response.data;
-                        console.log('✓ Loaded ' + karyawanList.length + ' karyawan');
-                    } else {
-                        console.error('✗ Failed to load karyawan: Invalid response');
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('✗ AJAX Error loading karyawan:', {
-                        status: status,
-                        error: error,
-                        response: xhr.responseText
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal memuat data karyawan.',
+                        confirmButtonColor: '#028284'
                     });
-                    alert('Gagal memuat data karyawan. Silakan refresh halaman atau hubungi admin.');
                 }
             });
         }
 
-        // Setup Autocomplete for both fields
         function setupAutocomplete() {
             setupAutocompleteField('karyawan_pengaju', 'karyawanPengajuDropdown', function(karyawan) {
                 document.getElementById('nik_pengaju').value = karyawan.nik;
@@ -380,21 +405,14 @@
 
             input.addEventListener('input', function() {
                 const query = this.value.toLowerCase().trim();
-                
                 if (query.length === 0) {
                     dropdown.style.display = 'none';
                     return;
                 }
 
-                console.log('Searching for:', query, '| Total karyawan:', karyawanList.length);
-
-                // Filter karyawan
-                const filtered = karyawanList.filter(k => 
-                    k.nik.includes(query) || 
-                    k.nama.toLowerCase().includes(query)
+                const filtered = karyawanList.filter(k =>
+                    k.nik.includes(query) || k.nama.toLowerCase().includes(query)
                 );
-
-                console.log('Found:', filtered.length, 'results');
 
                 if (filtered.length > 0) {
                     dropdown.innerHTML = '';
@@ -405,27 +423,19 @@
                             <strong>${k.nik}</strong> - ${k.nama}
                             <br><small>${k.departemen} | ${k.shift_desc}</small>
                         `;
-                        
-                        // Add click event listener
                         item.addEventListener('click', function() {
                             onSelectCallback(k);
                             dropdown.style.display = 'none';
                         });
-                        
                         dropdown.appendChild(item);
                     });
                     dropdown.style.display = 'block';
                 } else {
-                    if (karyawanList.length === 0) {
-                        dropdown.innerHTML = '<div class="autocomplete-item text-danger">Data karyawan belum dimuat. Silakan refresh halaman.</div>';
-                    } else {
-                        dropdown.innerHTML = '<div class="autocomplete-item">Tidak ada hasil</div>';
-                    }
+                    dropdown.innerHTML = '<div class="autocomplete-item">Tidak ada hasil</div>';
                     dropdown.style.display = 'block';
                 }
             });
 
-            // Close dropdown when clicking outside
             document.addEventListener('click', function(e) {
                 if (e.target !== input && !dropdown.contains(e.target)) {
                     dropdown.style.display = 'none';
@@ -433,25 +443,19 @@
             });
         }
 
-        function selectKaryawan(karyawan, dropdownId, callback) {
-            callback(karyawan);
-        }
-
-        // Load History
-        function loadHistory(page = 1) {
-            currentPage = page;
-            
+        function loadHistory() {
             $.ajax({
                 url: '{{ url("/trstuk/ajax") }}',
                 method: 'GET',
                 data: {
-                    page: page,
-                    search: searchQuery
+                    all: 1,
+                    search_pengaju: document.getElementById('historyPengajuFilter').value.trim(),
+                    search_ditukar: document.getElementById('historyDitukarFilter').value.trim(),
+                    status: document.getElementById('historyStatusFilter').value
                 },
                 success: function(response) {
                     if (response.success) {
                         renderHistoryTable(response.data);
-                        renderPagination(response.pagination);
                     }
                 },
                 error: function() {
@@ -467,12 +471,15 @@
             });
         }
 
-        // Render History Table
         function renderHistoryTable(data) {
+            if (historyTable) {
+                historyTable.destroy();
+            }
+
             if (data.length === 0) {
                 document.getElementById('historyTableBody').innerHTML = `
                     <tr>
-                        <td colspan="10" class="text-center py-5">
+                        <td colspan="11" class="text-center py-5">
                             <i class="fas fa-inbox fa-3x text-secondary mb-3 d-block"></i>
                             <p class="text-sm text-secondary">Tidak ada history tukar jadwal</p>
                         </td>
@@ -482,27 +489,21 @@
             }
 
             let html = '';
-            const offset = (currentPage - 1) * 10;
-            
             data.forEach((row, index) => {
+                const statusLabel = row.status.charAt(0).toUpperCase() + row.status.slice(1);
                 html += `
                     <tr>
-                        <td class="text-center text-xs">${offset + index + 1}</td>
-                        <td class="text-center text-xs">${formatDate(row.tanggal_pengajuan)}</td>
-                        <td class="text-xs ps-2">
-                            <strong>${row.nik_pengaju}</strong><br>
-                            ${row.nama_pengaju}
-                        </td>
-                        <td class="text-center text-xs">${row.departemen_pengaju}</td>
-                        <td class="text-center text-xs">${row.shift_asal_desc}</td>
-                        <td class="text-xs ps-2">
-                            <strong>${row.nik_ditukar}</strong><br>
-                            ${row.nama_ditukar}
-                        </td>
-                        <td class="text-center text-xs">${row.departemen_ditukar}</td>
-                        <td class="text-center text-xs">${row.shift_tujuan_desc}</td>
-                        <td class="text-center text-xs">${formatDate(row.tanggal_tukar)}</td>
-                        <td class="text-center">
+                        <td>${index + 1}</td>
+                        <td>${formatDate(row.tanggal_pengajuan)}</td>
+                        <td><strong>${row.nik_pengaju}</strong><br><small>${row.nama_pengaju}</small></td>
+                        <td>${row.departemen_pengaju}</td>
+                        <td>${row.shift_asal_desc}</td>
+                        <td><strong>${row.nik_ditukar}</strong><br><small>${row.nama_ditukar}</small></td>
+                        <td>${row.departemen_ditukar}</td>
+                        <td>${row.shift_tujuan_desc}</td>
+                        <td>${formatDate(row.tanggal_tukar)}</td>
+                        <td>${statusLabel}</td>
+                        <td>
                             <button class="btn btn-sm btn-info" onclick='showDetail(${JSON.stringify(row)})'>
                                 <i class="fas fa-eye"></i>
                             </button>
@@ -510,95 +511,57 @@
                     </tr>
                 `;
             });
-            
             document.getElementById('historyTableBody').innerHTML = html;
-        }
 
-        // Render Pagination
-        function renderPagination(pagination) {
-            const { current_page, last_page, per_page, total } = pagination;
-            
-            // Update info text
-            const start = (current_page - 1) * per_page + 1;
-            const end = Math.min(current_page * per_page, total);
-            document.getElementById('paginationInfo').textContent = 
-                `Menampilkan ${start} - ${end} dari ${total} data`;
-
-            if (last_page <= 1) {
-                document.getElementById('paginationControls').innerHTML = '';
-                return;
-            }
-
-            // Generate pagination buttons
-            let html = '<nav><ul class="pagination pagination-sm mb-0">';
-            
-            // Previous button
-            html += `
-                <li class="page-item ${current_page === 1 ? 'disabled' : ''}">
-                    <a class="page-link" href="#" onclick="loadHistory(${current_page - 1}); return false;">
-                        <i class="fas fa-angle-left"></i> Previous
-                    </a>
-                </li>
-            `;
-
-            // Page numbers logic - show first, last, current and 2 pages around current
-            let pages = [];
-            
-            // Always show first page
-            pages.push(1);
-            
-            // Show pages around current page
-            for (let i = Math.max(2, current_page - 1); i <= Math.min(last_page - 1, current_page + 1); i++) {
-                if (!pages.includes(i)) {
-                    pages.push(i);
-                }
-            }
-            
-            // Always show last page
-            if (last_page > 1 && !pages.includes(last_page)) {
-                pages.push(last_page);
-            }
-            
-            // Sort pages
-            pages.sort((a, b) => a - b);
-            
-            // Build page buttons with ellipsis
-            let prevPage = 0;
-            pages.forEach(pageNum => {
-                // Add ellipsis if gap
-                if (pageNum - prevPage > 1) {
-                    html += '<li class="page-item disabled"><span class="page-link">...</span></li>';
-                }
-                
-                html += `
-                    <li class="page-item ${pageNum === current_page ? 'active' : ''}">
-                        <a class="page-link" href="#" onclick="loadHistory(${pageNum}); return false;">${pageNum}</a>
-                    </li>
-                `;
-                
-                prevPage = pageNum;
+            historyTable = $('#historyTable').DataTable({
+                language: {
+                    lengthMenu: 'Tampilkan _MENU_ baris',
+                    zeroRecords: 'Maaf - Data tidak ada',
+                    info: 'Data _START_ - _END_ dari _TOTAL_',
+                    infoEmpty: 'Tidak ada data',
+                    infoFiltered: '(pencarian dari _MAX_ data)'
+                },
+                searching: false,
+                responsive: true,
+                order: [[1, 'desc']],
+                dom: 'Brtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel me-1 text-lg text-success"></i><span class="font-weight-bold"> Excel',
+                        autoFilter: true,
+                        sheetName: 'History Tukar Jadwal',
+                        exportOptions: { columns: ':visible' }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf me-1 text-lg text-danger"></i><span class="font-weight-bold"> PDF',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        exportOptions: { columns: ':visible' }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print me-1 text-lg text-info"></i><span class="font-weight-bold"> Print',
+                        exportOptions: { columns: ':visible' }
+                    }
+                ]
             });
 
-            // Next button
-            html += `
-                <li class="page-item ${current_page === last_page ? 'disabled' : ''}">
-                    <a class="page-link" href="#" onclick="loadHistory(${current_page + 1}); return false;">
-                        Next <i class="fas fa-angle-right"></i>
-                    </a>
-                </li>
-            `;
-            
-            html += '</ul></nav>';
-            document.getElementById('paginationControls').innerHTML = html;
+            styleMsjButtons();
         }
 
-        // Search History
-        function searchHistory() {
-            searchQuery = document.getElementById('searchInput').value;
-            loadHistory(1);
+        function applyHistoryFilter() {
+            loadHistory();
         }
 
-        // Show Detail Modal
+        function resetHistoryFilter() {
+            document.getElementById('historyPengajuFilter').value = '';
+            document.getElementById('historyDitukarFilter').value = '';
+            document.getElementById('historyStatusFilter').value = '';
+            loadHistory();
+        }
+
         function showDetail(row) {
             document.getElementById('detail_tanggal_pengajuan').textContent = formatDate(row.tanggal_pengajuan);
             document.getElementById('detail_tanggal_tukar').textContent = formatDate(row.tanggal_tukar);
@@ -612,11 +575,9 @@
             document.getElementById('detail_shift_tujuan').textContent = row.shift_tujuan_desc;
             document.getElementById('detail_alasan').textContent = row.alasan;
             document.getElementById('detail_catatan_admin').textContent = row.catatan_admin || 'Belum ada catatan';
-            
             new bootstrap.Modal(document.getElementById('detailModal')).show();
         }
 
-        // Submit Tukar Jadwal
         function submitTukarJadwal(event) {
             event.preventDefault();
 
@@ -629,7 +590,6 @@
                 _token: '{{ csrf_token() }}'
             };
 
-            // Validation
             if (!formData.nik_pengaju || !formData.nik_ditukar) {
                 Swal.fire({
                     icon: 'warning',
@@ -663,9 +623,8 @@
                             confirmButtonColor: '#5e72e4'
                         }).then(() => {
                             resetForm();
-                            // Switch to history tab
                             bootstrap.Tab.getInstance(document.getElementById('history-tab')).show();
-                            loadHistory(1);
+                            loadHistory();
                         });
                     }
                 },
@@ -680,7 +639,6 @@
             });
         }
 
-        // Reset Form
         function resetForm() {
             document.getElementById('tukarJadwalForm').reset();
             document.getElementById('nik_pengaju').value = '';
@@ -692,7 +650,6 @@
             document.getElementById('tanggal_tukar').valueAsDate = new Date();
         }
 
-        // Format Date
         function formatDate(dateStr) {
             if (!dateStr) return '-';
             const date = new Date(dateStr);
@@ -702,30 +659,6 @@
             return `${year}-${month}-${day}`;
         }
 
-        // Export Functions (Placeholder)
-        function exportExcel() {
-            Swal.fire({
-                icon: 'info',
-                title: 'Export Excel',
-                text: 'Fitur export Excel akan segera tersedia',
-                confirmButtonColor: '#5e72e4'
-            });
-        }
-
-        function exportPDF() {
-            Swal.fire({
-                icon: 'info',
-                title: 'Export PDF',
-                text: 'Fitur export PDF akan segera tersedia',
-                confirmButtonColor: '#5e72e4'
-            });
-        }
-
-        function printTable() {
-            window.print();
-        }
-
-        // Show Form Tab
         function showFormTab() {
             const formTab = document.getElementById('form-tab');
             const formTabPane = new bootstrap.Tab(formTab);

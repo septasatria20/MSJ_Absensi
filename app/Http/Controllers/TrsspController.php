@@ -15,9 +15,12 @@ class TrsspController extends Controller
     // Get SP History List (AJAX with Pagination)
     public function ajax($data = [])
     {
-        $page = request()->input('page', 1);
-        $perPage = 10;
+        $page = (int) request()->input('page', 1);
+        $perPage = (int) request()->input('per_page', 10);
         $nik = request()->input('nik', '');
+        $tanggalMulai = request()->input('tanggal_mulai', '');
+        $tanggalAkhir = request()->input('tanggal_akhir', '');
+        $returnAll = (bool) request()->input('all', false);
 
         // Dummy data - nanti akan diganti dengan query database
         $allData = [
@@ -175,16 +178,41 @@ class TrsspController extends Controller
             ],
         ];
 
-        // Filter by NIK
         if ($nik) {
             $allData = array_filter($allData, function($item) use ($nik) {
                 return $item['nik'] === $nik;
             });
-            $allData = array_values($allData);
         }
 
+        if ($tanggalMulai) {
+            $allData = array_filter($allData, function($item) use ($tanggalMulai) {
+                return $item['tanggal_sp'] >= $tanggalMulai;
+            });
+        }
+
+        if ($tanggalAkhir) {
+            $allData = array_filter($allData, function($item) use ($tanggalAkhir) {
+                return $item['tanggal_sp'] <= $tanggalAkhir;
+            });
+        }
+
+        $allData = array_values($allData);
         $total = count($allData);
-        $lastPage = ceil($total / $perPage);
+
+        if ($returnAll) {
+            return response()->json([
+                'success' => true,
+                'data' => $allData,
+                'pagination' => [
+                    'current_page' => 1,
+                    'last_page' => 1,
+                    'per_page' => $total,
+                    'total' => $total
+                ]
+            ]);
+        }
+
+        $lastPage = $perPage > 0 ? (int) ceil($total / $perPage) : 1;
         $offset = ($page - 1) * $perPage;
         $paginatedData = array_slice($allData, $offset, $perPage);
 
@@ -192,7 +220,7 @@ class TrsspController extends Controller
             'success' => true,
             'data' => $paginatedData,
             'pagination' => [
-                'current_page' => (int)$page,
+                'current_page' => (int) $page,
                 'last_page' => $lastPage,
                 'per_page' => $perPage,
                 'total' => $total

@@ -8,6 +8,8 @@
     
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -65,9 +67,16 @@
         .data-card h6 { font-size: 15px; font-weight: 700; color: #344767; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
         table { width: 100%; border-collapse: collapse; }
         thead { background: #f8f9fa; }
-        th { padding: 12px 16px; text-align: left; font-size: 11px; text-transform: uppercase; font-weight: 700; color: #67748e; border-bottom: 2px solid #e9ecef; white-space: nowrap; }
-        td { padding: 12px 16px; font-size: 13px; color: #344767; border-bottom: 1px solid #f1f3f5; white-space: nowrap; }
+        th { padding: 12px 16px; text-align: left; font-size: 13px; font-weight: 600; color: #67748e; border-bottom: 1px solid #e9ecef; white-space: nowrap; vertical-align: middle; text-transform: none; }
+        td { padding: 12px 16px; font-size: 13px; color: #344767; border-bottom: 1px solid #e9ecef; white-space: nowrap; vertical-align: middle; }
         tbody tr:hover { background: #f8f9fa; }
+        .thead-light { background-color: #00b7bd4f !important; }
+        .dt-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .dt-button.btn { box-shadow: none; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover { border: 1px solid #028284 !important; background: linear-gradient(135deg, #028284, #025f60) !important; color: white !important; }
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_length { display: none; }
         
         .badge { display: inline-block; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; }
         .badge-danger { background: #f8d7da; color: #f5365c; }
@@ -242,8 +251,8 @@
                 <!-- DATA TABLE -->
                 <div class="data-card">
                     <h6><i class="fas fa-table"></i> Data Karyawan yang Perlu Surat Peringatan</h6>
-                    <table>
-                        <thead>
+                    <table id="spTable">
+                        <thead class="thead-light">
                             <tr>
                                 <th style="width: 40px;">No</th>
                                 <th>NIK</th>
@@ -256,7 +265,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr data-period="2026-02-03">
                                 <td>1</td>
                                 <td><strong>169987</strong></td>
                                 <td>Ahmad Fauzi</td>
@@ -283,7 +292,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr data-period="2026-02-05">
                                 <td>2</td>
                                 <td><strong>235578</strong></td>
                                 <td>Citra Dewi</td>
@@ -310,7 +319,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr data-period="2026-02-08">
                                 <td>3</td>
                                 <td><strong>007122</strong></td>
                                 <td>Gita Maharani</td>
@@ -337,7 +346,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr data-period="2026-02-10">
                                 <td>4</td>
                                 <td><strong>099744</strong></td>
                                 <td>Hari Purnomo</td>
@@ -364,7 +373,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr data-period="2026-02-14">
                                 <td>5</td>
                                 <td><strong>012345</strong></td>
                                 <td>Indah Permata</td>
@@ -391,7 +400,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr data-period="2026-02-17">
                                 <td>6</td>
                                 <td><strong>098765</strong></td>
                                 <td>Joko Widodo</td>
@@ -421,17 +430,6 @@
                         </tbody>
                     </table>
                     
-                    <!-- PAGINATION -->
-                    <div class="pagination">
-                        <button disabled><i class="fas fa-chevron-left"></i> Previous</button>
-                        <button class="active">1</button>
-                        <button>2</button>
-                        <button>3</button>
-                        <button>4</button>
-                        <button>...</button>
-                        <button>11</button>
-                        <button>Next <i class="fas fa-chevron-right"></i></button>
-                    </div>
                 </div>
             </div>
             
@@ -442,18 +440,58 @@
         </div>
     </div>
     
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
     <script>
+        let spTable = null;
+        const spFilterState = {
+            startDate: '',
+            endDate: '',
+            employee: ''
+        };
+
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+            if (!settings.nTable || settings.nTable.id !== 'spTable') {
+                return true;
+            }
+
+            const rowNode = settings.aoData[dataIndex].nTr;
+            const period = rowNode ? rowNode.getAttribute('data-period') : '';
+            const nik = data[1] || '';
+
+            if (spFilterState.startDate && period < spFilterState.startDate) {
+                return false;
+            }
+
+            if (spFilterState.endDate && period > spFilterState.endDate) {
+                return false;
+            }
+
+            if (spFilterState.employee && nik !== spFilterState.employee) {
+                return false;
+            }
+
+            return true;
+        });
+
+        function styleMsjButtons() {
+            $('.dt-button').addClass('btn btn-secondary');
+            $('.dt-button').removeClass('dt-button');
+        }
+
         // Filter Function
         function applyFilter() {
-            const tanggalMulai = document.getElementById('filterTanggalMulai').value;
-            const tanggalAkhir = document.getElementById('filterTanggalAkhir').value;
-            const karyawan = document.getElementById('filterKaryawan').value;
-            
-            let filterText = 'Filter diterapkan:\n';
-            filterText += `Periode: ${tanggalMulai} s/d ${tanggalAkhir}`;
-            if (karyawan) filterText += `\nKaryawan: ${karyawan}`;
-            
-            alert('✓ ' + filterText + '\n\nData telah diperbarui.');
+            spFilterState.startDate = document.getElementById('filterTanggalMulai').value;
+            spFilterState.endDate = document.getElementById('filterTanggalAkhir').value;
+            spFilterState.employee = document.getElementById('filterKaryawan').value;
+            spTable.draw();
         }
         
         // Send WhatsApp Function
@@ -578,17 +616,51 @@
                 // Show success message
                 alert(`✓ Berhasil!\n\n${spText} untuk ${nama} telah selesai diproses.\n\nData telah disimpan ke history dan akan dihapus dari daftar ini.`);
                 
-                // In real implementation, remove the row from table
-                // row.remove();
+                if (spTable) {
+                    spTable.row(row).remove().draw(false);
+                }
                 
                 // Or refresh the page to load updated data
                 // location.reload();
             }
         }
         
-        // Auto-select SP based on mangkir count (optional feature)
-        document.addEventListener('DOMContentLoaded', function() {
-            // Can add logic to auto-recommend SP based on mangkir count
+        $(document).ready(function() {
+            spTable = $('#spTable').DataTable({
+                language: {
+                    lengthMenu: 'Tampilkan _MENU_ baris',
+                    zeroRecords: 'Maaf - Data tidak ada',
+                    info: 'Data _START_ - _END_ dari _TOTAL_',
+                    infoEmpty: 'Tidak ada data',
+                    infoFiltered: '(pencarian dari _MAX_ data)'
+                },
+                searching: false,
+                responsive: true,
+                dom: 'Brtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel me-1 text-lg text-success"></i><span class="font-weight-bold"> Excel',
+                        autoFilter: true,
+                        sheetName: 'Kirim SP',
+                        exportOptions: { columns: ':visible' }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf me-1 text-lg text-danger"></i><span class="font-weight-bold"> PDF',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        exportOptions: { columns: ':visible' }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print me-1 text-lg text-info"></i><span class="font-weight-bold"> Print',
+                        exportOptions: { columns: ':visible' }
+                    }
+                ]
+            });
+
+            styleMsjButtons();
             console.log('Kirim SP page loaded');
         });
     </script>
