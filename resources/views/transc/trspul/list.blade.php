@@ -3,24 +3,14 @@
 @section('content')
     @include('layouts.navbars.auth.topnav')
     
-    <div class="container-fluid py-4">
-        {{-- PAGE HEADER --}}
-        <div class="card shadow-sm mb-4">
-            <div class="card-body p-3">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <h6 class="mb-1 text-dark font-weight-bold">Pull Finger</h6>
-                        <p class="text-sm mb-0 text-secondary">Tarik Data Absensi dari Fingerprint Device - Pilih Filter Bulan untuk Melihat Ringkasan Harian</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    <div class="container-fluid py-3">
         {{-- FILTER SECTION - SUMMARY VIEW --}}
         <div class="card shadow-sm mb-4" id="summaryFilterCard">
             <div class="card-body">
+                <div class="mb-2">
+                    <h6 class="mb-1 text-dark font-weight-bold">Pull Finger</h6>
+                </div>
                 <h6 class="text-dark font-weight-bold mb-3">
-                    <i class="fas fa-filter me-2"></i>Filter Ringkasan Harian
                 </h6>
                 <form id="summaryFilterForm" method="GET">
                     <div class="row">
@@ -56,8 +46,11 @@
         {{-- FILTER SECTION - DETAIL VIEW --}}
         <div class="card shadow-sm mb-4" id="detailFilterCard" style="display: none;">
             <div class="card-body">
+                <div class="mb-2">
+                    <h6 class="mb-1 text-dark font-weight-bold">Pull Finger</h6>
+                </div>
                 <h6 class="text-dark font-weight-bold mb-3">
-                    <i class="fas fa-filter me-2"></i>Filter Data Detail
+                    <i class=""></i>Filter Data Detail
                 </h6>
                 <form id="detailFilterForm" method="GET">
                     <div class="row">
@@ -94,7 +87,7 @@
             <div class="card-header pb-0">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="text-dark font-weight-bold mb-0">
-                        <i class="fas fa-calendar-alt me-2"></i>Ringkasan Data Pull Fingerprint - <span id="summaryMonth">Februari 2026</span>
+                        <i class=""></i>Ringkasan Data Pull Fingerprint - <span id="summaryMonth">Februari 2026</span>
                     </h6>
                 </div>
             </div>
@@ -146,7 +139,7 @@
             <div class="card shadow-sm">
                 <div class="card-header pb-0">
                     <h6 class="text-dark font-weight-bold">
-                        <i class="fas fa-fingerprint me-2"></i>Data Pull Fingerprint - <span id="detailDateDisplay">-</span>
+                        <i class=""></i>Data Pull Fingerprint - <span id="detailDateDisplay">-</span>
                     </h6>
                 </div>
                 <div class="card-body p-0">

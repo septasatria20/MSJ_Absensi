@@ -2,23 +2,14 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => $title ?? ''])
-    <div class="container-fluid py-4">
-
-        {{-- PAGE HEADER --}}
-        <div class="card shadow-sm mb-4">
-            <div class="card-body p-3">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <h6 class="mb-0 text-dark font-weight-bold">Kirim Surat Peringatan</h6>
-                        <p class="text-sm mb-0 text-secondary">Manajemen dan Pengiriman Surat Peringatan Karyawan</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid py-3">
 
         {{-- FILTER SECTION --}}
         <div class="card shadow-sm mb-3">
             <div class="card-body p-3">
+                <div class="mb-2">
+                    <h6 class="mb-0 text-dark font-weight-bold">Kirim Surat Peringatan</h6>
+                </div>
                 <div class="row g-3 align-items-end">
                     <div class="col-md-3 position-relative">
                         <label for="karyawan_filter" class="form-label text-sm font-weight-bold">Karyawan</label>
@@ -34,15 +25,14 @@
                         <label for="tanggal_akhir" class="form-label text-sm font-weight-bold">Tanggal Akhir</label>
                         <input type="date" class="form-control" id="tanggal_akhir">
                     </div>
-                    <div class="col-md-5">
-                        <div class="d-flex gap-2 flex-wrap">
+                    <div class="col-md-5 d-flex align-items-end">
+                        <div class="d-flex gap-2 flex-wrap ms-auto">
                             <button class="btn btn-primary" type="button" onclick="applyFilter()">
                                 <i class="fas fa-search me-1"></i>Terapkan
                             </button>
                             <button class="btn btn-secondary" type="button" onclick="resetFilter()">
                                 <i class="fas fa-sync me-1"></i>Reset
                             </button>
-                            <div id="spExportButtons" class="d-flex gap-2 flex-wrap"></div>
                         </div>
                     </div>
                 </div>
@@ -51,6 +41,9 @@
 
         {{-- TABLE SECTION --}}
         <div class="card shadow-sm">
+            <div class="card-body pt-2 pb-0">
+                <div id="spExportButtons" class="d-flex gap-2 flex-wrap"></div>
+            </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-items-center mb-0" id="spTable">
@@ -68,7 +61,7 @@
                                 <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Pulang Cepat</th>
                                 <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Tugas</th>
                                 <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Surat Peringatan</th>
-                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start" style="width: 280px;">Action</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start" style="width: 360px;">Action</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -151,17 +144,20 @@
         .autocomplete-item small {
             color: #67748e;
         }
-        .table td {
-            padding: 12px 8px;
-            font-size: 13px;
-            vertical-align: middle;
-        }
         .btn-action {
-            padding: 6px 12px;
+            padding: 4px 8px;
             font-size: 11px;
             margin: 0;
-            width: 95px;
+            width: auto;
+            min-width: 86px;
             text-align: center;
+            white-space: nowrap;
+        }
+        .sp-action-group {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: nowrap;
         }
     </style>
 
@@ -355,7 +351,7 @@
                             </div>
                         </td>
                         <td>
-                            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                            <div class="sp-action-group">
                                 <button class="btn btn-sm btn-info btn-action" onclick="cetakSP(${item.id})" title="Cetak SP">
                                     <i class="fas fa-print"></i> Cetak SP
                                 </button>

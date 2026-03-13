@@ -3,21 +3,13 @@
 @section('content')
     @include('layouts.navbars.auth.topnav')
     
-    <div class="container-fluid py-4">
-        {{-- PAGE HEADER --}}
-        <div class="card shadow-sm mb-4">
-            <div class="card-body p-3">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 class="mb-0 text-dark font-weight-bold">Data Missing</h6>
-                    </div>
+    <div class="container-fluid py-3">
+        {{-- FILTER + DATA SECTION --}}
+        <div class="card shadow-sm mb-4" id="dataMissingContainer">
+            <div class="card-body pb-2">
+                <div class="mb-2">
+                    <h6 class="mb-0 text-dark font-weight-bold">Data Missing</h6>
                 </div>
-            </div>
-        </div>
-
-        {{-- FILTER SECTION --}}
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
                 <form id="filterForm" method="GET">
                     <div class="row">
                         <div class="col-md-3">
@@ -28,11 +20,10 @@
                             <label for="tanggal_akhir" class="form-label text-sm font-weight-bold">Tanggal Akhir</label>
                             <input type="date" class="form-control" id="tanggal_akhir" name="tanggal_akhir" value="2026-02-12">
                         </div>
-                        <div class="col-md-3 position-relative">
+                        <div class="col-md-3">
                             <label for="karyawan" class="form-label text-sm font-weight-bold">Karyawan</label>
                             <input type="text" class="form-control" id="karyawan" name="karyawan" 
-                                   placeholder="Cari NIK atau Nama..." autocomplete="off">
-                            <div id="karyawanDropdown" class="autocomplete-dropdown"></div>
+                                   placeholder="Masukkan NIK karyawan (opsional)">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label text-sm font-weight-bold">&nbsp;</label>
@@ -43,11 +34,9 @@
                     </div>
                 </form>
             </div>
-        </div>
 
-        {{-- ACTION BAR --}}
-        <div class="card shadow-sm mb-3" id="actionBar" style="display: none;">
-            <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            {{-- ACTION BAR --}}
+            <div class="px-3 pb-2 d-flex justify-content-between align-items-center flex-wrap gap-2" id="actionBar">
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                     <span class="text-sm me-2">
                         <strong class="text-primary" id="selectedCount">0</strong> data terpilih
@@ -64,11 +53,9 @@
                 </div>
                 <div id="dataMissingExportButtons" class="d-flex gap-2 flex-wrap"></div>
             </div>
-        </div>
 
-        {{-- DATA TABLE --}}
-        <div class="card shadow-sm" id="dataTableCard" style="display: none;">
-            <div class="card-body p-0">
+            {{-- DATA TABLE --}}
+            <div id="dataTableCard">
                 <div class="table-responsive">
                     <table class="table table-hover align-items-center mb-0" id="dataMissingTable">
                         <thead class="thead-light" style="background-color: #00b7bd4f;">
@@ -91,7 +78,11 @@
                             </tr>
                         </thead>
                         <tbody id="tableBody">
-                            {{-- Data will be loaded via AJAX --}}
+                            <tr>
+                                <td colspan="13" class="text-center py-4 text-secondary">
+                                    Klik tombol Tampilkan untuk memuat data.
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -152,112 +143,30 @@
     {{-- JAVASCRIPT --}}
     @push('js')
     <style>
-        .autocomplete-dropdown {
-            position: absolute;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            max-height: 200px;
-            overflow-y: auto;
-            width: 100%;
-            z-index: 1000;
-            display: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .autocomplete-item {
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 0.875rem;
-        }
-        .autocomplete-item:hover {
-            background: #f8f9fa;
-        }
-        .autocomplete-item strong {
-            color: #028284;
-        }
     </style>
     <script>
-        let selectedKaryawan = null;
         let dataMissingTable = null;
 
-        const karyawanData = [
-            { nik: '169987', nama: 'Ahmad Fauzi' },
-            { nik: '235578', nama: 'Citra Dewi' },
-            { nik: '007122', nama: 'Gita Maharani' },
-            { nik: '090744', nama: 'Hani Purnomo' },
-            { nik: '099744', nama: 'Hari Purnomo' },
-            { nik: '123456', nama: 'Budi Santoso' },
-            { nik: '234567', nama: 'Dewi Kusuma' },
-            { nik: '345678', nama: 'Eko Prasetyo' }
-        ];
-
-        $(document).ready(function() {
-            setupKaryawanAutocomplete();
-        });
+        $(document).ready(function() {});
 
         function styleMsjButtons() {
             $('#dataMissingExportButtons .dt-button').addClass('btn btn-secondary');
             $('#dataMissingExportButtons .dt-button').removeClass('dt-button');
         }
 
-        function setupKaryawanAutocomplete() {
-            const input = document.getElementById('karyawan');
-            const dropdown = document.getElementById('karyawanDropdown');
-
-            input.addEventListener('input', function() {
-                const query = this.value.toLowerCase().trim();
-
-                if (query.length === 0) {
-                    dropdown.style.display = 'none';
-                    selectedKaryawan = null;
-                    return;
-                }
-
-                const filtered = karyawanData.filter(k =>
-                    k.nik.includes(query) ||
-                    k.nama.toLowerCase().includes(query)
-                );
-
-                if (filtered.length > 0) {
-                    let html = '';
-                    filtered.forEach(k => {
-                        html += `<div class="autocomplete-item" onclick="selectKaryawan('${k.nik}', '${k.nama}')">
-                            <strong>${k.nik}</strong> - ${k.nama}
-                        </div>`;
-                    });
-                    dropdown.innerHTML = html;
-                    dropdown.style.display = 'block';
-                } else {
-                    dropdown.innerHTML = '<div class="autocomplete-item">Tidak ada hasil</div>';
-                    dropdown.style.display = 'block';
-                }
-            });
-
-            document.addEventListener('click', function(e) {
-                if (e.target !== input && !dropdown.contains(e.target)) {
-                    dropdown.style.display = 'none';
-                }
-            });
-        }
-
-        function selectKaryawan(nik, nama) {
-            document.getElementById('karyawan').value = `${nik} - ${nama}`;
-            document.getElementById('karyawanDropdown').style.display = 'none';
-            selectedKaryawan = nik;
-        }
-
         function getDataMissing() {
             const tanggalMulai = document.getElementById('tanggal_mulai').value;
             const tanggalAkhir = document.getElementById('tanggal_akhir').value;
-            const karyawan = selectedKaryawan;
+            const karyawan = document.getElementById('karyawan').value.trim();
+
+            document.getElementById('selectedCount').textContent = '0';
+            document.getElementById('selectAll').checked = false;
 
             if (dataMissingTable) {
                 dataMissingTable.destroy();
                 dataMissingTable = null;
             }
 
-            document.getElementById('dataTableCard').style.display = 'block';
-            document.getElementById('actionBar').style.display = 'none';
             document.getElementById('dataMissingExportButtons').innerHTML = '';
             document.getElementById('tableBody').innerHTML = `
                 <tr>
@@ -281,7 +190,6 @@
                 success: function(response) {
                     if (response.success && response.data.length > 0) {
                         renderTable(response.data);
-                        document.getElementById('actionBar').style.display = 'block';
                     } else {
                         document.getElementById('tableBody').innerHTML = `
                             <tr>
@@ -291,7 +199,8 @@
                                 </td>
                             </tr>
                         `;
-                        document.getElementById('actionBar').style.display = 'none';
+                        document.getElementById('selectedCount').textContent = '0';
+                        document.getElementById('selectAll').checked = false;
                     }
                 },
                 error: function(xhr, status, error) {

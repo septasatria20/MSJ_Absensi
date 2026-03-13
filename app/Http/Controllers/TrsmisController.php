@@ -194,10 +194,14 @@ class TrsmisController extends Controller
             $filteredData = $allDummyData;
         }
         
-        // Filter by karyawan NIK (optional)
+        // Filter by NIK or nama karyawan (optional)
         if (!empty($filterKaryawan)) {
             $filteredData = array_filter($filteredData, function($item) use ($filterKaryawan) {
-                return isset($item['nik']) && $item['nik'] === $filterKaryawan;
+                $keyword = strtolower(trim($filterKaryawan));
+                $nik = strtolower($item['nik'] ?? '');
+                $nama = strtolower($item['nama'] ?? '');
+
+                return str_contains($nik, $keyword) || str_contains($nama, $keyword);
             });
         }
         

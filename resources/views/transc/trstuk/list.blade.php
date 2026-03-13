@@ -3,21 +3,9 @@
 @section('content')
     @include('layouts.navbars.auth.topnav')
     
-    <div class="container-fluid py-4">
-        {{-- PAGE HEADER --}}
-        <div class="card shadow-sm mb-4">
-            <div class="card-body p-3">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <h6 class="mb-0 text-dark font-weight-bold">History Tukar Jadwal</h6>
-                        <p class="text-sm mb-0 text-secondary">Pengajuan dan History Tukar Jadwal Shift Karyawan</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    <div class="container-fluid py-2">
         {{-- TABS NAVIGATION --}}
-        <ul class="nav nav-tabs mb-3" id="tukarJadwalTabs" role="tablist">
+        <ul class="nav nav-tabs mb-2" id="tukarJadwalTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" 
                         type="button" role="tab">
@@ -39,6 +27,9 @@
             <div class="tab-pane fade show active" id="history" role="tabpanel">
                 <div class="card shadow-sm mb-3">
                     <div class="card-body p-3">
+                        <div class="mb-2">
+                            <h6 class="mb-0 text-dark font-weight-bold">History Tukar Jadwal</h6>
+                        </div>
                         <div class="row g-3 align-items-end">
                             <div class="col-md-3">
                                 <label for="historyPengajuFilter" class="form-label text-sm font-weight-bold">Karyawan Pengaju</label>
@@ -113,6 +104,10 @@
             <div class="tab-pane fade" id="form" role="tabpanel">
                 <div class="card shadow-sm">
                     <div class="card-body">
+                        <div class="mb-2">
+                            <h6 class="mb-0 text-dark font-weight-bold">Pengajuan Tukar Jadwal</h6>
+                            <p class="text-sm mb-0 text-secondary">Form pengajuan tukar jadwal antar karyawan</p>
+                        </div>
                         <form id="tukarJadwalForm" onsubmit="submitTukarJadwal(event)">
                             <div class="row mb-4">
                                 <div class="col-md-6">
@@ -319,7 +314,7 @@
             text-align: left;
             vertical-align: middle;
             border: 1px solid #e9ecef;
-            padding: 12px;
+            padding: 7px;
             white-space: nowrap;
         }
         #historyTable td small {
