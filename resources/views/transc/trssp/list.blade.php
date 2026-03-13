@@ -10,30 +10,26 @@
                 <div class="mb-2">
                     <h6 class="mb-0 text-dark font-weight-bold">Kirim Surat Peringatan</h6>
                 </div>
-                <div class="row g-3 align-items-end">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="tanggal_mulai" class="form-label text-sm font-weight-bold">Tanggal Mulai</label>
+                        <input type="date" class="form-control" id="tanggal_mulai">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="tanggal_akhir" class="form-label text-sm font-weight-bold">Tanggal Akhir</label>
+                        <input type="date" class="form-control" id="tanggal_akhir">
+                    </div>
                     <div class="col-md-3 position-relative">
                         <label for="karyawan_filter" class="form-label text-sm font-weight-bold">Karyawan</label>
                         <input type="text" class="form-control" id="karyawan_filter" placeholder="Cari karyawan..." autocomplete="off">
                         <input type="hidden" id="nik_filter">
                         <div id="karyawanDropdown" class="autocomplete-dropdown"></div>
                     </div>
-                    <div class="col-md-2">
-                        <label for="tanggal_mulai" class="form-label text-sm font-weight-bold">Tanggal Mulai</label>
-                        <input type="date" class="form-control" id="tanggal_mulai">
-                    </div>
-                    <div class="col-md-2">
-                        <label for="tanggal_akhir" class="form-label text-sm font-weight-bold">Tanggal Akhir</label>
-                        <input type="date" class="form-control" id="tanggal_akhir">
-                    </div>
-                    <div class="col-md-5 d-flex align-items-end">
-                        <div class="d-flex gap-2 flex-wrap ms-auto">
-                            <button class="btn btn-primary" type="button" onclick="applyFilter()">
-                                <i class="fas fa-search me-1"></i>Terapkan
-                            </button>
-                            <button class="btn btn-secondary" type="button" onclick="resetFilter()">
-                                <i class="fas fa-sync me-1"></i>Reset
-                            </button>
-                        </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-sm font-weight-bold">&nbsp;</label>
+                        <button class="btn btn-primary w-100 d-block" type="button" onclick="applyFilter()">
+                            <i class="fas fa-search me-2"></i>Terapkan
+                        </button>
                     </div>
                 </div>
             </div>
@@ -41,11 +37,16 @@
 
         {{-- TABLE SECTION --}}
         <div class="card shadow-sm">
-            <div class="card-body pt-2 pb-0">
-                <div id="spExportButtons" class="d-flex gap-2 flex-wrap"></div>
+            <div class="card-body pt-3 pb-0">
+                <div class="table-wrap-centered">
+                    <h6 class="text-dark font-weight-bold mb-3 mt-1">
+                        Ringkasan Data Kirim SP - <span id="spSummaryPeriod">Semua Periode</span>
+                    </h6>
+                    <div id="spExportButtons" class="d-flex gap-2 flex-wrap"></div>
+                </div>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
+            <div class="card-body p-3 pt-0">
+                <div class="table-responsive table-wrap-centered">
                     <table class="table table-hover align-items-center mb-0" id="spTable">
                         <thead style="background-color: #00b7bd4f;">
                             <tr>
@@ -74,40 +75,30 @@
 
     </div>
 
-    {{-- MODAL - Pilih Metode Hubungi --}}
+    {{-- MODAL - Hubungi Karyawan --}}
     <div class="modal fade" id="hubungiModal" tabindex="-1" aria-labelledby="hubungiModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-gradient-primary">
-                    <h5 class="modal-title text-white" id="hubungiModalLabel">
-                        <i class="fas fa-paper-plane me-2"></i>Pilih Metode Pengiriman
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hubungiModalLabel">
+                        Hubungi Karyawan
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="hubungi_sp_id">
                     <input type="hidden" id="hubungi_nik">
                     <input type="hidden" id="hubungi_nama">
-                    
-                    <div class="text-center mb-4">
-                        <p class="text-sm mb-1">Kirim Surat Peringatan kepada:</p>
-                        <h6 class="mb-0" id="hubungi_display_name"></h6>
-                    </div>
 
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <button class="btn btn-success w-100 py-3" onclick="sendViaWhatsApp()">
-                                <i class="fab fa-whatsapp fa-2x mb-2"></i>
-                                <br>WhatsApp
-                            </button>
-                        </div>
-                        <div class="col-6">
-                            <button class="btn btn-danger w-100 py-3" onclick="sendViaEmail()">
-                                <i class="fas fa-envelope fa-2x mb-2"></i>
-                                <br>Email
-                            </button>
-                        </div>
+                    <div class="mb-1">
+                        <p class="mb-1 fs-5">Hubungi Karyawan Melalui WhatsApp / Email Karyawan</p>
+                        <p class="text-danger mb-0">Pilih hubungi melalui WhatsApp atau Email Karyawan</p>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-info" onclick="sendViaEmail()">Email</button>
+                    <button type="button" class="btn btn-success" onclick="sendViaWhatsApp()">WhatsApp</button>
                 </div>
             </div>
         </div>
@@ -145,11 +136,11 @@
             color: #67748e;
         }
         .btn-action {
-            padding: 4px 8px;
-            font-size: 11px;
+            padding: 0.5rem 0.85rem;
+            font-size: 0.875rem;
             margin: 0;
             width: auto;
-            min-width: 86px;
+            min-width: 96px;
             text-align: center;
             white-space: nowrap;
         }
@@ -158,6 +149,11 @@
             gap: 6px;
             justify-content: center;
             flex-wrap: nowrap;
+        }
+        .table-wrap-centered,
+        #spTable_wrapper {
+            max-width: 99%;
+            margin: 0 auto;
         }
     </style>
 
@@ -169,6 +165,7 @@
             tanggal_mulai: '',
             tanggal_akhir: ''
         };
+        const completedIds = new Set();
 
         $(document).ready(function() {
             loadData();
@@ -253,20 +250,13 @@
             loadData();
         }
 
-        function resetFilter() {
-            document.getElementById('karyawan_filter').value = '';
-            document.getElementById('nik_filter').value = '';
-            document.getElementById('tanggal_mulai').value = '';
-            document.getElementById('tanggal_akhir').value = '';
-            currentFilters = { nik: '', tanggal_mulai: '', tanggal_akhir: '' };
-            loadData();
-        }
-
         function loadData() {
             if (spTable) {
                 spTable.destroy();
                 spTable = null;
             }
+
+            updateSummaryPeriod();
 
             $('#spExportButtons').html('');
             $('#tableBody').html(`
@@ -323,7 +313,22 @@
                 return;
             }
 
-            data.forEach((item, index) => {
+            const activeData = data.filter(item => item.status !== 'completed' && !completedIds.has(item.id));
+
+            if (activeData.length === 0) {
+                html = `
+                    <tr>
+                        <td colspan="13" class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x mb-3 text-secondary opacity-5"></i>
+                            <p class="text-secondary mb-0">Tidak ada data</p>
+                        </td>
+                    </tr>
+                `;
+                $('#tableBody').html(html);
+                return;
+            }
+
+            activeData.forEach((item, index) => {
                 const safeNama = String(item.nama).replace(/'/g, "\\'");
                 html += `
                     <tr>
@@ -352,13 +357,16 @@
                         </td>
                         <td>
                             <div class="sp-action-group">
-                                <button class="btn btn-sm btn-info btn-action" onclick="cetakSP(${item.id})" title="Cetak SP">
+                                <button class="btn btn-warning btn-action" onclick="goToDetail(${item.id})" title="Detail Missing">
+                                    <i class="fas fa-table"></i> Detail
+                                </button>
+                                <button class="btn btn-info btn-action" onclick="cetakSP(${item.id})" title="Cetak SP">
                                     <i class="fas fa-print"></i> Cetak SP
                                 </button>
-                                <button class="btn btn-sm btn-success btn-action" onclick="openHubungiModal(${item.id}, '${item.nik}', '${safeNama}')" title="Hubungi">
+                                <button class="btn btn-success btn-action" onclick="openHubungiModal(${item.id}, '${item.nik}', '${safeNama}')" title="Hubungi">
                                     <i class="fas fa-paper-plane"></i> Hubungi
                                 </button>
-                                <button class="btn btn-sm btn-warning btn-action" onclick="markSelesai(${item.id})" title="Selesai">
+                                <button class="btn btn-secondary btn-action" onclick="markSelesai(${item.id})" title="Selesai">
                                     <i class="fas fa-check"></i> Selesai
                                 </button>
                             </div>
@@ -408,6 +416,35 @@
             styleMsjButtons();
         }
 
+        function updateSummaryPeriod() {
+            const periodElem = document.getElementById('spSummaryPeriod');
+            const start = document.getElementById('tanggal_mulai').value;
+            const end = document.getElementById('tanggal_akhir').value;
+
+            if (!start && !end) {
+                periodElem.textContent = 'Semua Periode';
+                return;
+            }
+
+            const fmt = (value) => {
+                const d = new Date(value);
+                if (Number.isNaN(d.getTime())) return value;
+                const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+            };
+
+            if (start && end) {
+                periodElem.textContent = `${fmt(start)} s/d ${fmt(end)}`;
+            } else {
+                const single = start || end;
+                periodElem.textContent = fmt(single);
+            }
+        }
+
+        function goToDetail(id) {
+            window.location.href = `{{ url('/trssp/detail') }}/${id}`;
+        }
+
         function cetakSP(id) {
             $.ajax({
                 url: '{{ url("/trssp/cetaksp") }}',
@@ -443,7 +480,6 @@
             document.getElementById('hubungi_sp_id').value = id;
             document.getElementById('hubungi_nik').value = nik;
             document.getElementById('hubungi_nama').value = nama;
-            document.getElementById('hubungi_display_name').textContent = `${nik} - ${nama}`;
 
             const modal = new bootstrap.Modal(document.getElementById('hubungiModal'));
             modal.show();
@@ -576,6 +612,7 @@
                     },
                     success: function(response) {
                         if (response.success) {
+                            completedIds.add(Number(id));
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil',

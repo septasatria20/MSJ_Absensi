@@ -2,28 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class TrsspController extends Controller
 {
-    // Display Kirim SP Page
-    public function index($data)
+    private function getSharedViewData($titleMenu = 'Kirim SP')
     {
-        return view('transc.trssp.list', $data);
+        $userLogin = User::find(session('username'));
+        $usersRules = $userLogin ? array_map('trim', explode(',', $userLogin->idroles)) : [];
+
+        $gmenu = collect();
+        if (!empty($usersRules)) {
+            $gmenu = DB::table('sys_gmenu')
+                ->join('sys_auth', 'sys_gmenu.gmenu', '=', 'sys_auth.gmenu')
+                ->whereIn('sys_auth.idroles', $usersRules)
+                ->where('sys_gmenu.isactive', '1')
+                ->select('sys_gmenu.*')
+                ->distinct()
+                ->orderBy('urut')
+                ->get();
+        }
+
+        return [
+            'user_login' => $userLogin,
+            'users_rules' => $usersRules,
+            'setup_app' => DB::table('sys_app')->where('isactive', '1')->first(),
+            'gmenu' => $gmenu,
+            'url_menu' => 'trssp',
+            'title_group' => 'Transactions',
+            'title_menu' => $titleMenu,
+            'title' => '',
+        ];
     }
 
-    // Get SP History List (AJAX with Pagination)
-    public function ajax($data = [])
+    private function getDummySpData()
     {
-        $page = (int) request()->input('page', 1);
-        $perPage = (int) request()->input('per_page', 10);
-        $nik = request()->input('nik', '');
-        $tanggalMulai = request()->input('tanggal_mulai', '');
-        $tanggalAkhir = request()->input('tanggal_akhir', '');
-        $returnAll = (bool) request()->input('all', false);
-
-        // Dummy data - nanti akan diganti dengan query database
-        $allData = [
+        return [
             [
                 'id' => 1,
                 'nik' => '169987',
@@ -39,7 +54,7 @@ class TrsspController extends Controller
                 'tugas' => 1,
                 'sp_level' => 'SP 2',
                 'tanggal_sp' => '2026-02-15',
-                'status' => 'sent', // sent, pending, completed
+                'status' => 'sent',
                 'wa_sent' => true,
                 'email_sent' => false
             ],
@@ -177,6 +192,100 @@ class TrsspController extends Controller
                 'email_sent' => false
             ],
         ];
+    }
+
+    // Display Kirim SP Page
+    public function index($data)
+    {
+        return view('transc.trssp.list', $data);
+    }
+
+    public function detail($id)
+    {
+        $sharedData = $this->getSharedViewData('Detail SP Karyawan');
+        $allData = $this->getDummySpData();
+        $selected = collect($allData)->firstWhere('id', (int) $id);
+
+        if (!$selected) {
+            abort(404);
+        }
+
+        $detailRows = [
+            [
+                'tanggal' => '2026-02-12',
+                'shift' => 'Shift Pagi',
+                'jam_masuk' => '07:05',
+                'terlambat' => '00:05',
+                'jam_keluar' => null,
+                'pulang_cepat' => '-',
+                'status' => 'BELUM FINGER OUT',
+                'keterangan' => 'Izin Pulang Cepat',
+                'source' => 'HRIS'
+            ],
+            [
+                'tanggal' => '2026-02-11',
+                'shift' => 'Shift Siang',
+                'jam_masuk' => null,
+                'terlambat' => '-',
+                'jam_keluar' => '16:05',
+                'pulang_cepat' => '-',
+                'status' => 'BELUM FINGER IN',
+                'keterangan' => 'Mangkir/Tanpa Keterangan',
+                'source' => 'Sistem Absensi'
+            ],
+            [
+                'tanggal' => '2026-02-10',
+                'shift' => 'Shift Malam',
+                'jam_masuk' => null,
+                'terlambat' => '-',
+                'jam_keluar' => null,
+                'pulang_cepat' => '-',
+                'status' => 'DATA TIDAK ADA',
+                'keterangan' => 'Cuti Tahunan',
+                'source' => 'HRIS'
+            ],
+            [
+                'tanggal' => '2026-02-09',
+                'shift' => 'Shift Pagi',
+                'jam_masuk' => '07:15',
+                'terlambat' => '00:05',
+                'jam_keluar' => '17:00',
+                'pulang_cepat' => '-',
+                'status' => 'TERLAMBAT',
+                'keterangan' => 'Sakit',
+                'source' => 'Sistem Absensi'
+            ],
+            [
+                'tanggal' => '2026-02-09',
+                'shift' => 'Shift Pagi',
+                'jam_masuk' => '07:10',
+                'terlambat' => '00:10',
+                'jam_keluar' => '15:30',
+                'pulang_cepat' => '01:30',
+                'status' => 'PULANG CEPAT',
+                'keterangan' => 'Sakit',
+                'source' => 'HRIS'
+            ],
+        ];
+
+        return view('transc.trssp.detail', array_merge($sharedData, [
+            'sp' => $selected,
+            'detailRows' => $detailRows,
+        ]));
+    }
+
+    // Get SP History List (AJAX with Pagination)
+    public function ajax($data = [])
+    {
+        $page = (int) request()->input('page', 1);
+        $perPage = (int) request()->input('per_page', 10);
+        $nik = request()->input('nik', '');
+        $tanggalMulai = request()->input('tanggal_mulai', '');
+        $tanggalAkhir = request()->input('tanggal_akhir', '');
+        $returnAll = (bool) request()->input('all', false);
+        $completedIds = session('trssp_completed_ids', []);
+
+        $allData = $this->getDummySpData();
 
         if ($nik) {
             $allData = array_filter($allData, function($item) use ($nik) {
@@ -195,6 +304,10 @@ class TrsspController extends Controller
                 return $item['tanggal_sp'] <= $tanggalAkhir;
             });
         }
+
+        $allData = array_filter($allData, function($item) use ($completedIds) {
+            return strtolower($item['status']) !== 'completed' && !in_array($item['id'], $completedIds, true);
+        });
 
         $allData = array_values($allData);
         $total = count($allData);
@@ -359,7 +472,13 @@ class TrsspController extends Controller
     // Mark SP as Completed
     public function selesai($data = [])
     {
-        $id = request()->input('id');
+        $id = (int) request()->input('id');
+        $completedIds = session('trssp_completed_ids', []);
+
+        if (!in_array($id, $completedIds, true)) {
+            $completedIds[] = $id;
+            session(['trssp_completed_ids' => $completedIds]);
+        }
         
         // TODO: Update status in database to 'completed'
         // This will move the record to reports

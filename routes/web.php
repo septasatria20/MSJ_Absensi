@@ -99,6 +99,7 @@ Route::group(['middleware' => 'auth'], function () {
 	// Kirim SP - AJAX Routes (must be before catch-all)
 	Route::get('/trssp/getkaryawan', [TrsspController::class, 'getkaryawan'])->name('trssp.getkaryawan');
 	Route::get('/trssp/ajax', [TrsspController::class, 'ajax'])->name('trssp.ajax');
+	Route::get('/trssp/detail/{id}', [TrsspController::class, 'detail'])->name('trssp.detail');
 	Route::post('/trssp/updatesp', [TrsspController::class, 'updatesp'])->name('trssp.updatesp');
 	Route::post('/trssp/cetaksp', [TrsspController::class, 'cetaksp'])->name('trssp.cetaksp');
 	Route::post('/trssp/hubungi', [TrsspController::class, 'hubungi'])->name('trssp.hubungi');
