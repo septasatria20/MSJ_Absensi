@@ -568,7 +568,6 @@ class DatabaseSeeder extends Seeder
             example_call_seed::class,
             // Sistem Absensi Seeders
             absens_role_hr::class,
-            absens_gmenu::class,
             tabel_mst_shift::class,
             tabel_mst_mapping_nik::class,
             tabel_mst_group_karyawan::class,
@@ -579,6 +578,10 @@ class DatabaseSeeder extends Seeder
             tabel_trs_tukar_jadwal::class,
             tabel_trs_pull_finger::class,
             tabel_trs_data_missing::class,
+            SetTukarJadwalManual::class,
+            SetPullFingerManual::class,
+            SetDataMissingManual::class,
+            SetKirimSPManual::class,
             tabel_rpt_finger::class,
             tabel_rpt_sp::class,
         ]);

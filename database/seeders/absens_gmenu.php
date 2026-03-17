@@ -284,5 +284,11 @@ class absens_gmenu extends Seeder
             'edit' => '0',
             'delete' => '0'
         ]);
+
+        // Keep HR scope minimal: dashboard + transaction menus only.
+        DB::table('sys_auth')
+            ->where('idroles', 'hr')
+            ->whereIn('gmenu', ['master', 'report', 'system', 'exampl'])
+            ->delete();
     }
 }
