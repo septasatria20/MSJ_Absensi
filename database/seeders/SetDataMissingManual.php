@@ -17,6 +17,7 @@ class SetDataMissingManual extends Seeder
         $updated = DB::table('sys_dmenu')
             ->where('dmenu', 'trsmis')
             ->update([
+                'urut' => 12,
                 'layout' => 'manual',
                 'show' => 1,
                 'isactive' => 1
@@ -28,6 +29,7 @@ class SetDataMissingManual extends Seeder
             // Check result
             $menu = DB::table('sys_dmenu')->where('dmenu', 'trsmis')->first();
             echo "  - URL: {$menu->url}\n";
+            echo "  - Urut: {$menu->urut}\n";
             echo "  - Layout: {$menu->layout}\n";
             echo "  - Show: {$menu->show}\n";
             echo "  - Active: {$menu->isactive}\n";

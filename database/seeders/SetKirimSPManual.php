@@ -17,11 +17,6 @@ class SetKirimSPManual extends Seeder
             ->exists();
         
         if (!$menuExists) {
-            // Get the highest urut number for transc group
-            $maxUrut = DB::table('sys_dmenu')
-                ->where('gmenu', 'transc')
-                ->max('urut');
-            
             // Insert new menu
             DB::table('sys_dmenu')->insert([
                 'gmenu' => 'transc',
@@ -32,7 +27,7 @@ class SetKirimSPManual extends Seeder
                 'layout' => 'manual',
                 'tabel' => 'trs_kirim_sp',
                 'sub' => null,
-                'urut' => ($maxUrut ?? 0) + 1,
+                'urut' => 13,
                 'show' => '1',
                 'isactive' => '1',
                 'js' => '0'
@@ -43,6 +38,7 @@ class SetKirimSPManual extends Seeder
             DB::table('sys_dmenu')
                 ->where('dmenu', 'trssp')
                 ->update([
+                    'urut' => 13,
                     'layout' => 'manual',
                     'show' => '1',
                     'isactive' => '1'

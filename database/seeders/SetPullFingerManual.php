@@ -16,6 +16,9 @@ class SetPullFingerManual extends Seeder
             ->where('dmenu', 'trspul')
             ->update([
                 'layout' => 'manual',
+                'urut' => 10,
+                'show' => '1',
+                'isactive' => '1',
                 'updated_at' => now(),
             ]);
         
@@ -26,6 +29,7 @@ class SetPullFingerManual extends Seeder
         echo "  gmenu: {$menu->gmenu}\n";
         echo "  url: {$menu->url}\n";
         echo "  tabel: {$menu->tabel}\n";
+        echo "  urut: {$menu->urut}\n";
         echo "  layout: {$menu->layout}\n";
         echo "  show: {$menu->show}\n";
         echo "  isactive: {$menu->isactive}\n";

@@ -7,29 +7,9 @@ use Illuminate\Support\Facades\DB;
 
 class TrsmisController extends Controller
 {
-    /**
-     * Display Data Missing page
-     */
-    public function index($data)
+    private function getDummyData(): array
     {
-        // TODO: Nanti akan ambil data dari database
-        // Untuk sekarang fokus UI dulu
-        
-        return view($data['url'], $data);
-    }
-    
-    /**
-     * Get Data Missing data via AJAX
-     */
-    public function ajax($data)
-    {
-        // Get filter parameters using global request() helper
-        $tanggalMulai = request()->input('tanggal_mulai');
-        $tanggalAkhir = request()->input('tanggal_akhir');
-        $filterKaryawan = request()->input('karyawan');
-        
-        // All dummy data
-        $allDummyData = [
+        return [
             [
                 'id' => 1,
                 'tanggal' => '2026-02-12',
@@ -135,7 +115,6 @@ class TrsmisController extends Controller
                 'keterangan' => 'Mangkir/Tanpa Keterangan',
                 'keterangan_badge' => 'danger'
             ],
-            // Januari data
             [
                 'id' => 8,
                 'tanggal' => '2026-01-25',
@@ -182,16 +161,76 @@ class TrsmisController extends Controller
                 'keterangan_badge' => 'info'
             ]
         ];
+    }
+
+    private function applyKeteranganOverrides(array $data): array
+    {
+        $overrides = session('trsmis_keterangan_overrides', []);
+
+        foreach ($data as &$item) {
+            $id = (string) ($item['id'] ?? '');
+            if (isset($overrides[$id]) && $overrides[$id] !== '') {
+                $item['keterangan'] = $overrides[$id];
+            }
+        }
+
+        return $data;
+    }
+
+    private function getLastConfirmedAtFormatted(): ?string
+    {
+        $lastConfirmedAt = session('trsmis_last_confirmed_at');
+
+        if (empty($lastConfirmedAt)) {
+            return null;
+        }
+
+        $timestamp = strtotime($lastConfirmedAt);
+        if ($timestamp === false) {
+            return null;
+        }
+
+        return date('d-m-Y H:i:s', $timestamp);
+    }
+
+    /**
+     * Display Data Missing page
+     */
+    public function index($data)
+    {
+        // TODO: Nanti akan ambil data dari database
+        // Untuk sekarang fokus UI dulu
+        
+        return view($data['url'], $data);
+    }
+    
+    /**
+     * Get Data Missing data via AJAX
+     */
+    public function ajax($data)
+    {
+        // Get filter parameters using global request() helper
+        $tanggalMulai = request()->input('tanggal_mulai');
+        $tanggalAkhir = request()->input('tanggal_akhir');
+        $filterKaryawan = request()->input('karyawan');
+        $confirmedIds = array_map('intval', session('trsmis_confirmed_ids', []));
+        
+        $allDummyData = $this->applyKeteranganOverrides($this->getDummyData());
+
+        // Remove confirmed rows from active queue.
+        $allUnconfirmedData = array_values(array_filter($allDummyData, function ($item) use ($confirmedIds) {
+            return !in_array((int) ($item['id'] ?? 0), $confirmedIds, true);
+        }));
         
         // Apply filters by date range
         if (!empty($tanggalMulai) && !empty($tanggalAkhir)) {
-            $filteredData = array_filter($allDummyData, function($item) use ($tanggalMulai, $tanggalAkhir) {
+            $filteredData = array_filter($allUnconfirmedData, function($item) use ($tanggalMulai, $tanggalAkhir) {
                 return isset($item['tanggal']) && 
                        $item['tanggal'] >= $tanggalMulai && 
                        $item['tanggal'] <= $tanggalAkhir;
             });
         } else {
-            $filteredData = $allDummyData;
+            $filteredData = $allUnconfirmedData;
         }
         
         // Filter by NIK or nama karyawan (optional)
@@ -207,11 +246,27 @@ class TrsmisController extends Controller
         
         // Reset array keys
         $filteredData = array_values($filteredData);
+
+        $filteredIds = array_map(function ($item) {
+            return (int) ($item['id'] ?? 0);
+        }, $filteredData);
+
+        $outsideFilterUnconfirmed = array_values(array_filter($allUnconfirmedData, function ($item) use ($filteredIds) {
+            return !in_array((int) ($item['id'] ?? 0), $filteredIds, true);
+        }));
+
+        usort($outsideFilterUnconfirmed, function ($a, $b) {
+            return strcmp(($b['tanggal'] ?? ''), ($a['tanggal'] ?? ''));
+        });
         
         return response()->json([
             'success' => true,
             'data' => $filteredData,
             'total' => count($filteredData),
+            'outside_unconfirmed' => $outsideFilterUnconfirmed,
+            'outside_unconfirmed_total_rows' => count($outsideFilterUnconfirmed),
+            'last_confirmed_at' => session('trsmis_last_confirmed_at'),
+            'last_confirmed_at_formatted' => $this->getLastConfirmedAtFormatted(),
             'filters' => [
                 'tanggal_mulai' => $tanggalMulai,
                 'tanggal_akhir' => $tanggalAkhir,
@@ -225,7 +280,8 @@ class TrsmisController extends Controller
      */
     public function konfirmasi($data)
     {
-        $ids = request()->input('ids', []);
+        $ids = array_map('intval', request()->input('ids', []));
+        $ids = array_values(array_unique($ids));
         
         if (empty($ids)) {
             return response()->json([
@@ -234,13 +290,21 @@ class TrsmisController extends Controller
             ], 400);
         }
         
-        // TODO: Update database trs_data_missing
-        // For now return dummy success
+        $existingConfirmed = array_map('intval', session('trsmis_confirmed_ids', []));
+        $newConfirmed = array_values(array_unique(array_merge($existingConfirmed, $ids)));
+        $confirmedAt = now()->format('Y-m-d H:i:s');
+
+        session([
+            'trsmis_confirmed_ids' => $newConfirmed,
+            'trsmis_last_confirmed_at' => $confirmedAt,
+        ]);
         
         return response()->json([
             'success' => true,
             'message' => 'Data berhasil dikonfirmasi',
-            'confirmed' => count($ids)
+            'confirmed' => count($ids),
+            'last_confirmed_at' => $confirmedAt,
+            'last_confirmed_at_formatted' => $this->getLastConfirmedAtFormatted(),
         ]);
     }
     
@@ -249,11 +313,12 @@ class TrsmisController extends Controller
      */
     public function updateketerangan($data)
     {
-        $id = request()->input('id');
+        $id = (string) request()->input('id');
         $keterangan = request()->input('keterangan');
-        
-        // TODO: Update database trs_data_missing
-        // For now return dummy success
+
+        $overrides = session('trsmis_keterangan_overrides', []);
+        $overrides[$id] = $keterangan;
+        session(['trsmis_keterangan_overrides' => $overrides]);
         
         return response()->json([
             'success' => true,

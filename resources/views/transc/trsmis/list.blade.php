@@ -37,7 +37,15 @@
 
             {{-- ACTION BAR --}}
             <div class="px-3 pb-2 d-flex flex-column align-items-start gap-2" id="actionBar">
-                <div id="dataMissingExportButtons" class="d-flex gap-2 flex-wrap justify-content-start"></div>
+                <div class="d-flex justify-content-between align-items-center w-100 flex-wrap gap-2">
+                    <div id="dataMissingExportButtons" class="d-flex gap-2 flex-wrap justify-content-start"></div>
+                    <div id="lastKonfirmasiInfoWrap" class="d-flex justify-content-end">
+                        <div class="badge bg-gradient-info text-white px-3 py-2 shadow-sm border border-info-subtle" style="font-size: 0.8rem; font-weight: 600; white-space: nowrap;">
+                            <i class="fas fa-clock me-1"></i>
+                            <span id="lastKonfirmasiInfo">Terakhir kali konfirmasi: belum ada</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="d-flex align-items-center gap-2 flex-wrap" id="primaryActionButtons">
                     <span class="text-sm me-2">
                         <strong class="text-primary" id="selectedCount">0</strong> data terpilih
@@ -84,6 +92,32 @@
                                 </td>
                             </tr>
                         </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="px-3 pb-3" id="outsideUnconfirmedSection" style="display: none;">
+                <h6 class="mb-2 text-dark font-weight-bold">Belum Konfirmasi di Luar Filter</h6>
+                <p class="text-xs text-secondary mb-2" id="outsideUnconfirmedNote"></p>
+                <div class="table-responsive table-wrap-centered">
+                    <table class="table table-hover align-items-center mb-0" id="outsideUnconfirmedTable">
+                        <thead style="background-color: #00b7bd4f;">
+                            <tr>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">No</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Tanggal</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">NIK</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Nama Karyawan</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Shift</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Jam Masuk</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Terlambat</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Jam Keluar</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Pulang Cepat</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Status</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Keterangan</th>
+                                <th class="text-secondary text-sm font-weight-bold opacity-7 text-start">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="outsideUnconfirmedBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -144,7 +178,8 @@
     @push('js')
     <style>
         .table-wrap-centered,
-        #dataMissingTable_wrapper {
+        #dataMissingTable_wrapper,
+        #outsideUnconfirmedTable_wrapper {
             max-width: 100%;
             margin: 0;
         }
@@ -159,12 +194,20 @@
             margin-left: 0;
             padding-left: 0;
         }
+        #actionBar {
+            gap: 0.35rem !important;
+            padding-bottom: 0.4rem !important;
+        }
         #actionBar #primaryActionButtons {
-            margin-bottom: 2px;
+            margin-bottom: 0;
+        }
+        #lastKonfirmasiInfoWrap {
+            min-height: 34px;
         }
     </style>
     <script>
         let dataMissingTable = null;
+        let outsideUnconfirmedTable = null;
 
         $(document).ready(function() {});
 
@@ -180,10 +223,16 @@
 
             document.getElementById('selectedCount').textContent = '0';
             document.getElementById('selectAll').checked = false;
+            document.getElementById('outsideUnconfirmedSection').style.display = 'none';
 
             if (dataMissingTable) {
                 dataMissingTable.destroy();
                 dataMissingTable = null;
+            }
+
+            if (outsideUnconfirmedTable) {
+                outsideUnconfirmedTable.destroy();
+                outsideUnconfirmedTable = null;
             }
 
             document.getElementById('dataMissingExportButtons').innerHTML = '';
@@ -207,6 +256,9 @@
                     karyawan: karyawan
                 },
                 success: function(response) {
+                    renderLastKonfirmasi(response.last_confirmed_at_formatted);
+                    renderOutsideUnconfirmed(response.outside_unconfirmed || [], response.outside_unconfirmed_total_rows || 0);
+
                     if (response.success && response.data.length > 0) {
                         renderTable(response.data);
                     } else {
@@ -241,8 +293,77 @@
             });
         }
 
-        function renderTable(data) {
+        function renderLastKonfirmasi(lastConfirmedAtFormatted) {
+            const target = document.getElementById('lastKonfirmasiInfo');
+
+            if (!target) {
+                return;
+            }
+
+            if (!lastConfirmedAtFormatted) {
+                target.textContent = 'Terakhir kali konfirmasi: belum ada';
+            } else {
+                target.textContent = `Terakhir kali konfirmasi: ${lastConfirmedAtFormatted}`;
+            }
+        }
+
+        function renderOutsideUnconfirmed(data, totalRows) {
+            const section = document.getElementById('outsideUnconfirmedSection');
+            const body = document.getElementById('outsideUnconfirmedBody');
+            const note = document.getElementById('outsideUnconfirmedNote');
+
+            if (outsideUnconfirmedTable) {
+                outsideUnconfirmedTable.destroy();
+                outsideUnconfirmedTable = null;
+            }
+
+            if (!Array.isArray(data) || data.length === 0) {
+                section.style.display = 'none';
+                body.innerHTML = '';
+                note.textContent = '';
+                return;
+            }
+
+            note.textContent = `${totalRows} baris data belum dikonfirmasi di luar filter aktif.`;
+
+            body.innerHTML = buildRowsHtml(data, false);
+            section.style.display = 'block';
+
+            outsideUnconfirmedTable = $('#outsideUnconfirmedTable').DataTable({
+                language: {
+                    lengthMenu: 'Tampilkan _MENU_ baris',
+                    zeroRecords: 'Maaf - Data tidak ada',
+                    info: 'Data _START_ - _END_ dari _TOTAL_',
+                    infoEmpty: 'Tidak ada data',
+                    infoFiltered: '(pencarian dari _MAX_ data)'
+                },
+                searching: false,
+                responsive: true,
+                order: [[1, 'desc']],
+                dom: 'rtip'
+            });
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function escapeForJsSingleQuote(value) {
+            return String(value)
+                .replace(/\\/g, '\\\\')
+                .replace(/'/g, "\\'")
+                .replace(/\n/g, ' ')
+                .replace(/\r/g, ' ');
+        }
+
+        function buildRowsHtml(data, withCheckbox = true) {
             let html = '';
+
             data.forEach((row, index) => {
                 const statusColors = {
                     danger: 'bg-gradient-danger',
@@ -253,32 +374,37 @@
                 };
 
                 const statusBadge = statusColors[row.status_badge] || 'bg-gradient-secondary';
+                const escapedKeterangan = escapeForJsSingleQuote(row.keterangan || '');
+                const escapedNama = escapeForJsSingleQuote(row.nama || '');
 
                 html += `
                     <tr>
-                        <td>
-                            <input type="checkbox" class="row-checkbox" value="${row.id}" onchange="updateSelectedCount()">
-                        </td>
+                        ${withCheckbox ? `<td><input type="checkbox" class="row-checkbox" value="${row.id}" onchange="updateSelectedCount()"></td>` : ''}
                         <td>${index + 1}</td>
                         <td>${formatDate(row.tanggal)}</td>
-                        <td><strong>${row.nik}</strong></td>
-                        <td>${row.nama}</td>
-                        <td>${row.shift}</td>
-                        <td>${row.jam_masuk ? row.jam_masuk : '<span class="badge badge-sm bg-gradient-danger">Missing</span>'}</td>
-                        <td>${row.terlambat ? row.terlambat : '-'}</td>
-                        <td>${row.jam_keluar ? row.jam_keluar : '<span class="badge badge-sm bg-gradient-danger">Missing</span>'}</td>
-                        <td>${row.pulang_cepat ? row.pulang_cepat : '-'}</td>
-                        <td><span class="badge badge-sm ${statusBadge}">${row.status}</span></td>
-                        <td>${row.keterangan}</td>
+                        <td><strong>${escapeHtml(row.nik || '-')}</strong></td>
+                        <td>${escapeHtml(row.nama || '-')}</td>
+                        <td>${escapeHtml(row.shift || '-')}</td>
+                        <td>${row.jam_masuk ? escapeHtml(row.jam_masuk) : '<span class="badge badge-sm bg-gradient-danger">Missing</span>'}</td>
+                        <td>${row.terlambat ? escapeHtml(row.terlambat) : '-'}</td>
+                        <td>${row.jam_keluar ? escapeHtml(row.jam_keluar) : '<span class="badge badge-sm bg-gradient-danger">Missing</span>'}</td>
+                        <td>${row.pulang_cepat ? escapeHtml(row.pulang_cepat) : '-'}</td>
+                        <td><span class="badge badge-sm ${statusBadge}">${escapeHtml(row.status || '-')}</span></td>
+                        <td>${escapeHtml(row.keterangan || '-')}</td>
                         <td>
-                            <button class="btn btn-sm btn-warning" onclick="editKeterangan(${row.id}, '${row.nik}', '${row.nama}', '${row.tanggal}', '${String(row.keterangan).replace(/'/g, "\\'")}')">
+                            <button class="btn btn-sm btn-warning" onclick="editKeterangan(${row.id}, '${escapeForJsSingleQuote(row.nik || '')}', '${escapedNama}', '${escapeForJsSingleQuote(row.tanggal || '')}', '${escapedKeterangan}')">
                                 <i class="fas fa-edit"></i> Edit Keterangan
                             </button>
                         </td>
                     </tr>
                 `;
             });
-            document.getElementById('tableBody').innerHTML = html;
+
+            return html;
+        }
+
+        function renderTable(data) {
+            document.getElementById('tableBody').innerHTML = buildRowsHtml(data, true);
 
             dataMissingTable = $('#dataMissingTable').DataTable({
                 language: {

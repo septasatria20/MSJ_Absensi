@@ -14,6 +14,7 @@ class SetTukarJadwalManual extends Seeder
         DB::table('sys_dmenu')
             ->where('dmenu', 'trstuk')
             ->update([
+                'urut' => 11,
                 'layout' => 'manual',
                 'show' => '1',
                 'isactive' => '1'
