@@ -5,19 +5,43 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class SetKirimSPManual extends Seeder
+class tabel_trs_manual extends Seeder
 {
     public function run(): void
     {
-        echo "Setting up Kirim SP menu...\n";
-        
-        // Check if menu exists in sys_dmenu
+        DB::table('sys_dmenu')
+            ->where('dmenu', 'trspul')
+            ->update([
+                'layout' => 'manual',
+                'urut' => 10,
+                'show' => '1',
+                'isactive' => '1',
+                'updated_at' => now(),
+            ]);
+
+        DB::table('sys_dmenu')
+            ->where('dmenu', 'trstuk')
+            ->update([
+                'urut' => 11,
+                'layout' => 'manual',
+                'show' => '1',
+                'isactive' => '1',
+            ]);
+
+        DB::table('sys_dmenu')
+            ->where('dmenu', 'trsmis')
+            ->update([
+                'urut' => 12,
+                'layout' => 'manual',
+                'show' => '1',
+                'isactive' => '1',
+            ]);
+
         $menuExists = DB::table('sys_dmenu')
             ->where('dmenu', 'trssp')
             ->exists();
-        
+
         if (!$menuExists) {
-            // Insert new menu
             DB::table('sys_dmenu')->insert([
                 'gmenu' => 'transc',
                 'dmenu' => 'trssp',
@@ -30,28 +54,24 @@ class SetKirimSPManual extends Seeder
                 'urut' => 13,
                 'show' => '1',
                 'isactive' => '1',
-                'js' => '0'
+                'js' => '0',
             ]);
-            echo "✓ Created new sys_dmenu entry for Kirim SP\n";
         } else {
-            // Update existing menu
             DB::table('sys_dmenu')
                 ->where('dmenu', 'trssp')
                 ->update([
                     'urut' => 13,
                     'layout' => 'manual',
                     'show' => '1',
-                    'isactive' => '1'
+                    'isactive' => '1',
                 ]);
-            echo "✓ Updated existing sys_dmenu entry for Kirim SP\n";
         }
-        
-        // Setup sys_auth
+
         $authExists = DB::table('sys_auth')
             ->where('gmenu', 'transc')
             ->where('dmenu', 'trssp')
             ->exists();
-        
+
         if ($authExists) {
             DB::table('sys_auth')
                 ->where('gmenu', 'transc')
@@ -65,32 +85,23 @@ class SetKirimSPManual extends Seeder
                     'excel' => '1',
                     'pdf' => '1',
                     'rules' => '1',
-                    'isactive' => '1'
+                    'isactive' => '1',
                 ]);
-            echo "✓ Updated existing sys_auth entries for Kirim SP\n";
         } else {
-            // Create auth entries only for hr role (which exists)
-            $roles = ['hr']; // Only hr for now, can add more later
-            foreach ($roles as $role) {
-                DB::table('sys_auth')->insert([
-                    'gmenu' => 'transc',
-                    'dmenu' => 'trssp',
-                    'idroles' => $role,
-                    'add' => '1',
-                    'edit' => '1',
-                    'delete' => '1',
-                    'approval' => '1',
-                    'print' => '1',
-                    'excel' => '1',
-                    'pdf' => '1',
-                    'rules' => '1',
-                    'isactive' => '1'
-                ]);
-            }
-            echo "✓ Created sys_auth entries for Kirim SP (hr)\n";
+            DB::table('sys_auth')->insert([
+                'gmenu' => 'transc',
+                'dmenu' => 'trssp',
+                'idroles' => 'hr',
+                'add' => '1',
+                'edit' => '1',
+                'delete' => '1',
+                'approval' => '1',
+                'print' => '1',
+                'excel' => '1',
+                'pdf' => '1',
+                'rules' => '1',
+                'isactive' => '1',
+            ]);
         }
-        
-        echo "\n✅ Kirim SP is now accessible at /trssp\n";
-        echo "Role with full access: hr\n";
     }
 }

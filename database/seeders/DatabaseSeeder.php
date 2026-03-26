@@ -578,10 +578,7 @@ class DatabaseSeeder extends Seeder
             tabel_trs_tukar_jadwal::class,
             tabel_trs_pull_finger::class,
             tabel_trs_data_missing::class,
-            SetTukarJadwalManual::class,
-            SetPullFingerManual::class,
-            SetDataMissingManual::class,
-            SetKirimSPManual::class,
+            tabel_trs_manual::class,
             tabel_rpt_finger::class,
             tabel_rpt_sp::class,
         ]);
